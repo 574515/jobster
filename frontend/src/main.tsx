@@ -7,11 +7,13 @@ import {RecoilRoot} from "recoil";
 import {BrowserRouter} from "react-router-dom";
 import {ChakraProvider, ColorModeScript, extendTheme} from "@chakra-ui/react";
 import {mode} from "@chakra-ui/theme-tools";
+import {ThemeProps} from "./models/componentsTypes.ts";
 
 import './index.css'
 
+
 const styles = {
-	global: (props) => ({
+	global: (props: ThemeProps) => ({
 		body: {
 			color: mode('gray.800', 'whiteAlpha.900')(props),
 			bg: 'url(/login.jpeg)  no-repeat center center cover',
