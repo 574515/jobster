@@ -15,11 +15,15 @@ function App() {
 	const user = useRecoilValue(userAtom);
 	const getAuthScreen = useRecoilValue(authScreenAtom);
 	const {colorMode} = useColorMode();
-
 	let currentClass;
+
 	const getCurrentClas = (path: string, isDark: boolean, isLogin: boolean) => {
-		return path === '/auth' ? isLogin ? currentClass = isDark ? 'body-login-dark' : 'body-login' : currentClass = isDark ? 'body-signup-dark' : 'body-signup' : currentClass = isDark ? 'body-app-dark' : 'body-app';
+		if (path === '/auth') {
+			if (isLogin) currentClass = isDark ? 'body-login-dark' : 'body-login';
+			else currentClass = isDark ? 'body-signup-dark' : 'body-signup';
+		} else currentClass = isDark ? 'body-app-dark' : 'body-app';
 	}
+
 	getCurrentClas(location.pathname, colorMode === 'dark', getAuthScreen === 'login');
 
 	return (
@@ -27,7 +31,7 @@ function App() {
 			<AxiosInterceptor/>
 			<Box className={`${currentClass}`}></Box>
 			<Box className={"content"}>
-				{/*<Header/>*/}
+				{/*{user && <Header/>}*/}
 				<Routes>
 					<Route path='/' element={user ? <Home/> : <Navigate to='/auth'/>}/>
 					<Route path='/auth' element={!user ? <Auth/> : <Navigate to='/'/>}/>
