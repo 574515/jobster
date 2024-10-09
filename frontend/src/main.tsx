@@ -11,7 +11,6 @@ import {ThemeProps} from "./models/componentsTypes.ts";
 
 import './index.css'
 
-
 const styles = {
 	global: (props: ThemeProps) => ({
 		body: {

@@ -1,0 +1,47 @@
+a, #menu-button-collection {
+    color: #fff !important;
+    transition: color .6s ease;
+}
+
+a:hover, #menu-button-collection:hover {
+    color: cornsilk !important;
+    cursor: pointer;
+}
+
+.green-disc {
+    list-style-type: disc;
+    color: green;
+}
+
+.red-circle {
+    list-style-type: circle;
+    color: red;
+}
+
+.non-private-user-block {
+    top: 0;
+    left: 0;
+}
+
+.locked-profile img {
+    box-shadow: 0 0 10px red;
+    filter: brightness(75%);
+    transition: all 1s ease;
+}
+
+.locked-profile img:hover {
+    box-shadow: none;
+    filter: brightness(100%);
+}
+
+.red-bold, .green-bold {
+    font-weight: bold;
+}
+
+.red-bold {
+    color: #FF0000;
+}
+
+.green-bold {
+    color: #00FF00;
+}
