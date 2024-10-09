@@ -1,19 +1,31 @@
-import {AuthProvider} from "./context/AuthContext.tsx";
+import Auth from './pages/Auth.tsx';
+import Home from './pages/Home.tsx';
 import AxiosInterceptor from "./components/AxiosInterceptor.tsx";
-import {Box} from "@chakra-ui/react";
-import {Navigate, Route, Routes} from "react-router-dom";
-import {useRecoilValue} from "recoil";
-import Home from "./pages/Home.tsx";
-import Auth from "./pages/Auth.tsx";
-import userAtom from "./atoms/userAtom.ts";
+import authScreenAtom from "./atoms/authScreenAtom.ts";
+import userAtom from './atoms/userAtom.ts';
+
+import {Navigate, Route, Routes,} from 'react-router-dom';
+import {useRecoilValue} from 'recoil';
+import {AuthProvider} from './context/AuthContext.tsx';
+import {Box, useColorMode} from "@chakra-ui/react";
+
+import './styles/pagesStyle.css'
 
 function App() {
 	const user = useRecoilValue(userAtom);
+	const getAuthScreen = useRecoilValue(authScreenAtom);
+	const {colorMode} = useColorMode();
+
+	let currentClass;
+	const getCurrentClas = (path: string, isDark: boolean, isLogin: boolean) => {
+		return path === '/auth' ? isLogin ? currentClass = isDark ? 'body-login-dark' : 'body-login' : currentClass = isDark ? 'body-signup-dark' : 'body-signup' : currentClass = isDark ? 'body-app-dark' : 'body-app';
+	}
+	getCurrentClas(location.pathname, colorMode === 'dark', getAuthScreen === 'login');
 
 	return (
 		<AuthProvider>
 			<AxiosInterceptor/>
-			<Box className={"container"}></Box>
+			<Box className={`${currentClass}`}></Box>
 			<Box className={"content"}>
 				{/*<Header/>*/}
 				<Routes>
