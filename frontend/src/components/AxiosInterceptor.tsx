@@ -2,12 +2,12 @@ import React from 'react';
 
 import useAuth from "../hooks/useAuth.ts";
 
-import {usersInstance} from '../api/axiosInstances.ts';
+import {authInstance} from '../api/axiosInstances.ts';
 
 const AxiosInterceptor = () => {
 	const {logoutUser} = useAuth();
 	React.useEffect(() => {
-		const interceptor = usersInstance.interceptors.response.use(
+		const interceptor = authInstance.interceptors.response.use(
 			response => response,
 			async ({response}) => {
 				if (response && response.status === 401 && response.data.actions === 'logout') {
@@ -20,7 +20,7 @@ const AxiosInterceptor = () => {
 				return Promise.reject(response);
 			}
 		);
-		return () => usersInstance.interceptors.response.eject(interceptor);
+		return () => authInstance.interceptors.response.eject(interceptor);
 	}, [logoutUser]);
 	return null;
 };
