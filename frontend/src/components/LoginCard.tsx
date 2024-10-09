@@ -24,7 +24,6 @@ import {getDefaultValues} from "../helpers/constants.js";
 import {LoginValues} from "../models/componentsTypes.ts";
 
 import '../styles/style.css'
-import '../styles/componentsStyle.css'
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaLock, FaUser} from "react-icons/fa6";
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";

@@ -5,19 +5,19 @@ import AuthContext from "../context/AuthContext.tsx";
 
 import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
 import {
-    Box,
-    Button,
-    ButtonGroup,
-    Flex,
-    Heading,
-    HStack,
-    InputLeftElement,
-    InputRightElement,
-    Stack,
-    Text,
-    useColorMode,
-    useColorModeValue,
-    VStack,
+	Box,
+	Button,
+	ButtonGroup,
+	Flex,
+	Heading,
+	HStack,
+	InputLeftElement,
+	InputRightElement,
+	Stack,
+	Text,
+	useColorMode,
+	useColorModeValue,
+	VStack,
 } from '@chakra-ui/react';
 import {useSetRecoilState} from 'recoil';
 import {useForm} from "react-hook-form";
@@ -28,7 +28,6 @@ import {FaAt, FaCircleUser, FaClipboardUser, FaLock} from "react-icons/fa6";
 import {SignupValues} from "../models/componentsTypes.ts";
 
 import '../styles/style.css'
-import '../styles/componentsStyle.css'
 import authScreenAtom from "../atoms/authScreenAtom.ts";
 
 const SignupCard = () => {
