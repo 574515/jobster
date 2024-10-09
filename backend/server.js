@@ -3,9 +3,11 @@ import 'dotenv/config'
 import cookieParser from "cookie-parser";
 import corsOptions from "./config/corsOptions.js";
 import cors from 'cors';
+import connectDB from "./config/connectDB.js";
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 7002;
+void connectDB();
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
