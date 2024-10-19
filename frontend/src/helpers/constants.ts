@@ -23,3 +23,8 @@ export const getDefaultValues = (mode: string) => {
 			return {}
 	}
 }
+
+export const forbiddenUsernames = [
+	"admin",
+	"root",
+]
