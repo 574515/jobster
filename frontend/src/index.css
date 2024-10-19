@@ -10,27 +10,27 @@
 }
 
 .body-login {
-    background-image: url('../public/login.jpg');
+    background-image: url('../login.jpg');
 }
 
 .body-login-dark {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../public/login.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../login.jpg');
 }
 
 .body-signup {
-    background-image: url('../public/signup.jpg');
+    background-image: url('../signup.jpg');
 }
 
 .body-signup-dark {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../public/signup.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../signup.jpg');
 }
 
 .body-app {
-    background-image: url('../public/body.jpg');
+    background-image: url('../body.jpg');
 }
 
 .body-app-dark {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../public/body.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../body.jpg');
 }
 
 .content {
