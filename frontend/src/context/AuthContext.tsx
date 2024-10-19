@@ -44,7 +44,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 				toast('Registration Successful', 'success', 2000);
 			})
 			.catch((err) => {
-				toast(err.response?.data?.error, 'error');
+				// TODO: Fix on backend so it's consistent
+				const errorMessage = err.response ?
+					err.response.data.error : err.data.error;
+				toast(errorMessage, 'error');
 				return Promise.reject(err);
 			});
 	};
