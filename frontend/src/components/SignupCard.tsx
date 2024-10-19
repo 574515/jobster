@@ -2,7 +2,9 @@ import React from 'react';
 
 import CustomFormProvider from "./CustomFormProvider.tsx";
 import AuthContext from "../context/AuthContext.tsx";
+import authScreenAtom from "../atoms/authScreenAtom.ts";
 
+import {toast} from "../helpers/customToast.ts";
 import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
 import {
 	Box,
@@ -22,36 +24,50 @@ import {
 import {useSetRecoilState} from 'recoil';
 import {useForm} from "react-hook-form";
 import {RegisterValidationSchema} from "../helpers/validators.ts";
-import {getDefaultValues} from "../helpers/constants.ts";
+import {forbiddenUsernames, getDefaultValues} from "../helpers/constants.ts";
 import {InputControl, ResetButton, SubmitButton} from "react-hook-form-chakra";
 import {FaAt, FaCircleUser, FaClipboardUser, FaLock} from "react-icons/fa6";
 import {SignupValues} from "../models/componentsTypes.ts";
+import {AuthContextType} from "../models/contextTypes.ts";
 
 import '../styles/style.css'
-import authScreenAtom from "../atoms/authScreenAtom.ts";
 
 const SignupCard = () => {
-	const [showPassword, setShowPassword] = React.useState(false);
-	const [showRepeatPassword, setShowRepeatPassword] = React.useState(false);
-	const setAuthScreen = useSetRecoilState(authScreenAtom);
-	const [isLoading, setIsLoading] = React.useState(false);
-	const authContext = React.useContext(AuthContext);
+	const [signUpInputs, setSignUpInputs] = React.useState<SignupValues>({
+		email: "",
+		username: "",
+		password: "",
+		repeatPassword: "",
+	});
+	const [showPassword, setShowPassword] = React.useState<boolean>(false);
+	const [showRepeatPassword, setShowRepeatPassword] = React.useState<boolean>(false);
+	const setAuthScreen = useSetRecoilState<string>(authScreenAtom);
+	const [isLoading, setIsLoading] = React.useState<boolean>(false);
+	const [resetDisabled, setResetDisabled] = React.useState<boolean>(true);
+	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
 	const registerUser = authContext ? authContext.registerUser : undefined;
 	const methods = useForm({
 		resolver: RegisterValidationSchema, ...getDefaultValues("signup"),
 		mode: "onChange"
 	});
-
 	const {colorMode} = useColorMode();
 
-	const handleReset = () => {
-		methods.reset();
+	React.useEffect(() => setResetDisabled(Object.values(signUpInputs).every(value => value === "")), [signUpInputs]);
+
+	const handleReset = () => methods.reset();
+
+	const isUsernameForbidden = () => {
+		return forbiddenUsernames.includes(signUpInputs.username);
 	}
 
 	const handleSignup = async (data: SignupValues) => {
+		if (isUsernameForbidden()) {
+			void toast(`Username ${signUpInputs.username} is not allowed.`, "warning");
+			return;
+		}
 		setIsLoading(true);
 		if (registerUser) {
-			await registerUser({data})
+			await registerUser(data)
 				.catch((error) => console.log(error))
 				.finally(() => setIsLoading(false));
 		}
@@ -100,6 +116,10 @@ const SignupCard = () => {
 												<FaCircleUser/>
 											</InputLeftElement>
 										}
+										onChange={
+											({target}: React.ChangeEvent<HTMLInputElement>) =>
+												setSignUpInputs({...signUpInputs, username: target.value})
+										}
 									/>
 									<InputControl
 										className="prevent-select"
@@ -115,6 +135,10 @@ const SignupCard = () => {
 												<FaAt/>
 											</InputLeftElement>
 										}
+										onChange={
+											({target}: React.ChangeEvent<HTMLInputElement>) =>
+												setSignUpInputs({...signUpInputs, email: target.value})
+										}
 									/>
 								</HStack>
 								<HStack alignItems={
@@ -122,6 +146,7 @@ const SignupCard = () => {
 										methods.formState.errors.repeatPassword) ? 'center' :
 										"end"
 								} w={"full"}>
+									{/* TODO: Check if onKeyUp is needed and QoL */}
 									<InputControl
 										className="prevent-select"
 										name="password"
@@ -152,6 +177,10 @@ const SignupCard = () => {
 												{showPassword ? <ViewIcon/> : <ViewOffIcon/>}
 											</InputRightElement>
 										}
+										onChange={
+											({target}: React.ChangeEvent<HTMLInputElement>) =>
+												setSignUpInputs({...signUpInputs, password: target.value})
+										}
 									/>
 									<InputControl
 										className="prevent-select"
@@ -175,6 +204,10 @@ const SignupCard = () => {
 												{showRepeatPassword ? <ViewIcon/> : <ViewOffIcon/>}
 											</InputRightElement>
 										}
+										onChange={
+											({target}: React.ChangeEvent<HTMLInputElement>) =>
+												setSignUpInputs({...signUpInputs, repeatPassword: target.value})
+										}
 									/>
 								</HStack>
 								<Stack spacing={10} pt={2}>
@@ -187,6 +220,7 @@ const SignupCard = () => {
 										<ResetButton
 											width="full"
 											onClick={handleReset}
+											disabled={resetDisabled}
 										>Reset</ResetButton>
 									</ButtonGroup>
 								</Stack>
