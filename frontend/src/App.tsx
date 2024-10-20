@@ -1,5 +1,6 @@
 import Auth from './pages/Auth.tsx';
 import Home from './pages/Home.tsx';
+import Header from "./components/Header.tsx";
 import AxiosInterceptor from "./components/AxiosInterceptor.tsx";
 import authScreenAtom from "./atoms/authScreenAtom.ts";
 import userAtom from './atoms/userAtom.ts';
@@ -30,12 +31,14 @@ function App() {
 		<AuthProvider>
 			<AxiosInterceptor/>
 			<Box className={`${currentClass}`}></Box>
-			<Box className={"content"}>
-				{/*{user && <Header/>}*/}
-				<Routes>
-					<Route path='/' element={user ? <Home/> : <Navigate to='/auth'/>}/>
-					<Route path='/auth' element={!user ? <Auth/> : <Navigate to='/'/>}/>
-				</Routes>
+			<Box className={"overall-content"}>
+				{user && <Header/>}
+				<Box className={"content"}>
+					<Routes>
+						<Route path='/' element={user ? <Home/> : <Navigate to='/auth'/>}/>
+						<Route path='/auth' element={!user ? <Auth/> : <Navigate to='/'/>}/>
+					</Routes>
+				</Box>
 			</Box>
 		</AuthProvider>
 	)
