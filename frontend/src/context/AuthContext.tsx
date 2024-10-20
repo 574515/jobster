@@ -5,16 +5,16 @@ import authScreenAtom from "../atoms/authScreenAtom.ts";
 import {useNavigate} from 'react-router-dom';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {toast} from "../helpers/customToast.ts";
-import {AuthContextType, AuthTokens} from "../models/contextTypes.ts";
+import {AuthContextType, UserToken} from "../models/contextTypes.ts";
 import {authInstance} from "../api/axiosInstances.ts";
 import {AuthProviderProps} from "../models/interfaces.ts";
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
-	const storedTokensString = localStorage.getItem('authTokens');
-	const storedTokens: AuthTokens | null = storedTokensString ? JSON.parse(storedTokensString) : null;
-	const [authTokens, setAuthTokens] = React.useState<AuthTokens | null>(storedTokens);
+	const storedTokensString = localStorage.getItem('userToken');
+	const storedTokens: UserToken | null = storedTokensString ? JSON.parse(storedTokensString) : null;
+	const [userToken, setUserToken] = React.useState<UserToken | null>(storedTokens);
 	const setUser = useSetRecoilState(userAtom);
 	const setAuthScreen = useSetRecoilState(authScreenAtom);
 	const user = useRecoilValue(userAtom);
@@ -24,8 +24,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 		await authInstance
 			.post('/login', inputs)
 			.then((res) => {
-				setAuthTokens(res.data);
-				localStorage.setItem('authTokens', JSON.stringify(res.data));
+				setUserToken(res.data);
+				localStorage.setItem('userToken', JSON.stringify(res.data));
 				setUser(res.data);
 				navigate('/');
 				toast('Login Successful', 'success', 2000);
@@ -56,9 +56,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 		await authInstance
 			.post('/logout')
 			.then(() => {
-				setAuthTokens(null);
+				setUserToken(null);
 				setUser(null);
-				localStorage.removeItem('authTokens');
+				localStorage.removeItem('userToken');
 				navigate('/auth');
 				toast('You have been logged out', 'success');
 			})
@@ -70,8 +70,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
 	const value = {
 		user,
-		authTokens,
-		setAuthTokens,
+		userToken,
+		setUserToken,
 		registerUser,
 		loginUser,
 		logoutUser,
