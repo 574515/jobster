@@ -10,34 +10,27 @@
 }
 
 .body-login {
-    background-image: url('../login.jpg');
+    background-image: url('/login.jpeg');
 }
 
 .body-login-dark {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../login.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/login.jpeg');
 }
 
 .body-signup {
-    background-image: url('../signup.jpg');
+    background-image: url('/signup.jpg');
 }
 
 .body-signup-dark {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../signup.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/signup.jpg');
 }
 
 .body-app {
-    background-image: url('../body.jpg');
+    background-image: url('/body.jpeg');
 }
 
 .body-app-dark {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../body.jpg');
-}
-
-.overall-content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    z-index: 2;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/body.jpeg');
 }
 
 .content {
@@ -47,6 +40,7 @@
     z-index: 2;
     margin-left: 20px;
     margin-right: 20px;
+    height: 100vh;
 }
 
 ::-webkit-scrollbar {
