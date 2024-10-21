@@ -5,6 +5,7 @@ import corsOptions from "./config/corsOptions.js";
 import cors from 'cors';
 import connectDB from "./config/connectDB.js";
 import authRoutes from './routes/authRoutes.js';
+import jobRoutes from "./routes/jobRoutes.js";
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 7002;
@@ -16,5 +17,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/job', jobRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
