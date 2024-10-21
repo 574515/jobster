@@ -10,11 +10,11 @@
 }
 
 .body-login {
-    background-image: url('/login.jpeg');
+    background-image: url('/login.jpg');
 }
 
 .body-login-dark {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/login.jpeg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/login.jpg');
 }
 
 .body-signup {
