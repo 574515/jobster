@@ -18,7 +18,6 @@ const signup = async (req, res) => {
             password: hashedPassword,
         });
         await newUser.save();
-        console.log(newUser)
         if (newUser) {
             generateTokenAndSetCookie(newUser._id, res)
             res.status(201).json({
