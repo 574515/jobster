@@ -1,4 +1,4 @@
-import {BasicModalSelectTypeLV, ModalSelectType} from "../models/componentsTypes.ts";
+import {BasicModalSelectTypeLV, ModalSelectType, SortByOptionType} from "../models/componentsTypes.ts";
 
 export const TEXT_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 16;
@@ -106,5 +106,25 @@ export const jobListingCategories: BasicModalSelectTypeLV[] = [
 	{
 		value: 'green',
 		label: 'Green',
+	},
+];
+
+
+export const sortByOptions: SortByOptionType[] = [
+	{
+		whatDate: "Date Applied",
+		when: "Newest",
+	},
+	{
+		whatDate: "Date Applied",
+		when: "Oldest",
+	},
+	{
+		whatDate: "Closing Date",
+		when: "Later",
+	},
+	{
+		whatDate: "Closing Date",
+		when: "Sooner",
 	},
 ];
