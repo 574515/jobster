@@ -5,7 +5,7 @@ import authScreenAtom from "../atoms/authScreenAtom.ts";
 import {useNavigate} from 'react-router-dom';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {toast} from "../helpers/customToast.ts";
-import {AuthContextType, UserToken} from "../models/contextTypes.ts";
+import {AuthContextType, CustomUser, UserToken} from "../models/contextTypes.ts";
 import {authInstance} from "../api/axiosInstances.ts";
 import {AuthProviderProps} from "../models/interfaces.ts";
 
@@ -15,7 +15,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 	const storedTokensString = localStorage.getItem('userToken');
 	const storedTokens: UserToken | null = storedTokensString ? JSON.parse(storedTokensString) : null;
 	const [userToken, setUserToken] = React.useState<UserToken | null>(storedTokens);
-	const setUser = useSetRecoilState(userAtom);
+	const setUser = useSetRecoilState<CustomUser>(userAtom);
+	const emptyUser: CustomUser = {
+		_id: "",
+		username: "",
+		email: "",
+	}
 	const setAuthScreen = useSetRecoilState(authScreenAtom);
 	const user = useRecoilValue(userAtom);
 	const navigate = useNavigate();
@@ -57,7 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			.post('/logout')
 			.then(() => {
 				setUserToken(null);
-				setUser(null);
+				setUser(emptyUser);
 				localStorage.removeItem('userToken');
 				navigate('/auth');
 				toast('You have been logged out', 'success');
