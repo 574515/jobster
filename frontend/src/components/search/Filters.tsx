@@ -36,20 +36,10 @@ const Filters: React.FC<FilterProps> = (
 			),
 			className: "prevent-select",
 		},
-		{
-			filterName: "Date Applied",
-			filterComponent: null,
-			className: "prevent-select",
-		},
-		{
-			filterName: "Closing Date",
-			filterComponent: null,
-			className: "prevent-select",
-		}
 	];
 
 	return (
-		<Accordion w={"100%"} defaultIndex={0} onChange={(e: number) => setFilterActive(e)}>
+		<Accordion w={"100%"} onChange={(e: number) => setFilterActive(e)} allowToggle>
 			<StatusFilters
 				listOfFilters={listOfFilters}
 			/>
