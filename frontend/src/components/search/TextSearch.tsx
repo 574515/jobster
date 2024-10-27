@@ -1,4 +1,4 @@
-import React, {BaseSyntheticEvent} from "react";
+import React from "react";
 
 import {Input} from "@chakra-ui/react";
 import {TextSearchProps} from "../../models/interfaces.ts";
@@ -6,8 +6,9 @@ import {TextSearchProps} from "../../models/interfaces.ts";
 const TextSearch: React.FC<TextSearchProps> = (
 	{userJobListings, setSearchedListings}
 ) => {
+	const searchInputRef = React.useRef<HTMLInputElement>(null);
 
-	const handleSearch = (data: BaseSyntheticEvent) => {
+	const handleSearch = (data: React.BaseSyntheticEvent) => {
 		const formattedSearchTerm = data.target.value.toLowerCase().trim();
 		setSearchedListings(userJobListings.filter(listing =>
 			listing.jobTitle.toLowerCase().includes(formattedSearchTerm) ||
@@ -18,7 +19,21 @@ const TextSearch: React.FC<TextSearchProps> = (
 
 	return (
 		<Input
-			placeholder="Search..."
+			placeholder={"Title, Company or Description"}
+			textAlign={"center"}
+			ref={searchInputRef as React.LegacyRef<HTMLInputElement>}
+			onFocus={() => {
+				if (searchInputRef.current) {
+					searchInputRef.current.style.textAlign = "start";
+					searchInputRef.current.placeholder = "";
+				}
+			}}
+			onBlur={() => {
+				if (searchInputRef.current && !searchInputRef.current.value) {
+					searchInputRef.current.style.textAlign = "center";
+					searchInputRef.current.placeholder = "Title, Company or Description";
+				}
+			}}
 			onKeyUp={handleSearch}
 		/>
 	);
