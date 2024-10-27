@@ -41,7 +41,6 @@ const AddEditJobModal: React.FC<AddEditJobModalProps> = (
 	React.useEffect(() => setStatuses(statusesToSet), []);
 
 	const handleSave = (data: AddEditJobProps) => {
-		console.log("???")
 		setIsLoading(true);
 		const transformedData: TransformedAddEditJobProps = {
 			company: data.company,
