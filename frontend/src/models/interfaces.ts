@@ -1,12 +1,6 @@
 import React from "react";
 import {Control, FieldValues, UseFormReturn} from "react-hook-form";
-import {
-	AddEditJobNameProps,
-	AddEditJobProps,
-	AllJobsResponseModel,
-	BasicModalSelectTypeLV,
-	FiltersType
-} from "./componentsTypes.ts";
+import {AddEditJobProps, AllJobsResponseModel, BasicModalSelectTypeLV, FiltersType} from "./componentsTypes.ts";
 import {CustomUser} from "./contextTypes.ts";
 
 export interface AuthProviderProps {
@@ -31,7 +25,7 @@ export interface AddEditJobModalProps {
 	onClose: () => void;
 	editing: boolean;
 	user: CustomUser;
-	methods: UseFormReturn<AddEditJobProps, any, undefined>;
+	methods: UseFormReturn<AddEditJobProps>;
 
 	getAllListings(): void;
 }
@@ -42,7 +36,7 @@ export interface LoadingOverlayProps {
 
 type CustomSelectionProps = {
 	control: Control<AddEditJobProps>;
-	name: AddEditJobNameProps;
+	name: string;
 	py?: number;
 	className: string;
 	label?: string;
@@ -78,10 +72,10 @@ export interface StatusListProps {
 }
 
 export interface FilterProps {
+	checkedStates: Record<string, boolean>;
+	userJobListings: AllJobsResponseModel[];
 
-	checkedStates: any;
-	setCheckedStates(e: ): void;
-userJobListings={userJobListings}
+	setCheckedStates: (updater: (prevState: Record<string, boolean>) => Record<string, boolean>) => void;
 }
 
 export interface StatusFiltersProps {
