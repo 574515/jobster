@@ -38,9 +38,10 @@
     left: 0;
     right: 0;
     z-index: 2;
-    margin-left: 20px;
-    margin-right: 20px;
-    height: 100vh;
+    margin: auto;
+    min-height: 80vh;
+    width: 90vw;
+    padding: 1rem;
 }
 
 ::-webkit-scrollbar {
