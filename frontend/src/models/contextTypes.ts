@@ -10,3 +10,9 @@ export type AuthContextType = {
 	loginUser: (inputs: object) => Promise<void>;
 	logoutUser: () => Promise<void>;
 }
+
+export type CustomUser = {
+	_id: string;
+	email: string;
+	username: string;
+}
