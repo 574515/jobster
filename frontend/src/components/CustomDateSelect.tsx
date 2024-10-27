@@ -6,7 +6,7 @@ import {useRecoilValue} from "recoil";
 import userLocaleAtom from "../atoms/userLocaleAtom.ts";
 import React from "react";
 import {CustomDateSelectProps} from "../models/interfaces.ts";
-import {AddEditJobNameProps} from "../models/componentsTypes.ts";
+import {AddEditJobNameType} from "../models/componentsTypes.ts";
 
 const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 	{control, name, py, className, label, definedDate, setDate}
@@ -15,7 +15,7 @@ const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 	return (
 		<Controller
 			control={control}
-			name={name as AddEditJobNameProps}
+			name={name as AddEditJobNameType}
 			render={({field}) => (
 				<FormControl
 					py={py ?? 0}
