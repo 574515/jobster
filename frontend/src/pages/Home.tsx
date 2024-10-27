@@ -25,6 +25,8 @@ const Home = () => {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const [checkedStates, setCheckedStates] = React.useState<Record<string, boolean>>({});
 	const [totalNumberOfListings, setTotalNumberOfListings] = React.useState<number>(0);
+	const [searchedListings, setSearchedListings] = React.useState<AllJobsResponseModel[]>([]);
+	const [filterActive, setFilterActive] = React.useState<number>(0);
 	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
 	const logoutUser = authContext ? authContext.logoutUser : undefined;
 
@@ -42,15 +44,21 @@ const Home = () => {
 		}
 	}, [user]);
 
-	React.useEffect(() => {
-		getAllListings();
-	}, [getAllListings]);
+	React.useEffect(() => getAllListings(), [getAllListings]);
+
+	React.useEffect(() => setSearchedListings(userJobListings), [userJobListings]);
 
 	const filteredJobListings = React.useMemo(() => {
-		const filteredJobs: AllJobsResponseModel[] = userJobListings.filter((job) => checkedStates[job.status.value]);
-		setTotalNumberOfListings(userJobListings.length);
-		return filteredJobs;
-	}, [userJobListings, checkedStates]);
+		if (filterActive === 1) {
+			setTotalNumberOfListings(userJobListings.length);
+			return userJobListings.filter((job) => checkedStates[job.status.value]);
+		}
+		if (filterActive === 0) {
+			setTotalNumberOfListings(searchedListings.length);
+			return searchedListings;
+		}
+		return userJobListings;
+	}, [checkedStates, filterActive, searchedListings, userJobListings]);
 
 	const methods = useForm({
 		resolver: NewJobValidationSchema,
@@ -102,6 +110,8 @@ const Home = () => {
 										checkedStates={checkedStates}
 										setCheckedStates={setCheckedStates}
 										userJobListings={userJobListings}
+										setSearchedListings={setSearchedListings}
+										setFilterActive={setFilterActive}
 									/>
 									<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
 								</VStack>
