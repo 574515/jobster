@@ -13,28 +13,49 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
+	Divider,
+	Grid,
 	Heading,
 	HStack,
 	Link,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
 	Tag,
 	Text,
 	Textarea,
 	useDisclosure,
 	VStack
 } from "@chakra-ui/react";
-import {DeleteIcon, EditIcon, LinkIcon} from "@chakra-ui/icons";
+import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
 import {jobInstance} from "../api/axiosInstances.ts";
 import '../styles/componentStyle.css';
 import {format} from "date-fns";
 import {useRecoilValue} from "recoil";
 import userLocaleAtom from "../atoms/userLocaleAtom.ts";
 import {TIME_FORMATS} from "../helpers/dateLocales.ts";
+import {statusesToSet} from "../helpers/constants.ts";
+import {ModalSelectType} from "../models/componentsTypes.ts";
+import {JobActions} from "./JobActions.action.ts";
+import {toast} from "../helpers/customToast.ts";
 
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (
 	{userJob, setIsLoading, getAllListings}
 ) => {
-	const {isOpen, onOpen, onClose} = useDisclosure()
+	const {
+		isOpen: isDeleteOpen,
+		onOpen: onDeleteOpen,
+		onClose: onDeleteClose
+	} = useDisclosure();
+	const {
+		isOpen: isStatusChangeOpen,
+		onOpen: onStatusChangeOpen,
+		onClose: onStatusChangeClose
+	} = useDisclosure();
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
 	const userLocale = useRecoilValue(userLocaleAtom);
 	const [textareaHeight, setTextareaHeight] = React.useState<string>("0vh");
@@ -67,36 +88,62 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 
 	const handleLinkOpen = () => window.open(userJob.jobLink, '_blank');
 
+	const handleTagChange = (status: ModalSelectType) => {
+		if (status.value === userJob.status.value) return undefined;
+		setIsLoading(true);
+		JobActions
+			.changeJobStatus(userJob._id, status)
+			.then(() => {
+				void toast(`Job "${userJob.jobTitle}" Updated Successfully`, 'success');
+				getAllListings();
+			})
+			.catch((error) => void toast(error.response.data.error, 'error'))
+			.finally(() => setIsLoading(false));
+	}
+
+	const getTagClassName = (status: ModalSelectType) => {
+		const className = "prevent-select";
+		return status.value === userJob.status.value ? className : `${className} make-pointer`;
+	}
+
+	const getTagVariant = (status: ModalSelectType) => {
+		return status.value === userJob.status.value ? 'solid' : 'outline';
+	}
+
+	const getTagBackground = (status: ModalSelectType) => {
+		return status.value === userJob.status.value ? userJob.status.color : undefined;
+	}
+
+	const getTagColor = (status: ModalSelectType) => {
+		return status.value === userJob.status.value ? "black" : "white";
+	}
+
 	return (
 		<React.Fragment>
 			<Card maxW='sm' colorScheme={"red"}>
 				<CardHeader pb={2}>
 					<HStack justifyContent={"space-between"}>
 						<Tag
-							className={"prevent-select"}
+							className={"prevent-select make-pointer"}
 							size={'lg'}
 							w={"50%"}
 							justifyContent={"center"}
 							variant='outline'
 							color={userJob.status.color}
 							shadow={tagShadow}
+							onClick={onStatusChangeOpen}
 						>
 							{userJob.status.label}
 						</Tag>
 						<HStack>
-							<EditIcon
-								color={"blue.200"}
-								className={"make-pointer"}
-								// TODO: Edit
-							/>
-							<DeleteIcon
-								color={"red.200"}
-								onClick={onOpen}
-								className={"make-pointer"}
-							/>
 							<LinkIcon
 								color={"gray.200"}
 								onClick={handleLinkOpen}
+								className={"make-pointer"}
+							/>
+							<DeleteIcon
+								color={"red.200"}
+								onClick={onDeleteOpen}
 								className={"make-pointer"}
 							/>
 						</HStack>
@@ -164,8 +211,8 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 				</CardFooter>
 			</Card>
 			<AlertDialog
-				isOpen={isOpen}
-				onClose={onClose}
+				isOpen={isDeleteOpen}
+				onClose={onDeleteClose}
 				leastDestructiveRef={cancelRef}
 			>
 				<AlertDialogOverlay>
@@ -184,7 +231,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 								<Button variant={"outline"} onClick={handleDelete} colorScheme='red'>
 									Delete
 								</Button>
-								<Button variant={"outline"} onClick={onClose} ref={cancelRef}>
+								<Button variant={"outline"} onClick={onDeleteClose} ref={cancelRef}>
 									Cancel
 								</Button>
 							</ButtonGroup>
@@ -192,6 +239,42 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					</AlertDialogContent>
 				</AlertDialogOverlay>
 			</AlertDialog>
+			<Modal
+				isOpen={isStatusChangeOpen}
+				onClose={onStatusChangeClose}
+				isCentered
+				scrollBehavior={"inside"}
+				closeOnEsc={true}
+			>
+				<ModalOverlay/>
+				<ModalContent>
+					<ModalHeader alignItems={"center"} justifyContent="center">
+						Change Application Status
+					</ModalHeader>
+					<ModalCloseButton my={2}/>
+					<Divider mb={'1rem'}/>
+					<ModalBody pt={2} pb={4} px={4}>
+						<Grid templateColumns='repeat(2, 1fr)' gap={2} w={"100%"} h={"100%"}>
+							{statusesToSet.map((status: ModalSelectType, index: number) => (
+								<Tag
+									className={getTagClassName(status)}
+									size={'lg'}
+									w={"100%"}
+									justifyContent={"center"}
+									variant={getTagVariant(status)}
+									bg={getTagBackground(status)}
+									color={getTagColor(status)}
+									shadow={`inset 0 0 0px 1px ${status.color}`}
+									key={index}
+									onClick={() => handleTagChange(status)}
+								>
+									{status.label}
+								</Tag>
+							))}
+						</Grid>
+					</ModalBody>
+				</ModalContent>
+			</Modal>
 		</React.Fragment>
 	);
 }
