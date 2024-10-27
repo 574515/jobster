@@ -13,9 +13,10 @@ import LoadingOverlay from "../components/LoadingOverlay.tsx";
 import MyJobs from "../components/MyJobs.tsx";
 import {NewJobValidationSchema} from "../helpers/validators.ts";
 import {defaultNewJobValues} from "../helpers/constants.ts";
-import Filters from "../components/search/Filters.tsx";
+import Filters from "../components/filtering/Filters.tsx";
 import {AuthContextType} from "../models/contextTypes.ts";
 import AuthContext from "../context/AuthContext.tsx";
+import SortBy from "../components/filtering/SortBy.tsx";
 
 const Home = () => {
 	const user = useRecoilValue(userAtom);
@@ -104,16 +105,24 @@ const Home = () => {
 									isLoading={isLoading}
 									userJobListings={filteredJobListings}
 								/>
-								<VStack p={3} justifyContent="center" gap={5} width="25%">
-									<Text className={"prevent-select"} fontWeight={"bold"}>Filter By</Text>
-									<Filters
-										checkedStates={checkedStates}
-										setCheckedStates={setCheckedStates}
-										userJobListings={userJobListings}
-										setSearchedListings={setSearchedListings}
-										setFilterActive={setFilterActive}
-									/>
-									<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
+								<VStack w={"100%"}>
+									<VStack w={"100%"} p={3} justifyContent="center" gap={5}>
+										<Text className={"prevent-select"} fontWeight={"bold"}>Sort By</Text>
+										<SortBy
+											userJobListings={userJobListings}
+											setUserJobListings={setUserJobListings}
+										/>
+									</VStack>
+									<VStack w={"100%"} p={3} justifyContent="center" gap={5}>
+										<Filters
+											checkedStates={checkedStates}
+											setCheckedStates={setCheckedStates}
+											userJobListings={userJobListings}
+											setSearchedListings={setSearchedListings}
+											setFilterActive={setFilterActive}
+										/>
+										<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
+									</VStack>
 								</VStack>
 							</HStack>
 						</VStack>
