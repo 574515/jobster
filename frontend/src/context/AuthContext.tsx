@@ -15,12 +15,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 	const storedTokensString = localStorage.getItem('userToken');
 	const storedTokens: UserToken | null = storedTokensString ? JSON.parse(storedTokensString) : null;
 	const [userToken, setUserToken] = React.useState<UserToken | null>(storedTokens);
-	const setUser = useSetRecoilState<CustomUser>(userAtom);
-	const emptyUser: CustomUser = {
-		_id: "",
-		username: "",
-		email: "",
-	}
+	const setUser = useSetRecoilState<CustomUser | null>(userAtom);
 	const setAuthScreen = useSetRecoilState(authScreenAtom);
 	const user = useRecoilValue(userAtom);
 	const navigate = useNavigate();
@@ -62,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			.post('/logout')
 			.then(() => {
 				setUserToken(null);
-				setUser(emptyUser);
+				setUser(null);
 				localStorage.removeItem('userToken');
 				navigate('/auth');
 				toast('You have been logged out', 'success');

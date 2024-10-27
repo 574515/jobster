@@ -1,7 +1,7 @@
 import {atom} from 'recoil';
 import {CustomUser} from "../models/contextTypes.ts";
 
-const userAtom = atom<CustomUser>({
+const userAtom = atom<CustomUser | null>({
 	key: 'userAtom',
 	default: (() => {
 		const storedAuthTokens = localStorage.getItem('userToken');
