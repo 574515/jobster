@@ -1,3 +1,5 @@
+import {ModalSelectType} from "../models/componentsTypes.ts";
+
 export const TEXT_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 16;
 export const PASSWORD_MIN_LENGTH = 8;
@@ -46,3 +48,36 @@ export const defaultNewJobValues = {
 	closingDate: new Date(),
 	dateApplied: new Date(),
 };
+
+export const statusesToSet: ModalSelectType[] = [
+	{
+		value: 'applied',
+		label: 'Applied',
+		color: '#F7E73F',
+	},
+	{
+		value: 'declined',
+		label: 'Declined',
+		color: '#FC3232',
+	},
+	{
+		value: 'testing',
+		label: 'Testing',
+		color: '#269DE9',
+	},
+	{
+		value: 'interview',
+		label: 'Interview',
+		color: '#9856F2',
+	},
+	{
+		value: 'referral',
+		label: 'Referral',
+		color: '#F7A71B',
+	},
+	{
+		value: 'offer',
+		label: 'Offer',
+		color: '#3ECF6F',
+	},
+];
