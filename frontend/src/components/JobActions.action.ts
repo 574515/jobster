@@ -1,4 +1,9 @@
-import {AllJobsResponseModel, JobCreationResponseModel, TransformedAddEditJobProps} from "../models/componentsTypes.ts";
+import {
+	AllJobsResponseModel,
+	JobCreationResponseModel,
+	ModalSelectType,
+	TransformedAddEditJobProps
+} from "../models/componentsTypes.ts";
 import {jobInstance} from "../api/axiosInstances.ts";
 
 export class JobActions {
@@ -14,6 +19,14 @@ export class JobActions {
 		userId: string,
 	): Promise<AllJobsResponseModel[]> => {
 		const response = await jobInstance.get<AllJobsResponseModel[]>(`/all/${userId}`);
+		return response.data;
+	}
+
+	static changeJobStatus = async (
+		jobId: string,
+		status: ModalSelectType,
+	): Promise<JobCreationResponseModel> => {
+		const response = await jobInstance.put<JobCreationResponseModel>(`/${jobId}/status`, status);
 		return response.data;
 	}
 }
