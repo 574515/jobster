@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {CustomJobCardProps} from "../models/interfaces.ts";
+import {CustomJobCardProps} from "../../models/interfaces.ts";
 import {
 	AlertDialog,
 	AlertDialogBody,
@@ -31,16 +31,16 @@ import {
 	VStack
 } from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
-import {jobInstance} from "../api/axiosInstances.ts";
-import '../styles/componentStyle.css';
+import {jobInstance} from "../../api/axiosInstances.ts";
+import '../../styles/componentStyle.css';
 import {format} from "date-fns";
 import {useRecoilValue} from "recoil";
-import userLocaleAtom from "../atoms/userLocaleAtom.ts";
-import {TIME_FORMATS} from "../helpers/dateLocales.ts";
-import {statusesToSet} from "../helpers/constants.ts";
-import {ModalSelectType} from "../models/componentsTypes.ts";
-import {JobActions} from "./JobActions.action.ts";
-import {toast} from "../helpers/customToast.ts";
+import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
+import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
+import {statusesToSet} from "../../helpers/constants.ts";
+import {ModalSelectType} from "../../models/componentsTypes.ts";
+import {JobActions} from "../JobActions.action.ts";
+import {toast} from "../../helpers/customToast.ts";
 
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (

@@ -1,12 +1,12 @@
 import {FormControl, FormLabel} from "@chakra-ui/react";
 import {SingleDatepicker} from "chakra-dayzed-datepicker";
-import {TIME_FORMATS} from "../helpers/dateLocales.ts";
+import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {Controller} from "react-hook-form";
 import {useRecoilValue} from "recoil";
-import userLocaleAtom from "../atoms/userLocaleAtom.ts";
+import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
 import React from "react";
-import {CustomDateSelectProps} from "../models/interfaces.ts";
-import {AddEditJobNameType} from "../models/componentsTypes.ts";
+import {CustomDateSelectProps} from "../../models/interfaces.ts";
+import {AddEditJobNameType} from "../../models/componentsTypes.ts";
 
 const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 	{control, name, py, className, label, definedDate, setDate}

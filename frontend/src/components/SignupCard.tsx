@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CustomFormProvider from "./CustomFormProvider.tsx";
+import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import AuthContext from "../context/AuthContext.tsx";
 import authScreenAtom from "../atoms/authScreenAtom.ts";
 

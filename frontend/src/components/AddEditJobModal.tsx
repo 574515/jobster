@@ -21,13 +21,13 @@ import {
 	TransformedAddEditJobProps
 } from "../models/componentsTypes.ts";
 import {InputControl, ResetButton, SubmitButton, TextareaControl} from "react-hook-form-chakra";
-import CustomFormProvider from "./CustomFormProvider.tsx";
+import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import {jobListingCategories, statusesToSet} from "../helpers/constants.ts";
-import CustomSelect from "./CustomSelect.tsx";
+import CustomSelect from "./customComponents/CustomSelect.tsx";
 import {JobActions} from "./JobActions.action.ts";
 import {toast} from "../helpers/customToast.ts";
 import {AddEditJobModalProps} from "../models/interfaces.ts";
-import CustomDateSelect from "./CustomDateSelect.tsx";
+import CustomDateSelect from "./customComponents/CustomDateSelect.tsx";
 
 const AddEditJobModal: React.FC<AddEditJobModalProps> = (
 	{isOpen, onClose, user, getAllListings, methods}

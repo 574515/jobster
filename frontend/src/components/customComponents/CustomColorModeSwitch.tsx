@@ -2,7 +2,7 @@ import React from 'react';
 
 import {useColorMode} from '@chakra-ui/react';
 import {MoonIcon, SunIcon} from '@chakra-ui/icons';
-import {CustomColorModeIcon} from "../models/componentsTypes.ts";
+import {CustomColorModeIcon} from "../../models/componentsTypes.ts";
 
 const CustomColorModeSwitch = () => {
 	const {colorMode, toggleColorMode} = useColorMode();

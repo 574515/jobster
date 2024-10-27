@@ -1,5 +1,5 @@
 import {FieldValues, FormProvider} from "react-hook-form";
-import {CustomFormProviderProps} from "../models/interfaces.ts";
+import {CustomFormProviderProps} from "../../models/interfaces.ts";
 
 const CustomFormProvider = <T extends FieldValues>(
 	{children, formProviderData}: CustomFormProviderProps<T>

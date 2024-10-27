@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonGroup, Flex, Heading, HStack, Text, useDisclosure, VStack} from "@chakra-ui/react";
-import {useRecoilValue} from "recoil";
+import {useRecoilValue, useSetRecoilState} from "recoil";
 import {useForm} from "react-hook-form";
 import {AddIcon} from "@chakra-ui/icons";
 import {BiExit} from "react-icons/bi";
@@ -17,6 +17,8 @@ import Filters from "../components/filtering/Filters.tsx";
 import {AuthContextType} from "../models/contextTypes.ts";
 import AuthContext from "../context/AuthContext.tsx";
 import SortBy from "../components/filtering/SortBy.tsx";
+import homeScreenAtom from "../atoms/homeScreenAtom.ts";
+import Pool from "../components/Pool.tsx";
 
 const Home = () => {
 	const user = useRecoilValue(userAtom);
@@ -30,6 +32,20 @@ const Home = () => {
 	const [filterActive, setFilterActive] = React.useState<number>(0);
 	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
 	const logoutUser = authContext ? authContext.logoutUser : undefined;
+	const homeScreenState = useRecoilValue(homeScreenAtom);
+	const setHomeScreenState = useSetRecoilState(homeScreenAtom);
+	const homeScreenPages = [
+		{
+			title: "My Jobs",
+			active: true,
+			value: "myJobs",
+		},
+		{
+			title: "Pool",
+			active: false,
+			value: "pool",
+		}
+	];
 
 	const getAllListings = React.useCallback(() => {
 		if (user) {
@@ -76,6 +92,12 @@ const Home = () => {
 		}
 	}
 
+	const handlePageClick = (pageValue: string) => {
+		// Set the clicked page as active in Recoil state
+		setHomeScreenState(pageValue);
+	};
+
+
 	return (
 		<React.Fragment>
 			<LoadingOverlay isLoading={isLoading}/>
@@ -84,9 +106,21 @@ const Home = () => {
 					<React.Fragment>
 						<VStack alignItems="start" w="100%">
 							<HStack justifyContent="space-evenly" w="100%">
-								<Heading my="1rem" size="md">
-									My Jobs
-								</Heading>
+								{homeScreenPages.map((page, index) => (
+									<Heading
+										my="1rem"
+										size="md"
+										key={index}
+										onClick={() => handlePageClick(page.value)}
+										color={homeScreenState === page.value ? "blue.500" : "gray.500"}
+										className={"make-pointer"}
+										px={8}
+										py={2}
+										border={"1px solid red"}
+									>
+										{page.title}
+									</Heading>
+								))}
 								<ButtonGroup>
 									<Button leftIcon={<AddIcon/>} variant="outline" colorScheme="gray" onClick={onOpen}>
 										Add Listing
@@ -99,12 +133,17 @@ const Home = () => {
 							</HStack>
 
 							<HStack alignItems="start" w="100%">
-								<MyJobs
-									setIsLoading={setIsLoading}
-									getAllListings={getAllListings}
-									isLoading={isLoading}
-									userJobListings={filteredJobListings}
-								/>
+								{homeScreenState === "myJobs" && (
+									<MyJobs
+										setIsLoading={setIsLoading}
+										getAllListings={getAllListings}
+										isLoading={isLoading}
+										userJobListings={filteredJobListings}
+									/>
+								)}
+								{homeScreenState === "pool" && (
+									<Pool/>
+								)}
 								<VStack w={"100%"}>
 									<VStack w={"100%"} p={3} justifyContent="center" gap={5}>
 										<Text className={"prevent-select"} fontWeight={"bold"}>Sort By</Text>

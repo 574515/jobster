@@ -1,6 +1,6 @@
 import React from "react";
 
-import CustomJobCard from "./CustomJobCard.tsx";
+import CustomJobCard from "./customComponents/CustomJobCard.tsx";
 
 import {Box, Divider, Grid, VStack} from "@chakra-ui/react";
 import {AllJobsResponseModel} from "../models/componentsTypes.ts";

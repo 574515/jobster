@@ -1,7 +1,7 @@
 import React from 'react';
 
 import authScreenAtom from '../atoms/authScreenAtom.ts';
-import CustomFormProvider from "./CustomFormProvider.tsx";
+import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import useAuth from "../hooks/useAuth.ts";
 import {
 	Box,
@@ -27,7 +27,7 @@ import '../styles/style.css'
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaLock, FaUser} from "react-icons/fa6";
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
-import CustomColorModeSwitch from "./CustomColorModeSwitch.tsx";
+import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
 
 const LoginCard = () => {
 	const {loginUser} = useAuth();
