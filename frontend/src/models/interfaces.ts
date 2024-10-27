@@ -22,12 +22,12 @@ export interface CustomJobCardProps {
 
 export interface AddEditJobModalProps {
 	isOpen: boolean;
-	onClose: () => void;
-	editing: boolean;
 	user: CustomUser;
 	methods: UseFormReturn<AddEditJobProps>;
 
 	getAllListings(): void;
+
+	onClose(): void;
 }
 
 export interface LoadingOverlayProps {
