@@ -30,7 +30,7 @@ import {AddEditJobModalProps} from "../models/interfaces.ts";
 import CustomDateSelect from "./CustomDateSelect.tsx";
 
 const AddEditJobModal: React.FC<AddEditJobModalProps> = (
-	{isOpen, onClose, editing, user, getAllListings, methods}
+	{isOpen, onClose, user, getAllListings, methods}
 ) => {
 	const handleReset = () => methods.reset();
 	const [statuses, setStatuses] = React.useState<ModalSelectType[]>([]);
@@ -79,7 +79,7 @@ const AddEditJobModal: React.FC<AddEditJobModalProps> = (
 			definedDate: closingDate,
 			setDate: setClosingDate,
 		},
-	]
+	];
 
 	return (
 		<CustomFormProvider formProviderData={methods}>
@@ -93,7 +93,7 @@ const AddEditJobModal: React.FC<AddEditJobModalProps> = (
 				<ModalOverlay/>
 				<ModalContent borderRadius={0}>
 					<ModalHeader alignItems={"center"} justifyContent="center">
-						{editing ? 'Edit ' : 'Add '} Job
+						Add Listing
 					</ModalHeader>
 					<ModalCloseButton my={2}/>
 					<Divider mb={'1rem'}/>
@@ -160,14 +160,14 @@ const AddEditJobModal: React.FC<AddEditJobModalProps> = (
 								label={"Status"}
 								control={methods.control}
 							/>
-							<ButtonGroup mb={8}>
+							<ButtonGroup mb={8} w={"75%"}>
 								<SubmitButton
 									isLoading={isLoading}
 									loadingText="Submitting..."
 									width="full"
 									colorScheme={"green"}
 									variant={"outline"}
-								>{editing ? "Edit" : "Save"} Job</SubmitButton>
+								>Save Listing</SubmitButton>
 								<ResetButton
 									isLoading={isLoading}
 									width="full"
