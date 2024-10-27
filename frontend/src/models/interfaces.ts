@@ -91,3 +91,9 @@ export interface TextSearchProps {
 
 	setSearchedListings(searchListings: AllJobsResponseModel[]): void;
 }
+
+export interface SortByProps {
+	userJobListings: AllJobsResponseModel[];
+
+	setUserJobListings(searchListings: AllJobsResponseModel[]): void;
+}
