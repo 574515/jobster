@@ -74,6 +74,7 @@ export type JobCreationResponseModel = {
 };
 
 export type AllJobsResponseModel = AddEditJobProps & {
+	[key: string]: string;
 	_id: string;
 }
 
@@ -96,4 +97,9 @@ export type FiltersType = {
 	filterName: string;
 	filterComponent: React.ReactNode;
 	className: string;
+}
+
+export type SortByOptionType = {
+	whatDate: string;
+	when: string;
 }
