@@ -1,7 +1,7 @@
 import {PacmanLoader} from 'react-spinners';
 import React from "react";
 import {LoadingOverlayProps} from "../models/interfaces.ts";
-import '../styles/componentStyle.css'; // Optional: Add your custom CSS
+import '../styles/componentStyle.css';
 
 const LoadingOverlay: React.FC<LoadingOverlayProps> = (
 	{isLoading,}
