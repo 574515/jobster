@@ -53,7 +53,7 @@ export type AddEditJobProps = {
 	jobTitle: string;
 	description?: string;
 	category: BasicModalSelectTypeLV;
-	link?: string;
+	jobLink?: string;
 	status: ModalSelectType;
 	dateApplied: Date;
 	closingDate: Date;
@@ -67,7 +67,7 @@ export type JobCreationResponseModel = {
 	category: string;
 	createdAt: string;
 	description: string;
-	link: string;
+	jobLink: string;
 	name: string;
 	status: ModalSelectType;
 	updatedAt: string;
@@ -77,8 +77,8 @@ export type AllJobsResponseModel = AddEditJobProps & {
 	_id: string;
 }
 
-export type AddEditJobNameProps =
-	"link" |
+export type AddEditJobNameType =
+	"jobLink" |
 	"description" |
 	"company" |
 	"jobTitle" |
