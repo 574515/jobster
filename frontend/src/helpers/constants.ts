@@ -109,7 +109,6 @@ export const jobListingCategories: BasicModalSelectTypeLV[] = [
 	},
 ];
 
-
 export const sortByOptions: SortByOptionType[] = [
 	{
 		whatDate: "Date Applied",
