@@ -25,7 +25,6 @@ const Home = () => {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const [checkedStates, setCheckedStates] = React.useState<Record<string, boolean>>({});
 	const [totalNumberOfListings, setTotalNumberOfListings] = React.useState<number>(0);
-	const [numberOfFilteredListings, setNumberOfFilteredListings] = React.useState<number>(0);
 	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
 	const logoutUser = authContext ? authContext.logoutUser : undefined;
 
@@ -50,7 +49,6 @@ const Home = () => {
 	const filteredJobListings = React.useMemo(() => {
 		const filteredJobs: AllJobsResponseModel[] = userJobListings.filter((job) => checkedStates[job.status.value]);
 		setTotalNumberOfListings(userJobListings.length);
-		setNumberOfFilteredListings(filteredJobs.length);
 		return filteredJobs;
 	}, [userJobListings, checkedStates]);
 
@@ -105,10 +103,7 @@ const Home = () => {
 										setCheckedStates={setCheckedStates}
 										userJobListings={userJobListings}
 									/>
-									<VStack>
-										<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
-										<span><b>Selected:</b> {numberOfFilteredListings} job{numberOfFilteredListings !== 1 && 's'}</span>
-									</VStack>
+									<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
 								</VStack>
 							</HStack>
 						</VStack>
@@ -119,7 +114,6 @@ const Home = () => {
 			{user && <AddEditJobModal
                 isOpen={isOpen}
                 onClose={onClose}
-                editing={false}
                 user={user}
                 getAllListings={getAllListings}
                 methods={methods}
