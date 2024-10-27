@@ -46,7 +46,7 @@ export const NewJobValidationSchema = yupResolver(Yup.object({
 			value: Yup.string().required(),
 			label: Yup.string().required(),
 		}).required(),
-	link: Yup.string(),
+	jobLink: Yup.string(),
 	status: Yup.object({
 		value: Yup.string().required(),
 		label: Yup.string().required(),
