@@ -1,27 +1,41 @@
 import mongoose from 'mongoose';
 
 const jobListingSchema = new mongoose.Schema({
-        name: {
+        company: {
+            type: String,
+            required: true,
+        },
+        jobTitle: {
             type: String,
             minLength: 3,
+            required: true,
         },
         description: {
-            type: String,
-        },
-        category: {
             type: String,
         },
         link: {
             type: String,
         },
         status: {
-            type: String,
+            type: Map,
+            of: String,
             required: true,
         },
-        posted: {
+        user: {
+            type: mongoose.Types.ObjectId,
+            ref: "User"
+        },
+        category: {
+            type: String,
+        },
+        dateApplied: {
             type: Date,
-            default: () => new Date(),
-        }
+            required: true,
+        },
+        closingDate: {
+            type: Date,
+            required: true,
+        },
     }, { timestamps: true, }
 );
 
