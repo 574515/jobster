@@ -26,7 +26,12 @@ const jobListingSchema = new mongoose.Schema({
             ref: "User"
         },
         category: {
-            type: String,
+            label: {
+                type: String,
+            },
+            value: {
+                type: String,
+            }
         },
         dateApplied: {
             type: Date,
