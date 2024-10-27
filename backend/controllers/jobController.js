@@ -1,7 +1,7 @@
 import JobListing from "../models/jobListingModel.js";
 import User from "../models/userModel.js";
 
-const newPost = async (req, res) => {
+const newJobListing = async (req, res) => {
     try {
         const { company, jobTitle, link, description, category, status, userId, dateApplied, closingDate } = req.body;
         const job = await JobListing.findOne({ jobTitle }, null, { lean: true });
@@ -26,7 +26,7 @@ const newPost = async (req, res) => {
     }
 };
 
-const allPosts = async (req, res) => {
+const allJobListings = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await User.findOne({ _id: userId }, null, { lean: true });
@@ -44,7 +44,20 @@ const allPosts = async (req, res) => {
     }
 };
 
-const deletePost = async (req, res) => {
+const changeJobListingStatus = async (req, res) => {
+    const { listingId } = req.params;
+    const status = req.body;
+    console.log(req);
+    try {
+        let jobListing = await JobListing.findByIdAndUpdate(listingId, { status: status }, { returnDocument: "after" });
+        res.status(200).json(jobListing);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log(`Error in update listing: ${err.message}`);
+    }
+}
+
+const deleteJobListing = async (req, res) => {
     try {
         const { _id } = req.params;
         const listing = await JobListing.findByIdAndDelete({ _id }, null);
@@ -57,7 +70,8 @@ const deletePost = async (req, res) => {
 }
 
 export {
-    newPost,
-    allPosts,
-    deletePost,
+    newJobListing,
+    allJobListings,
+    changeJobListingStatus,
+    deleteJobListing,
 };
