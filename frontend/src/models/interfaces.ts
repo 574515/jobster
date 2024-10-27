@@ -76,8 +76,18 @@ export interface FilterProps {
 	userJobListings: AllJobsResponseModel[];
 
 	setCheckedStates: (updater: (prevState: Record<string, boolean>) => Record<string, boolean>) => void;
+
+	setSearchedListings(searchListings: AllJobsResponseModel[]): void;
+
+	setFilterActive(filterActive: number): void;
 }
 
 export interface StatusFiltersProps {
 	listOfFilters: FiltersType[];
+}
+
+export interface TextSearchProps {
+	userJobListings: AllJobsResponseModel[];
+
+	setSearchedListings(searchListings: AllJobsResponseModel[]): void;
 }
