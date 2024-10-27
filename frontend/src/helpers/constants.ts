@@ -1,4 +1,4 @@
-import {ModalSelectType} from "../models/componentsTypes.ts";
+import {BasicModalSelectTypeLV, ModalSelectType} from "../models/componentsTypes.ts";
 
 export const TEXT_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 16;
@@ -79,5 +79,32 @@ export const statusesToSet: ModalSelectType[] = [
 		value: 'offer',
 		label: 'Offer',
 		color: '#3ECF6F',
+	},
+];
+
+export const jobListingCategories: BasicModalSelectTypeLV[] = [
+	{
+		value: 'blue',
+		label: 'Blue',
+	},
+	{
+		value: 'purple',
+		label: 'Purple',
+	},
+	{
+		value: 'red',
+		label: 'Red',
+	},
+	{
+		value: 'orange',
+		label: 'Orange',
+	},
+	{
+		value: 'yellow',
+		label: 'Yellow',
+	},
+	{
+		value: 'green',
+		label: 'Green',
 	},
 ];
