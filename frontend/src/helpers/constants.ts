@@ -39,7 +39,7 @@ export const defaultNewJobValues = {
 		value: "",
 		label: "",
 	},
-	link: "",
+	jobLink: "",
 	status: {
 		value: "",
 		label: "",
