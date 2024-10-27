@@ -1,4 +1,4 @@
-export const USERNAME_MIN_LENGTH = 3;
+export const TEXT_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 16;
 export const PASSWORD_MIN_LENGTH = 8;
 
@@ -27,4 +27,22 @@ export const getDefaultValues = (mode: string) => {
 export const forbiddenUsernames = [
 	"admin",
 	"root",
-]
+];
+
+export const defaultNewJobValues = {
+	company: "",
+	jobTitle: "",
+	description: "",
+	category: {
+		value: "",
+		label: "",
+	},
+	link: "",
+	status: {
+		value: "",
+		label: "",
+		color: ""
+	},
+	closingDate: new Date(),
+	dateApplied: new Date(),
+};
