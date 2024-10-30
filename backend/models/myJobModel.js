@@ -4,10 +4,13 @@ const myJobSchema = new mongoose.Schema({
         company: {
             type: String,
             required: true,
+            minlength: 2,
+            maxLength: 64,
         },
         jobTitle: {
             type: String,
-            minLength: 3,
+            minLength: 2,
+            maxLength: 256,
             required: true,
         },
         description: {
@@ -22,12 +25,8 @@ const myJobSchema = new mongoose.Schema({
             required: true,
         },
         category: {
-            label: {
-                type: String,
-            },
-            value: {
-                type: String,
-            }
+            type: Array,
+            of: String,
         },
         dateApplied: {
             type: Date,
