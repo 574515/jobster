@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const jobListingSchema = new mongoose.Schema({
+const myJobSchema = new mongoose.Schema({
         company: {
             type: String,
             required: true,
@@ -13,17 +13,13 @@ const jobListingSchema = new mongoose.Schema({
         description: {
             type: String,
         },
-        link: {
+        jobLink: {
             type: String,
         },
         status: {
             type: Map,
             of: String,
             required: true,
-        },
-        user: {
-            type: mongoose.Types.ObjectId,
-            ref: "User"
         },
         category: {
             label: {
@@ -41,9 +37,13 @@ const jobListingSchema = new mongoose.Schema({
             type: Date,
             required: true,
         },
+        user: {
+            type: mongoose.Types.ObjectId,
+            ref: "User"
+        },
     }, { timestamps: true, }
 );
 
-const JobListing = mongoose.model('JobListing', jobListingSchema);
+const MyJob = mongoose.model('MyJob', myJobSchema);
 
-export default JobListing;
+export default MyJob;
