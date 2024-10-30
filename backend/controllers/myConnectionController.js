@@ -3,9 +3,9 @@ import MyConnection from "../models/myConnectionModel.js";
 
 const addMyConnection = async (req, res) => {
     try {
-        const { company, jobLink, userId, dateSent } = req.body;
+        const { company, jobLink, dateSent, userId } = req.body;
         const myConnection = new MyConnection({
-            company, jobLink, userId, dateSent
+            company, jobLink, dateSent, userId
         });
         await myConnection.save();
         if (myConnection) res.status(201).json(myConnection);
@@ -18,11 +18,11 @@ const addMyConnection = async (req, res) => {
 
 const deleteMyConnection = async (req, res) => {
     try {
-        const { listingId } = req.params;
-        const listing = await MyConnection.findByIdAndDelete(
-            { _id: listingId }, null
+        const { connectionId } = req.params;
+        const myConnection = await MyConnection.findByIdAndDelete(
+            { _id: connectionId }, null
         ).select("company");
-        if (listing) res.status(200).json(listing);
+        if (myConnection) res.status(200).json(myConnection);
         else res.status(404).json({ error: 'No connection found' })
     } catch (err) {
         res.status(500).json({ error: err.message });

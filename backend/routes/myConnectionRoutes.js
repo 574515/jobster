@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.post("/myConnection", addMyConnection, protectRoute);
 router.get("/myConnection/:userId", deleteMyConnection, protectRoute);
-router.delete("/myConnection/:listingId", getAllConnections, protectRoute);
+router.delete("/myConnection/:connectionId", getAllConnections, protectRoute);
 
 export default router;
