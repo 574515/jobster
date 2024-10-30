@@ -6,24 +6,16 @@ const addMyJob = async (req, res) => {
         const {
             company,
             jobTitle,
-            jobLink,
             description,
-            category,
+            jobLink,
             status,
-            userId,
+            category,
             dateApplied,
-            closingDate
+            closingDate,
+            userId,
         } = req.body;
         const myJob = new MyJob({
-            company: company,
-            jobTitle: jobTitle,
-            jobLink: jobLink,
-            description: description,
-            category: category,
-            status: status,
-            user: userId,
-            dateApplied: dateApplied,
-            closingDate: closingDate,
+            company, jobTitle, description, jobLink, status, category, dateApplied, closingDate, userId
         });
         await myJob.save();
         if (myJob) res.status(201).json(myJob);
@@ -34,27 +26,27 @@ const addMyJob = async (req, res) => {
     }
 };
 
-const changeJobListingStatus = async (req, res) => {
-    const { listingId } = req.params;
+const changeMyJobStatus = async (req, res) => {
+    const { jobId } = req.params;
     const status = req.body;
     try {
-        let jobListing = await MyJob.findOneAndUpdate(
-            { _id: listingId }, { status: status }, null
+        let myJob = await MyJob.findOneAndUpdate(
+            { _id: jobId }, { status: status }, null
         );
-        res.status(200).json(jobListing);
+        res.status(200).json(myJob);
     } catch (err) {
         res.status(500).json({ error: err.message });
         console.log(`Error in update my job: ${err.message}`);
     }
 };
 
-const deleteJobListing = async (req, res) => {
+const deleteMyJob = async (req, res) => {
     try {
-        const { listingId } = req.params;
-        const listing = await MyJob.findOneAndDelete(
-            { _id: listingId }, null
+        const { jobId } = req.params;
+        const myJob = await MyJob.findOneAndDelete(
+            { _id: jobId }, null
         ).select("jobTitle");
-        if (listing) res.status(200).json(listing);
+        if (myJob) res.status(200).json(myJob);
         else res.status(404).json({ error: 'Job not found' })
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -85,7 +77,7 @@ const getAllMyJobs = async (req, res) => {
 
 export {
     addMyJob,
-    changeJobListingStatus,
-    deleteJobListing,
+    changeMyJobStatus,
+    deleteMyJob,
     getAllMyJobs,
 };
