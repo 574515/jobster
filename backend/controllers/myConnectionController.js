@@ -1,10 +1,10 @@
 import User from "../models/userModel.js";
-import MyConnections from "../models/myConnectionModel.js";
+import MyConnection from "../models/myConnectionModel.js";
 
 const addMyConnection = async (req, res) => {
     try {
         const { company, jobLink, userId, dateSent } = req.body;
-        const myConnection = new MyConnections({
+        const myConnection = new MyConnection({
             company, jobLink, userId, dateSent
         });
         await myConnection.save();
@@ -19,7 +19,7 @@ const addMyConnection = async (req, res) => {
 const deleteMyConnection = async (req, res) => {
     try {
         const { listingId } = req.params;
-        const listing = await MyConnections.findByIdAndDelete(
+        const listing = await MyConnection.findByIdAndDelete(
             { _id: listingId }, null
         ).select("company");
         if (listing) res.status(200).json(listing);
@@ -37,7 +37,7 @@ const getAllConnections = async (req, res) => {
             { _id: userId }, null, { lean: true }
         );
         if (!user) return res.status(404).json({ error: 'User not found' });
-        const allConnections = await MyConnections
+        const allConnections = await MyConnection
             .find({ user: userId }, null, { lean: true })
             .select('-updatedAt')
             .select('-user')
