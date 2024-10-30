@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 const myConnectionSchema = new mongoose.Schema({
         company: {
             type: String,
+            minLength: 2,
+            maxLength: 64,
             required: true,
         },
         jobLink: {
