@@ -27,20 +27,21 @@ import {
 	Tag,
 	Text,
 	Textarea,
+	Tooltip,
 	useDisclosure,
 	VStack
 } from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
-import {jobInstance} from "../../api/axiosInstances.ts";
 import '../../styles/componentStyle.css';
 import {format} from "date-fns";
 import {useRecoilValue} from "recoil";
 import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {statusesToSet} from "../../helpers/constants.ts";
-import {ModalSelectType} from "../../models/componentsTypes.ts";
-import {JobActions} from "../JobActions.action.ts";
+import {JobDeletionResponseModel, ModalSelectType} from "../../models/componentsTypes.ts";
+import {JobActions} from "../AppActions.action.ts";
 import {toast} from "../../helpers/customToast.ts";
+import {FaRegNoteSticky} from "react-icons/fa6";
 
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (
@@ -73,15 +74,16 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 		}
 	}, [userJob.description?.length]);
 
-	useEffect(() => {
-		setTagShadow(`inset 0 0 0px 1px ${userJob.status.color}`);
-	}, [userJob.status.color]);
+	useEffect(() => setTagShadow(`inset 0 0 0px 1px ${userJob.status.color}`), [userJob.status.color]);
 
 	const handleDelete = async () => {
 		setIsLoading(true);
-		await jobInstance
-			.delete(`/listing/${userJob._id}`)
-			.then(() => getAllListings())
+		await JobActions
+			.deleteJobListing(userJob._id)
+			.then((response: JobDeletionResponseModel) => {
+				void toast(`Job "${response.jobTitle}" Deleted Successfully`, 'success');
+				getAllListings();
+			})
 			.catch((err) => console.log(err))
 			.finally(() => setIsLoading(false));
 	}
@@ -118,6 +120,12 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 		return status.value === userJob.status.value ? "black" : "white";
 	}
 
+	const setNoteLabel = () => {
+		if (userJob.jobLink)
+			return userJob.jobLink;
+		else return "Add Note";
+	}
+
 	return (
 		<React.Fragment>
 			<Card maxW='sm' colorScheme={"red"}>
@@ -136,11 +144,23 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 							{userJob.status.label}
 						</Tag>
 						<HStack>
-							<LinkIcon
-								color={"gray.200"}
-								onClick={handleLinkOpen}
-								className={"make-pointer"}
-							/>
+							<Tooltip
+								label={setNoteLabel()}
+								hasArrow
+							>
+								<span>
+									<FaRegNoteSticky
+										color={"#FEFF9C"}
+										className={"make-pointer"}
+									/>
+									{/*	TODO: New modal for input, tooltip if exists */}
+								</span>
+							</Tooltip>
+							{userJob.jobLink && <LinkIcon
+                                color={"gray.200"}
+                                onClick={handleLinkOpen}
+                                className={"make-pointer"}
+                            />}
 							<DeleteIcon
 								color={"red.200"}
 								onClick={onDeleteOpen}
@@ -204,7 +224,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 								colorScheme={"red"}
 								color={"gray.400"}
 							>
-								{format(userJob.closingDate, TIME_FORMATS[userLocale])}
+								{userJob.closingDate && format(userJob.closingDate, TIME_FORMATS[userLocale])}
 							</Tag>
 						</VStack>
 					</HStack>

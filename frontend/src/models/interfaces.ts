@@ -1,6 +1,13 @@
 import React from "react";
 import {Control, FieldValues, UseFormReturn} from "react-hook-form";
-import {AddEditJobProps, AllJobsResponseModel, BasicModalSelectTypeLV, FiltersType} from "./componentsTypes.ts";
+import {
+	AddEditJobType,
+	AddEditPoolType,
+	AllJobListingsResponseModel,
+	AllPoolListingsResponseModel,
+	BasicModalSelectTypeLV,
+	FiltersType
+} from "./componentsTypes.ts";
 import {CustomUser} from "./contextTypes.ts";
 
 export interface AuthProviderProps {
@@ -12,20 +19,29 @@ export interface CustomFormProviderProps<T extends FieldValues> {
 	formProviderData: UseFormReturn<T>;
 }
 
-export interface CustomJobCardProps {
-	userJob: AllJobsResponseModel;
-
+interface CustomCardProps {
 	setIsLoading(isLoading: boolean): void;
 
 	getAllListings(): void;
 }
 
+export interface CustomJobCardProps extends CustomCardProps {
+	userJob: AllJobListingsResponseModel;
+}
+
+export interface CustomPoolCardProps extends CustomCardProps {
+	userJob: AllPoolListingsResponseModel;
+}
+
 export interface AddEditJobModalProps {
 	isOpen: boolean;
 	user: CustomUser;
-	methods: UseFormReturn<AddEditJobProps>;
+	jobMethods: UseFormReturn<AddEditJobType>;
+	poolMethods: UseFormReturn<AddEditPoolType>;
 
-	getAllListings(): void;
+	getAllJobListings(): void;
+
+	getAllPoolListings(): void;
 
 	onClose(): void;
 }
@@ -35,20 +51,25 @@ export interface LoadingOverlayProps {
 }
 
 type CustomSelectionProps = {
-	control: Control<AddEditJobProps>;
 	name: string;
 	py?: number;
 	className: string;
 	label?: string;
+	minDate?: Date;
+	isRequired?: boolean;
 }
 
 export interface CustomDateSelectProps extends CustomSelectionProps {
+	jobControl?: Control<AddEditJobType>;
+	poolControl?: Control<AddEditPoolType>;
 	definedDate: Date;
+	percentWidth?: number;
 
 	setDate(date: Date): void;
 }
 
 export interface CustomSelectProps extends CustomSelectionProps {
+	control: Control<AddEditJobType>;
 	choices: BasicModalSelectTypeLV[];
 	definedValue?: BasicModalSelectTypeLV;
 	isClearable?: boolean;
@@ -57,15 +78,19 @@ export interface CustomSelectProps extends CustomSelectionProps {
 
 export interface MyJobsProps {
 	isLoading: boolean;
-	userJobListings: AllJobsResponseModel[];
+	isPool?: boolean;
+	userJobListings: AllJobListingsResponseModel[];
+	userPoolListings: AllPoolListingsResponseModel[];
 
 	setIsLoading(isLoading: boolean): void;
 
-	getAllListings(): void;
+	getAllJobListings(): void;
+
+	getAllPoolListings(): void;
 }
 
 export interface StatusListProps {
-	jobListings: AllJobsResponseModel[];
+	jobListings: AllJobListingsResponseModel[];
 	checkedStates: Record<string, boolean>;
 
 	setCheckedStates: (updater: (prevState: Record<string, boolean>) => Record<string, boolean>) => void;
@@ -73,11 +98,11 @@ export interface StatusListProps {
 
 export interface FilterProps {
 	checkedStates: Record<string, boolean>;
-	userJobListings: AllJobsResponseModel[];
+	userJobListings: AllJobListingsResponseModel[];
 
 	setCheckedStates: (updater: (prevState: Record<string, boolean>) => Record<string, boolean>) => void;
 
-	setSearchedListings(searchListings: AllJobsResponseModel[]): void;
+	setSearchedListings(searchListings: AllJobListingsResponseModel[]): void;
 
 	setFilterActive(filterActive: number): void;
 }
@@ -87,13 +112,17 @@ export interface StatusFiltersProps {
 }
 
 export interface TextSearchProps {
-	userJobListings: AllJobsResponseModel[];
+	userJobListings: AllJobListingsResponseModel[];
 
-	setSearchedListings(searchListings: AllJobsResponseModel[]): void;
+	setSearchedListings(searchListings: AllJobListingsResponseModel[]): void;
 }
 
 export interface SortByProps {
-	userJobListings: AllJobsResponseModel[];
+	isPool?: boolean;
+	userJobListings?: AllJobListingsResponseModel[];
+	userPoolListings?: AllPoolListingsResponseModel[];
 
-	setUserJobListings(searchListings: AllJobsResponseModel[]): void;
+	setUserJobListings?(searchListings: AllJobListingsResponseModel[]): void;
+
+	setUserPoolListings?(searchListings: AllPoolListingsResponseModel[]): void;
 }

@@ -98,7 +98,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 		setIsLoading(true);
 		const transformedData: TransformedAddEditPoolType = {
 			company: data.company,
-			companyLink: data.companyLink,
+			jobLink: data.jobLink,
 			userId: user._id,
 			dateSent: data.dateSent,
 		};
@@ -185,7 +185,10 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											label="Company"
 											inputProps={{
 												placeholder: 'Company',
+												maxLength: 64, // TODO: Apply the rules
 											}}
+											isRequired
+
 										/>
 										<InputControl
 											py={2}
@@ -195,6 +198,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											inputProps={{
 												placeholder: 'Job Title',
 											}}
+											isRequired
 										/>
 										<FormControl py={2} className={"prevent-select"}>
 											<FormLabel>Job Description</FormLabel>
@@ -206,7 +210,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											py={2}
 											choices={jobListingCategories}
 											label={"Job Category"}
-											jobControl={jobMethods.control}
+											control={jobMethods.control}
 										/>
 										<InputControl
 											py={2}
@@ -225,6 +229,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 													jobControl={jobMethods.control}
 													className={"prevent-select"}
 													percentWidth={100}
+													isRequired={true}
 												/>
 											))}
 										</HStack>
@@ -234,7 +239,8 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											py={2}
 											choices={statuses}
 											label={"Job Status"}
-											jobControl={jobMethods.control}
+											control={jobMethods.control}
+											isRequired={true}
 										/>
 										<ButtonGroup my={2} w={"100%"}>
 											<SubmitButton
@@ -272,11 +278,12 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											inputProps={{
 												placeholder: 'Company',
 											}}
+											isRequired={true}
 										/>
 										<InputControl
 											py={2}
 											className="prevent-select"
-											name="companyLink"
+											name="jobLink"
 											label="Job Link"
 											inputProps={{
 												placeholder: 'https://linktojob.com',
@@ -346,6 +353,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											inputProps={{
 												placeholder: 'https://linktojob.com',
 											}}
+											isRequired
 										/>
 										<HStack w={"100%"} py={2}>
 											{myFutureApplicationsDateSelects.map((date, index: number) => (

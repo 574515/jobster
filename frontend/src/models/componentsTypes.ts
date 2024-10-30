@@ -18,7 +18,6 @@ export type SignupValues = {
 	username: string;
 	password: string;
 	repeatPassword: string;
-	email: string;
 };
 
 export type CustomColorModeIcon = {
@@ -34,8 +33,8 @@ type BasicModalSelectTypeLC = {
 }
 
 export type BasicModalSelectTypeLV = {
-	label: string;
-	value: string;
+	label?: string;
+	value?: string;
 }
 
 export type ModalSelectType = BasicModalSelectTypeLC & {
@@ -48,7 +47,17 @@ export type StatusSelectType = ModalSelectType & {
 	count: number;
 }
 
-export type AddEditJobProps = {
+export type AddEditPoolType = {
+	company: string
+	jobLink?: string;
+	dateSent?: Date;
+};
+
+export type TransformedAddEditPoolType = AddEditPoolType & {
+	userId: string;
+}
+
+export type AddEditJobType = {
 	company: string;
 	jobTitle: string;
 	description?: string;
@@ -56,15 +65,15 @@ export type AddEditJobProps = {
 	jobLink?: string;
 	status: ModalSelectType;
 	dateApplied: Date;
-	closingDate: Date;
+	closingDate?: Date;
 };
 
-export type TransformedAddEditJobProps = AddEditJobProps & {
+export type TransformedAddEditJobProps = AddEditJobType & {
 	userId: string;
 }
 
 export type JobCreationResponseModel = {
-	category: string;
+	category?: string;
 	createdAt: string;
 	description: string;
 	jobLink: string;
@@ -73,7 +82,31 @@ export type JobCreationResponseModel = {
 	updatedAt: string;
 };
 
-export type AllJobsResponseModel = AddEditJobProps & {
+export type JobDeletionResponseModel = {
+	jobTitle: string;
+	_id: string;
+}
+
+export type PoolDeletionResponseModel = {
+	company: string;
+	_id: string;
+}
+
+export type PoolCreationResponseModel = {
+	createdAt: string;
+	jobLink: string;
+	company: string;
+	dateApplied: Date;
+	updatedAt: string;
+};
+
+export type AllJobListingsResponseModel = AddEditJobType & {
+	[key: string]: string;
+	_id: string;
+};
+
+
+export type AllPoolListingsResponseModel = AddEditPoolType & {
 	[key: string]: string;
 	_id: string;
 }
@@ -93,6 +126,11 @@ export type AddEditJobNameType =
 	"status.label" |
 	"status.color";
 
+export type AddEditPoolNameType =
+	"jobLink" |
+	"company" |
+	"dateSent";
+
 export type FiltersType = {
 	filterName: string;
 	filterComponent: React.ReactNode;
@@ -102,4 +140,31 @@ export type FiltersType = {
 export type SortByOptionType = {
 	whatDate: string;
 	when: string;
+}
+
+export type CheckSXType = {
+	'.chakra-switch__track[data-checked]:not([data-theme])': {
+		backgroundColor: string;
+	},
+	'span.chakra-switch__track:not([data-checked])': {
+		backgroundColor: string;
+	},
+}
+
+export type DateSelectType = {
+	label: string;
+	name: string;
+	definedDate: Date;
+	setDate(date: Date): void;
+}
+
+export type CustomDateSelectPropsType = {
+	triggerBtnProps: {
+		width: string;
+	}
+}
+
+export type HomeScreenPagesType = {
+	title: string;
+	value: string;
 }

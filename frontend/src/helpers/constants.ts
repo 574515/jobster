@@ -1,8 +1,19 @@
 import {BasicModalSelectTypeLV, ModalSelectType, SortByOptionType} from "../models/componentsTypes.ts";
 
-export const TEXT_MIN_LENGTH = 3;
-export const USERNAME_MAX_LENGTH = 16;
-export const PASSWORD_MIN_LENGTH = 8;
+export const Constants = {
+	MIN_LENGTH_COMPANY_NAME: 2,
+	MAX_LENGTH_COMPANY_NAME: 64,
+
+	MIN_LENGTH_JOB_NAME: 2,
+	MAX_LENGTH_JOB_NAME: 256,
+
+	DAY_IN_MILLISECONDS: 86400000,
+
+	MIN_LENGTH_USERNAME: 3,
+	MAX_LENGTH_USERNAME: 16,
+
+	PASSWORD_MIN_LENGTH: 8,
+};
 
 const defaultLoginValues = {
 	username: "",
@@ -10,9 +21,9 @@ const defaultLoginValues = {
 };
 
 const defaultRegisterValues = {
-	...defaultLoginValues,
+	username: "",
+	password: "",
 	repeatPassword: "",
-	email: "",
 }
 
 export const getDefaultValues = (mode: string) => {
@@ -30,6 +41,12 @@ export const forbiddenUsernames = [
 	"admin",
 	"root",
 ];
+
+export const defaultNewPoolValues = {
+	company: "",
+	jobLink: "",
+	dateSent: new Date(),
+}
 
 export const defaultNewJobValues = {
 	company: "",
@@ -109,7 +126,7 @@ export const jobListingCategories: BasicModalSelectTypeLV[] = [
 	},
 ];
 
-export const sortByOptions: SortByOptionType[] = [
+export const sortByJobOptions: SortByOptionType[] = [
 	{
 		whatDate: "Date Applied",
 		when: "Newest",
@@ -127,3 +144,19 @@ export const sortByOptions: SortByOptionType[] = [
 		when: "Sooner",
 	},
 ];
+
+export const sortByPoolOptions: SortByOptionType[] = [
+	{
+		whatDate: "Date Sent",
+		when: "Newest",
+	},
+	{
+		whatDate: "Date Sent",
+		when: "Oldest",
+	},
+]
+
+export const homeScreenPages = {
+	MY_JOBS: "myJobs",
+	POOL: "pool",
+};

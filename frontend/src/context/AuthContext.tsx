@@ -37,6 +37,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 	};
 
 	const registerUser = async (inputs: object) => {
+		console.log(inputs);
 		await authInstance
 			.post('/signup', inputs)
 			.then(() => {

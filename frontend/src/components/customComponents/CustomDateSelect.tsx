@@ -9,7 +9,11 @@ import {CustomDateSelectProps} from "../../models/interfaces.ts";
 import {AddEditJobNameType, AddEditPoolNameType, CustomDateSelectPropsType} from "../../models/componentsTypes.ts";
 
 const CustomDateSelect: React.FC<CustomDateSelectProps> = (
-	{jobControl, poolControl, name, py, className, label, definedDate, setDate, percentWidth}
+	{
+		jobControl, poolControl, name, py, className,
+		label, definedDate, setDate, percentWidth, minDate,
+		isRequired = false,
+	}
 ) => {
 	const userLocale = useRecoilValue(userLocaleAtom)
 	const [propsConfigs, setPropsConfigs] = React.useState<CustomDateSelectPropsType>({
@@ -34,24 +38,28 @@ const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 			<Controller
 				control={jobControl}
 				name={name as AddEditJobNameType}
-				render={({field}) => (
-					<FormControl
+				render={({field}) => {
+					console.log(field);
+					return <FormControl
 						py={py ?? 0}
 						className={className}
 						textAlign={"center"}
+						isRequired={isRequired}
 					>
-						{label && <FormLabel mx={0} textAlign={"center"}>{label}</FormLabel>}
+						{label && <FormLabel mx={0}>{label}</FormLabel>}
 						<SingleDatepicker
-							date={(field.value as Date) ?? definedDate}
+							date={definedDate}
 							onDateChange={(date) => {
 								field.onChange(date);
 								setDate(date);
 							}}
 							configs={{dateFormat: TIME_FORMATS[userLocale],}}
 							propsConfigs={propsConfigs}
+							minDate={minDate}
+							maxDate={new Date(new Date().getFullYear() + 1, 11, 31)}
 						/>
 					</FormControl>
-				)}
+				}}
 			/>
 		) : (
 			<Controller

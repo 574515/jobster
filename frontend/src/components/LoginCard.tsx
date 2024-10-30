@@ -3,6 +3,8 @@ import React from 'react';
 import authScreenAtom from '../atoms/authScreenAtom.ts';
 import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import useAuth from "../hooks/useAuth.ts";
+import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
+
 import {
 	Box,
 	Flex,
@@ -22,12 +24,11 @@ import {useForm} from 'react-hook-form';
 import {LoginValidationSchema} from "../helpers/validators.js";
 import {getDefaultValues} from "../helpers/constants.js";
 import {LoginValues} from "../models/componentsTypes.ts";
-
-import '../styles/style.css'
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaLock, FaUser} from "react-icons/fa6";
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
-import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
+
+import '../styles/style.css'
 
 const LoginCard = () => {
 	const {loginUser} = useAuth();
@@ -57,7 +58,7 @@ const LoginCard = () => {
 					<Stack
 						spacing={8}
 						mx={'auto'}
-						maxW={'lg'}
+						w={{base: "sm", md: "xl"}}
 						py={12}
 						px={6}
 					>
@@ -67,7 +68,6 @@ const LoginCard = () => {
 							boxShadow={'lg'}
 							py={8}
 							px={12}
-							width={{base: 'full', sm: '400px'}}
 						>
 							<Stack align={'center'} mb={12}>
 								<Heading className="prevent-select" fontSize={'4xl'} textAlign='center'>
@@ -103,19 +103,21 @@ const LoginCard = () => {
 										<InputRightElement
 											className="make-pointer"
 											onClick={() => setShowPassword(!showPassword)}
-										>{showPassword ? <ViewOffIcon/> : <ViewIcon/>}</InputRightElement>
+										>
+											{showPassword ? <ViewIcon/> : <ViewOffIcon/>}
+										</InputRightElement>
 									}
 								/>
-								<HStack spacing={5} p={2}>
+								<HStack spacing={5} w={"100%"} my={2}>
 									<SubmitButton
 										isLoading={isLoading}
 										loadingText="Submitting..."
-										width="75%"
+										width="100%"
 										margin={"auto"}
 									>Log in</SubmitButton>
 									<CustomColorModeSwitch/>
 								</HStack>
-								<Text align={'center'} mt={4} mb={2}>
+								<Text align={'center'} className="prevent-select">
 									Don&apos;t have an account?&nbsp;<Link onClick={() => setAuthScreen('signup')}>Sign
 									up!</Link>
 								</Text>

@@ -10,7 +10,7 @@ const CustomSelect: React.FC<CustomSelectProps> = (
 	{
 		choices, control, name, py, className,
 		label, definedValue,
-		isClearable = true
+		isClearable = true, isRequired = false,
 	}
 ) => {
 	return (
@@ -31,9 +31,11 @@ const CustomSelect: React.FC<CustomSelectProps> = (
 					className={className}
 					isInvalid={!!error}
 					id={name}
+					isRequired={isRequired}
 				>
 					{label && <FormLabel>{label}</FormLabel>}
 					<Select
+						menuPlacement={"auto"}
 						name={name}
 						ref={ref}
 						onChange={onChange}

@@ -2,6 +2,7 @@ import {
 	AllJobListingsResponseModel,
 	AllPoolListingsResponseModel,
 	JobCreationResponseModel,
+	JobDeletionResponseModel,
 	ModalSelectType,
 	PoolCreationResponseModel,
 	TransformedAddEditJobProps,
@@ -13,7 +14,7 @@ export class JobActions {
 	static postNewJobListing = async (
 		data: TransformedAddEditJobProps
 	): Promise<JobCreationResponseModel> => {
-		const response = await jobInstance.post<JobCreationResponseModel>("/job/newListing", data);
+		const response = await jobInstance.post<JobCreationResponseModel>("/jobListings/newListing", data);
 		return response.data;
 	}
 
@@ -34,8 +35,8 @@ export class JobActions {
 
 	static deleteJobListing = async (
 		jobId: string,
-	) => {
-		const response = await jobInstance.delete(`/jobListings/${jobId}`);
+	): Promise<JobDeletionResponseModel> => {
+		const response = await jobInstance.delete<JobDeletionResponseModel>(`/jobListings/${jobId}`);
 		return response.data;
 	}
 }
@@ -44,7 +45,7 @@ export class PoolActions {
 	static postNewPoolListing = async (
 		data: TransformedAddEditPoolType
 	): Promise<PoolCreationResponseModel> => {
-		const response = await jobInstance.post<PoolCreationResponseModel>("/newPoolListing", data);
+		const response = await jobInstance.post<PoolCreationResponseModel>("/poolListings/newListing", data);
 		return response.data;
 	}
 
@@ -58,7 +59,7 @@ export class PoolActions {
 	static deletePoolListing = async (
 		poolId: string,
 	) => {
-		const response = await jobInstance.delete(`/listing/${poolId}`);
+		const response = await jobInstance.delete(`/poolListings/${poolId}`);
 		return response.data;
 	}
 }
