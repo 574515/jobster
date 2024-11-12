@@ -22,18 +22,21 @@ import {
 import {
 	AddEditJobType,
 	AddEditPoolType,
+	AddEditToApplyType,
 	DateSelectType,
 	JobCreationResponseModel,
 	ModalSelectType,
+	MyFutureApplicationResponseModel,
 	PoolCreationResponseModel,
 	TransformedAddEditJobProps,
-	TransformedAddEditPoolType
+	TransformedAddEditPoolType,
+	TransformedAddEditToApplyType
 } from "../models/componentsTypes.ts";
 import {InputControl, ResetButton, SubmitButton, TextareaControl} from "react-hook-form-chakra";
 import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import {Constants, homeScreenPages, jobListingCategories, statusesToSet} from "../helpers/constants.ts";
 import CustomSelect from "./customComponents/CustomSelect.tsx";
-import {JobActions, PoolActions} from "./AppActions.action.ts";
+import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action.ts";
 import {toast} from "../helpers/customToast.ts";
 import {AddEditJobModalProps} from "../models/interfaces.ts";
 import CustomDateSelect from "./customComponents/CustomDateSelect.tsx";
@@ -42,8 +45,9 @@ import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 
 const AddListingModal: React.FC<AddEditJobModalProps> = (
 	{
-		isOpen, onClose, user, getAllJobListings,
-		getAllPoolListings, jobMethods, poolMethods
+		isOpen, onClose, user,
+		getAllMyJobListings, getAllMyConnections, getAllMyToApply,
+		jobMethods, poolMethods, toApplyMethods
 	}
 ) => {
 	const setHomeScreenState = useSetRecoilState(homeScreenAtom);
@@ -52,6 +56,9 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 	}
 	const handlePoolReset = () => {
 		if (poolMethods) poolMethods.reset();
+	}
+	const handleMyFutureApplicationsReset = () => {
+		if (toApplyMethods) toApplyMethods.reset();
 	}
 	const [statuses, setStatuses] = React.useState<ModalSelectType[]>([]);
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -82,10 +89,10 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			closingDate: data.closingDate,
 		};
 		JobActions
-			.postNewJobListing(transformedData)
+			.postMyNewJob(transformedData)
 			.then((response: JobCreationResponseModel) => {
 				void toast(`Job "${response.name}" Added Successfully`, 'success');
-				getAllJobListings();
+				getAllMyJobListings();
 				setHomeScreenState(homeScreenPages.MY_JOBS);
 				onClose();
 				handleJobReset();
@@ -99,21 +106,43 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 		const transformedData: TransformedAddEditPoolType = {
 			company: data.company,
 			jobLink: data.jobLink,
-			userId: user._id,
 			dateSent: data.dateSent,
+			userId: user._id,
 		};
-		PoolActions
-			.postNewPoolListing(transformedData)
+		ConnectionActions
+			.postMyConnection(transformedData)
 			.then((response: PoolCreationResponseModel) => {
-				void toast(`Pool for "${response.company}" Added Successfully`, 'success');
-				getAllPoolListings();
-				setHomeScreenState(homeScreenPages.POOL);
+				void toast(`Connection For "${response.company}" Added Successfully`, 'success');
 				onClose();
 				handlePoolReset();
+				getAllMyConnections();
+				setHomeScreenState(homeScreenPages.MY_CONNECTIONS);
 			})
 			.catch((error) => void toast(error.response.data.error, 'error'))
 			.finally(() => setIsLoading(false));
 	};
+
+	const handleToApplySave = (data: AddEditToApplyType) => {
+		setIsLoading(true);
+		const transformedData: TransformedAddEditToApplyType = {
+			company: data.company,
+			jobLink: data.jobLink,
+			jobTitle: data.jobTitle,
+			closingDate: data.closingDate,
+			userId: user._id,
+		};
+		ToApplyActions
+			.postMyToApply(transformedData)
+			.then((response: MyFutureApplicationResponseModel) => {
+				void toast(`My Future Application for ${response.jobLink} Added Successfully`, 'success');
+				onClose();
+				handleMyFutureApplicationsReset();
+				getAllMyToApply();
+				setHomeScreenState(homeScreenPages.MY_FUTURE_APPLICATIONS);
+			})
+			.catch((error) => void toast(error.response.data.error, 'error'))
+			.finally(() => setIsLoading(false));
+	}
 
 	const jobDateSelects: DateSelectType[] = [
 		{
@@ -322,10 +351,10 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 								</CustomFormProvider>
 							</TabPanel>
 							<TabPanel>
-								<CustomFormProvider formProviderData={jobMethods}>
+								<CustomFormProvider formProviderData={toApplyMethods}>
 									<VStack
 										as="form"
-										onSubmit={jobMethods.handleSubmit(handleJobSave)}
+										onSubmit={toApplyMethods.handleSubmit(handleToApplySave)}
 									>
 										<InputControl
 											py={2}

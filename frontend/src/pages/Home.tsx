@@ -1,5 +1,17 @@
 import React from "react";
+
+import AuthContext from "../context/AuthContext.tsx";
+import homeScreenAtom from "../atoms/homeScreenAtom.ts";
+import loadingAtom from "../atoms/loadingAtom.ts";
+import userAtom from "../atoms/userAtom.ts";
+import AddListingModal from "../components/AddListingModal.tsx";
+import Filters from "../components/filtering/Filters.tsx";
+import LoadingOverlay from "../components/LoadingOverlay.tsx";
+import MyJobs from "../components/MyJobs.tsx";
+import SortBy from "../components/filtering/SortBy.tsx";
+
 import {
+	Badge,
 	Button,
 	ButtonGroup,
 	Divider,
@@ -11,153 +23,133 @@ import {
 	useDisclosure,
 	VStack
 } from "@chakra-ui/react";
-import {useRecoilValue, useSetRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {useForm} from "react-hook-form";
-import {AddIcon} from "@chakra-ui/icons";
-import {BiExit} from "react-icons/bi";
-
-import userAtom from "../atoms/userAtom.ts";
-import AddListingModal from "../components/AddListingModal.tsx";
-import {JobActions, PoolActions} from "../components/AppActions.action.ts";
+import {ConnectionActions, JobActions, ToApplyActions} from "../components/AppActions.action.ts";
+import {HomeScreenPagesType} from "../models/componentsTypes.ts";
 import {
-	AllJobListingsResponseModel,
-	AllPoolListingsResponseModel,
-	HomeScreenPagesType
-} from "../models/componentsTypes.ts";
-import LoadingOverlay from "../components/LoadingOverlay.tsx";
-import MyJobs from "../components/MyJobs.tsx";
-import {defaultNewJobValues, defaultNewPoolValues} from "../helpers/constants.ts";
-import Filters from "../components/filtering/Filters.tsx";
-import {AuthContextType} from "../models/contextTypes.ts";
-import AuthContext from "../context/AuthContext.tsx";
-import SortBy from "../components/filtering/SortBy.tsx";
-import homeScreenAtom from "../atoms/homeScreenAtom.ts";
-import {NewConnectionValidationSchema, NewJobValidationSchema} from "../helpers/validators.ts";
+	defaultMyConnectionValues,
+	defaultMyFutureApplicationValues,
+	defaultMyJobValues,
+	homeScreenPages,
+	homeScreenPagesList
+} from "../helpers/constants.ts";
+import {AuthContextType, CustomUser} from "../models/contextTypes.ts";
+import {MyConnectionValidationSchema, MyJobValidationSchema, MyToApplyValidationSchema} from "../helpers/validators.ts";
+import {ConstantItemNames} from "../helpers/enums.ts";
+import {MyConnectionResponseModel, MyFutureApplicationResponseModel, MyJobResponseModel} from "../models/types.ts";
+import {toast} from "../helpers/customToast.ts";
+import {FaArrowRightFromBracket, FaPlus} from "react-icons/fa6";
 
 const Home = () => {
-	const user = useRecoilValue(userAtom);
 	const {onOpen, isOpen, onClose} = useDisclosure();
-
-	const [userJobListings, setUserJobListings] = React.useState<AllJobListingsResponseModel[]>([]);
-	const [userPoolListings, setUserPoolListings] = React.useState<AllPoolListingsResponseModel[]>([]);
-	const [userToApplyListings, setUserToApplyListings] = React.useState([]);
-	const [isLoading, setIsLoading] = React.useState<boolean>(false);
-	const [checkedStates, setCheckedStates] = React.useState<Record<string, boolean>>({});
-	const [totalNumberOfListings, setTotalNumberOfListings] = React.useState<number>(0);
-	const [searchedListings, setSearchedListings] = React.useState<AllJobListingsResponseModel[]>([]);
-	const [filterActive, setFilterActive] = React.useState<number>(0);
 	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
 	const logoutUser = authContext ? authContext.logoutUser : undefined;
-	const homeScreenState = useRecoilValue(homeScreenAtom);
-	const setHomeScreenState = useSetRecoilState(homeScreenAtom);
-	const homeScreenPages: HomeScreenPagesType[] = [
-		{
-			title: "My Jobs",
-			value: "myJobs",
-		},
-		{
-			title: "My Connections",
-			value: "pool", // TODO: refactor
-		},
-		{
-			title: "My Future Applications",
-			value: "toApply", // TODO: refactor
-		}
-	];
+	const user = useRecoilValue<CustomUser | null>(userAtom);
+	const [isLoading, setIsLoading] = useRecoilState<boolean>(loadingAtom);
+	const [homeScreenState, setHomeScreenState] = useRecoilState<string>(homeScreenAtom);
 
-	const getAllJobListings = React.useCallback(() => {
+	const [allMyJobs, setAllMyJobs] = React.useState<MyJobResponseModel[]>([]);
+	const [myJobsFiltered, setMyJobsFiltered] = React.useState<MyJobResponseModel[]>([]);
+	const [allMyConnections, setAllMyConnections] = React.useState<MyConnectionResponseModel[]>([]);
+	const [userToApplyListings, setUserToApplyListings] = React.useState<MyFutureApplicationResponseModel[]>([]);
+	const [checkedStatuses, setCheckedStatuses] = React.useState<Record<string, boolean>>({});
+	const [totalNumberOfListings, setTotalNumberOfListings] = React.useState<number>(0);
+	const [filterActive, setFilterActive] = React.useState<number>(0);
+
+	const getAllMyJobs = React.useCallback(() => {
 		if (user) {
 			setIsLoading(true);
 			JobActions
-				.getAllJobListings(user._id)
-				.then((data: AllJobListingsResponseModel[]) => setUserJobListings(data))
-				.catch((err) => console.log(err))
+				.getAllMyJobs(user._id)
+				.then((data: MyJobResponseModel[]) => setAllMyJobs(data))
+				.catch((err) => void toast(err.response.data.error, 'error'))
 				.finally(() => setIsLoading(false));
 		}
-	}, [user]);
+	}, [setIsLoading, user]);
 
-	const getAllPoolListings = React.useCallback(() => {
+	const getAllMyConnections = React.useCallback(() => {
 		if (user) {
 			setIsLoading(true);
-			PoolActions
-				.getAllPoolListings(user._id)
-				.then((data: AllPoolListingsResponseModel[]) => setUserPoolListings(data))
-				.catch((err) => console.log(err))
+			ConnectionActions
+				.getAllMyConnections(user._id)
+				.then((data: MyConnectionResponseModel[]) => setAllMyConnections(data))
+				.catch((err) => void toast(err.response.data.error, 'error'))
 				.finally(() => setIsLoading(false));
 		}
-	}, [user]);
+	}, [setIsLoading, user]);
+
+	const getAllMyFutureApplications = React.useCallback(() => {
+		if (user) {
+			setIsLoading(true);
+			ToApplyActions
+				.getAllMyFutureApplications(user._id)
+				.then((data: MyFutureApplicationResponseModel[]) => setUserToApplyListings(data))
+				.catch((err) => void toast(err.response.data.error, 'error'))
+				.finally(() => setIsLoading(false));
+		}
+	}, [setIsLoading, user]);
 
 	React.useEffect(() => {
-		switch (homeScreenState) {
-			case "myJobs": {
-				getAllJobListings();
-				break;
-			}
-			case "pool": {
-				getAllPoolListings();
-				break;
-			}
-			case "toApply": {
-				break;
-			}
-			default: {
-				getAllJobListings();
-				break;
-			}
-		}
-	}, [getAllJobListings, getAllPoolListings, homeScreenState]);
+		getAllMyJobs();
+		getAllMyConnections();
+		getAllMyFutureApplications();
+	}, [getAllMyConnections, getAllMyJobs, getAllMyFutureApplications]);
 
-	React.useEffect(() => getAllPoolListings(), [getAllPoolListings]);
+	React.useEffect(() => setMyJobsFiltered(allMyJobs), [allMyJobs]);
 
-	React.useEffect(() => setSearchedListings(userJobListings), [userJobListings]);
-
-	React.useEffect(() => setHomeScreenState(userJobListings.length === 0 ? "pool" : "myJobs"), [setHomeScreenState, userJobListings.length]);
-
-	const filteredJobListings = React.useMemo(() => {
+	const filteredMyJobs = React.useMemo(() => {
 		if (filterActive === 1) {
-			setTotalNumberOfListings(userJobListings.length);
-			return userJobListings.filter((job) => checkedStates[job.status.value]);
+			setTotalNumberOfListings(allMyJobs.length);
+			return allMyJobs.filter((job) => checkedStatuses[job.status.value]);
 		}
 		if (filterActive === 0) {
-			setTotalNumberOfListings(searchedListings.length);
-			return searchedListings;
+			setTotalNumberOfListings(myJobsFiltered.length);
+			return myJobsFiltered;
 		}
-		return userJobListings;
-	}, [checkedStates, filterActive, searchedListings, userJobListings]);
+		return allMyJobs;
+	}, [checkedStatuses, filterActive, myJobsFiltered, allMyJobs]);
 
-	const jobMethods = useForm({
-		resolver: NewJobValidationSchema,
-		defaultValues: defaultNewJobValues,
-		mode: "onChange",
+	const myJobMethods = useForm({
+		resolver: MyJobValidationSchema,
+		defaultValues: defaultMyJobValues,
+		mode: "onTouched",
 	});
 
-	const poolMethods = useForm({
-		resolver: NewConnectionValidationSchema,
-		defaultValues: defaultNewPoolValues,
-		mode: "onChange",
+	const myConnectionMethods = useForm({
+		resolver: MyConnectionValidationSchema,
+		defaultValues: defaultMyConnectionValues,
+	});
+
+	const myFutureApplicationMethods = useForm({
+		resolver: MyToApplyValidationSchema,
+		defaultValues: defaultMyFutureApplicationValues,
 	});
 
 	const handleLogout = async () => {
 		setIsLoading(true);
 		if (logoutUser) {
 			await logoutUser()
-				.catch((error) => console.log(error))
+				.catch((err) => void toast(err.data.error, 'error'))
 				.finally(() => setIsLoading(false));
 		}
 	}
 
 	const handlePageClick = (pageValue: string) => {
-		if (pageValue === "myJobs" && userJobListings.length === 0) return;
-		if (pageValue === "pool" && userPoolListings.length === 0) return;
-		if (pageValue === "toApply" && userToApplyListings.length === 0) return;
+		if (pageValue === homeScreenPages.MY_JOBS && allMyJobs.length === 0) return;
+		if (pageValue === homeScreenPages.MY_CONNECTIONS && allMyConnections.length === 0) return;
+		if (pageValue === homeScreenPages.MY_FUTURE_APPLICATIONS && userToApplyListings.length === 0) return;
 		setHomeScreenState(pageValue);
 	}
 
 	const isListingEmpty = (
 		page: HomeScreenPagesType
 	): boolean => {
-		return (page.value === "pool" && userPoolListings.length === 0) ||
-			(page.value === "myJobs" && userJobListings.length === 0);
+		return (
+			(page.value === homeScreenPages.MY_JOBS && allMyJobs.length === 0) ||
+			(page.value === homeScreenPages.MY_CONNECTIONS && allMyConnections.length === 0) ||
+			(page.value === homeScreenPages.MY_FUTURE_APPLICATIONS && userToApplyListings.length === 0)
+		);
 	};
 
 	const isActivePage = (
@@ -171,12 +163,29 @@ const Home = () => {
 		return isListingEmpty(page) ? baseClass : `${baseClass} make-pointer`;
 	};
 
-	const getHeading = (
-		page: HomeScreenPagesType
-	): React.ReactNode => {
-		const content = <Text>{page.title}</Text>;
+	const getHeading = (page: HomeScreenPagesType): React.ReactNode => {
+		const badge = (
+			page.title === ConstantItemNames.MY_FUTURE_APPLICATIONS && userToApplyListings.length > 0
+				? <Badge
+					ml='1rem'
+					bg="#FF9999"
+					color="#000"
+					py={1}
+					px={2}
+					borderRadius="50%"
+				>
+					{userToApplyListings.length}
+				</Badge>
+				: null
+		);
+		const content = (
+			<Text>
+				{page.title}
+				{badge}
+			</Text>
+		);
 		return isListingEmpty(page)
-			? <Tooltip hasArrow label={"It is empty."}>{content}</Tooltip>
+			? <Tooltip hasArrow label="It is empty.">{content}</Tooltip>
 			: content;
 	};
 
@@ -195,13 +204,13 @@ const Home = () => {
 	return (
 		<React.Fragment>
 			<LoadingOverlay isLoading={isLoading}/>
-			<Flex justifyContent="center">
-				{user && (
+			{user && (
+				<Flex justifyContent="center">
 					<React.Fragment>
 						<VStack alignItems="start" w="100%">
 							<HStack w="100%">
 								<HStack justifyContent="space-evenly" w="100%">
-									{homeScreenPages.map((page: HomeScreenPagesType, index: number): React.ReactNode => (
+									{homeScreenPagesList.map((page: HomeScreenPagesType, index: number): React.ReactNode => (
 										<Heading
 											my="1rem"
 											size="md"
@@ -218,10 +227,10 @@ const Home = () => {
 									))}
 								</HStack>
 								<ButtonGroup>
-									<Button leftIcon={<AddIcon/>} variant="outline" colorScheme="gray" onClick={onOpen}>
+									<Button leftIcon={<FaPlus/>} variant="outline" colorScheme="gray" onClick={onOpen}>
 										Add
 									</Button>
-									<Button leftIcon={<BiExit/>} variant="outline" colorScheme="gray"
+									<Button leftIcon={<FaArrowRightFromBracket/>} variant="outline" colorScheme="gray"
 									        onClick={handleLogout}>
 										Logout [{user.username}]
 									</Button>
@@ -229,45 +238,56 @@ const Home = () => {
 							</HStack>
 							<Divider/>
 							<HStack alignItems="start" w="100%">
-								{homeScreenState === "myJobs" && (
+								{homeScreenState === homeScreenPages.MY_JOBS && (
 									<MyJobs
-										setIsLoading={setIsLoading}
-										isLoading={isLoading}
-										userJobListings={filteredJobListings}
-										getAllJobListings={getAllJobListings}
-										userPoolListings={userPoolListings}
-										getAllPoolListings={getAllPoolListings}
+										allMyJobs={filteredMyJobs}
+										getAllMyJobs={getAllMyJobs}
+										allMyConnections={allMyConnections}
+										getAllMyConnections={getAllMyConnections}
+										allMyFutureApplications={userToApplyListings}
+										getAllMyFutureApplications={getAllMyFutureApplications}
+										myJobMethods={myJobMethods}
 									/>
 								)}
-								{homeScreenState === "pool" && (
+								{homeScreenState === homeScreenPages.MY_CONNECTIONS && (
 									<MyJobs
-										setIsLoading={setIsLoading}
-										isLoading={isLoading}
-										userJobListings={filteredJobListings}
-										getAllJobListings={getAllJobListings}
-										userPoolListings={userPoolListings}
-										getAllPoolListings={getAllPoolListings}
-										isPool={true}
+										allMyJobs={filteredMyJobs}
+										getAllMyJobs={getAllMyJobs}
+										allMyConnections={allMyConnections}
+										getAllMyConnections={getAllMyConnections}
+										allMyFutureApplications={userToApplyListings}
+										getAllMyFutureApplications={getAllMyFutureApplications}
+									/>
+								)}
+								{homeScreenState === homeScreenPages.MY_FUTURE_APPLICATIONS && (
+									<MyJobs
+										allMyJobs={filteredMyJobs}
+										getAllMyJobs={getAllMyJobs}
+										allMyConnections={allMyConnections}
+										getAllMyConnections={getAllMyConnections}
+										allMyFutureApplications={userToApplyListings}
+										getAllMyFutureApplications={getAllMyFutureApplications}
 									/>
 								)}
 								<VStack w={"100%"}>
 									<VStack w={"100%"} p={3} justifyContent="center" gap={5}>
 										<Text className={"prevent-select"} fontWeight={"bold"}>Sort By</Text>
 										<SortBy
-											userJobListings={userJobListings}
-											setUserJobListings={setUserJobListings}
-											isPool={homeScreenState === "pool"}
-											userPoolListings={userPoolListings}
-											setUserPoolListings={setUserPoolListings}
+											allMyJobs={allMyJobs}
+											setAllMyJobs={setAllMyJobs}
+											allMyConnections={allMyConnections}
+											setAllMyConnections={setAllMyConnections}
+											allMyFutureApplications={userToApplyListings}
+											setAllMyFutureApplications={setUserToApplyListings}
 										/>
 									</VStack>
-									{homeScreenState === "myJobs" && (
+									{homeScreenState === homeScreenPages.MY_JOBS && (
 										<VStack w={"100%"} p={3} justifyContent="center" gap={5}>
 											<Filters
-												checkedStates={checkedStates}
-												setCheckedStates={setCheckedStates}
-												userJobListings={userJobListings}
-												setSearchedListings={setSearchedListings}
+												checkedStatuses={checkedStatuses}
+												setCheckedStatuses={setCheckedStatuses}
+												allMyJobs={allMyJobs}
+												setMyJobsFiltered={setMyJobsFiltered}
 												setFilterActive={setFilterActive}
 											/>
 											<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
@@ -277,18 +297,19 @@ const Home = () => {
 							</HStack>
 						</VStack>
 					</React.Fragment>
-				)}
-			</Flex>
-
-			{user && <AddListingModal
-                isOpen={isOpen}
-                onClose={onClose}
-                user={user}
-                getAllJobListings={getAllJobListings}
-                getAllPoolListings={getAllPoolListings}
-                jobMethods={jobMethods}
-                poolMethods={poolMethods}
-            />}
+					<AddListingModal
+						isOpen={isOpen}
+						onClose={onClose}
+						user={user}
+						getAllMyJobs={getAllMyJobs}
+						getAllMyConnections={getAllMyConnections}
+						getAllMyFutureApplications={getAllMyFutureApplications}
+						myJobMethods={myJobMethods}
+						myConnectionMethods={myConnectionMethods}
+						myFutureApplicationMethods={myFutureApplicationMethods}
+					/>
+				</Flex>
+			)}
 		</React.Fragment>
 	);
 };
