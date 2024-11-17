@@ -4,7 +4,7 @@ import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import loadingAtom from "../atoms/loadingAtom.ts";
 import CustomFutureApplicationCard from "./customComponents/CustomFutureApplicationCard.tsx";
 import CustomJobCard from "./customComponents/CustomJobCard.tsx";
-import CustomPoolCard from "./customComponents/CustomPoolCard.tsx";
+import CustomConnectionCard from "./customComponents/CustomConnectionCard.tsx";
 
 import {Box, Grid, VStack} from "@chakra-ui/react";
 import {MyJobsProps} from "../models/interfaces.ts";
@@ -43,7 +43,7 @@ const MyJobs: React.FC<MyJobsProps> = (
 				{homeScreenState === homeScreenPages.MY_CONNECTIONS && (allMyConnections && allMyConnections.length > 0) && !isLoading &&
 					allMyConnections.map((listing: MyConnectionResponseModel, index: number) => (
 						<Box key={index}>
-							<CustomPoolCard
+							<CustomConnectionCard
 								item={listing}
 								getAllItems={getAllMyConnections}
 							/>
