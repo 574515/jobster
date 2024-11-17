@@ -2,16 +2,16 @@ import React from "react";
 
 import StatusList from "./StatusList.tsx";
 import StatusFilters from "./StatusFilters.tsx";
+import TextSearch from "./TextSearch.tsx";
 
 import {Accordion} from "@chakra-ui/react";
 import {FiltersType} from "../../models/componentsTypes.ts";
 import {FilterProps} from "../../models/interfaces.ts";
-import TextSearch from "./TextSearch.tsx";
 
 const Filters: React.FC<FilterProps> = (
 	{
-		userJobListings, checkedStates, setCheckedStates,
-		setSearchedListings, setFilterActive,
+		allMyJobs, checkedStatuses, setCheckedStatuses,
+		setMyJobsFiltered, setFilterActive,
 	}
 ) => {
 	const listOfFilters: FiltersType[] = [
@@ -19,30 +19,26 @@ const Filters: React.FC<FilterProps> = (
 			filterName: "Search",
 			filterComponent: (
 				<TextSearch
-					userJobListings={userJobListings}
-					setSearchedListings={setSearchedListings}
+					allMyJobs={allMyJobs}
+					setMyJobsFiltered={setMyJobsFiltered}
 				/>
 			),
-			className: "prevent-select",
 		},
 		{
 			filterName: "Status",
 			filterComponent: (
 				<StatusList
-					jobListings={userJobListings}
-					checkedStates={checkedStates}
-					setCheckedStates={setCheckedStates}
+					jobListings={allMyJobs}
+					checkedStatuses={checkedStatuses}
+					setCheckedStatuses={setCheckedStatuses}
 				/>
 			),
-			className: "prevent-select",
 		},
 	];
 
 	return (
 		<Accordion w={"100%"} onChange={(e: number) => setFilterActive(e)} allowToggle>
-			<StatusFilters
-				listOfFilters={listOfFilters}
-			/>
+			<StatusFilters listOfFilters={listOfFilters}/>
 		</Accordion>
 	);
 }
