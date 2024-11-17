@@ -1,45 +1,63 @@
-import React, {useEffect} from "react";
+import React from "react";
 
+import homeScreenAtom from "../atoms/homeScreenAtom.ts";
+import loadingAtom from "../atoms/loadingAtom.ts";
+import CustomFutureApplicationCard from "./customComponents/CustomFutureApplicationCard.tsx";
 import CustomJobCard from "./customComponents/CustomJobCard.tsx";
+import CustomPoolCard from "./customComponents/CustomPoolCard.tsx";
 
 import {Box, Grid, VStack} from "@chakra-ui/react";
-import {AllJobListingsResponseModel, AllPoolListingsResponseModel} from "../models/componentsTypes.ts";
 import {MyJobsProps} from "../models/interfaces.ts";
-import CustomPoolCard from "./customComponents/CustomPoolCard.tsx";
+import {useRecoilValue} from "recoil";
+import {homeScreenPages} from "../helpers/constants.ts";
+import {MyConnectionResponseModel, MyFutureApplicationResponseModel, MyJobResponseModel} from "../models/types.ts";
 
 const MyJobs: React.FC<MyJobsProps> = (
 	{
-		userJobListings, userPoolListings, isLoading, isPool = false,
-		setIsLoading, getAllJobListings, getAllPoolListings,
+		allMyJobs, allMyConnections,
+		getAllMyJobs, getAllMyConnections,
+		allMyFutureApplications, getAllMyFutureApplications, myJobMethods
 	}
 ) => {
 	const [templateColumns, setTemplateColumns] = React.useState<string>("");
+	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
+	const isLoading = useRecoilValue<boolean>(loadingAtom);
 
-	useEffect(() => setTemplateColumns(`repeat(${isPool ? 5 : 4}, 1fr)`), [isPool]);
+	React.useEffect(() => {
+		if (homeScreenState === homeScreenPages.MY_JOBS) setTemplateColumns('repeat(4, 1fr)');
+		else setTemplateColumns('repeat(5, 1fr)');
+	}, [homeScreenState]);
 
 	return (
 		<VStack minW={'75%'}>
 			<Grid templateColumns={templateColumns} gap={5} w={"100%"}>
-				{!isPool && (userJobListings && userJobListings.length > 0) && !isLoading &&
-					userJobListings.map((listing: AllJobListingsResponseModel, index: number) =>
+				{homeScreenState === homeScreenPages.MY_JOBS && (allMyJobs && allMyJobs.length > 0) && myJobMethods && !isLoading &&
+					allMyJobs.map((listing: MyJobResponseModel, index: number) => (
 						<Box key={index}>
 							<CustomJobCard
-								userJob={listing}
-								setIsLoading={setIsLoading}
-								getAllListings={getAllJobListings}
+								item={listing}
+								getAllItems={getAllMyJobs}
 							/>
 						</Box>
-					)}
-				{isPool && (userPoolListings && userPoolListings.length > 0) && !isLoading &&
-					userPoolListings.map((listing: AllPoolListingsResponseModel, index: number) =>
+					))}
+				{homeScreenState === homeScreenPages.MY_CONNECTIONS && (allMyConnections && allMyConnections.length > 0) && !isLoading &&
+					allMyConnections.map((listing: MyConnectionResponseModel, index: number) => (
 						<Box key={index}>
 							<CustomPoolCard
-								userJob={listing}
-								setIsLoading={setIsLoading}
-								getAllListings={getAllPoolListings}
+								item={listing}
+								getAllItems={getAllMyConnections}
 							/>
 						</Box>
-					)}
+					))}
+				{homeScreenState === homeScreenPages.MY_FUTURE_APPLICATIONS && (allMyFutureApplications && allMyFutureApplications.length > 0) && !isLoading &&
+					allMyFutureApplications.map((listing: MyFutureApplicationResponseModel, index: number) => (
+						<Box key={index}>
+							<CustomFutureApplicationCard
+								item={listing}
+								getAllItems={getAllMyFutureApplications}
+							/>
+						</Box>
+					))}
 			</Grid>
 		</VStack>
 	);
