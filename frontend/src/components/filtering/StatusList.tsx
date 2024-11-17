@@ -1,50 +1,51 @@
-import React, {useEffect} from 'react';
+import React, {ChangeEvent, useEffect} from 'react';
+
 import {StatusListProps} from "../../models/interfaces.ts";
 import {Checkbox, Flex, Text} from "@chakra-ui/react";
 import {StatusSelectType} from "../../models/componentsTypes.ts";
+import {MyJobResponseModel} from "../../models/types.ts";
 
 const StatusList: React.FC<StatusListProps> = (
-	{jobListings, checkedStates, setCheckedStates}
+	{jobListings, checkedStatuses, setCheckedStatuses}
 ) => {
-	const statusCount: Record<string, StatusSelectType> = jobListings.reduce(
-		(acc: Record<string, StatusSelectType>, job) => {
-			const {value, label, color} = job.status;
-			if (!acc[value]) {
-				acc[value] = {label, color, count: 0, value};
-			}
-			acc[value].count += 1;
-			return acc;
-		},
-		{}
-	);
-
-	useEffect(() => {
-		setCheckedStates(() => Object.keys(statusCount).reduce(
-			(acc: Record<string, boolean>, key: string) => {
-				acc[key] = true;
+	const statusCount: Record<string, StatusSelectType> = React.useMemo((): Record<string, StatusSelectType> => {
+		return jobListings.reduce(
+			(acc: Record<string, StatusSelectType>, job: MyJobResponseModel): Record<string, StatusSelectType> => {
+				const {value, label, color} = job.status;
+				if (!acc[value])
+					acc[value] = {label, color, count: 0, value};
+				acc[value].count += 1;
 				return acc;
-			},
-			{}
-		));
-		// TODO: Better?
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+			}, {}
+		);
 	}, [jobListings]);
 
-	const allChecked = Object.keys(statusCount).every((key) => checkedStates[key]);
+	useEffect(() => {
+		setCheckedStatuses((): Record<string, boolean> => Object.keys(statusCount).reduce(
+			(acc: Record<string, boolean>, key: string): Record<string, boolean> => {
+				acc[key] = true;
+				return acc;
+			}, {}
+		));
+	}, [jobListings, setCheckedStatuses, statusCount]);
 
-	const handleFlexClick = (value: string) => {
-		setCheckedStates((prevState) => ({
+	const allChecked: boolean = Object.keys(statusCount).every((key: string): boolean => checkedStatuses[key]);
+
+	const handleFlexClick = (value: string): void => {
+		setCheckedStatuses((prevState: Record<string, boolean>) => ({
 			...prevState,
 			[value]: !prevState[value],
 		}));
 	};
 
-	const handleAllToggle = () => {
-		setCheckedStates((prevState) => {
-			return Object.keys(statusCount).reduce((acc, key) => {
-				acc[key] = !prevState[key];
-				return acc;
-			}, {} as Record<string, boolean>);
+	const handleAllToggle = (): void => {
+		setCheckedStatuses((prevState: Record<string, boolean>): Record<string, boolean> => {
+			const allChecked: boolean = Object.values(prevState).every((status: boolean): boolean => status);
+			return Object.keys(prevState).reduce(
+				(acc: Record<string, boolean>, key: string): Record<string, boolean> => {
+					acc[key] = !allChecked;
+					return acc;
+				}, {} as Record<string, boolean>);
 		});
 	};
 
@@ -63,12 +64,12 @@ const StatusList: React.FC<StatusListProps> = (
 			>
 				<Checkbox
 					isChecked={allChecked}
-					onChange={(e) => e.stopPropagation()}
+					onChange={(e: ChangeEvent<HTMLInputElement>): void => e.stopPropagation()}
 				>
 					All
 				</Checkbox>
 			</Flex>
-			{Object.values(statusCount).map((jobListingStatus: StatusSelectType, index: number) => (
+			{Object.values(statusCount).map((jobListingStatus: StatusSelectType, index: number): React.ReactNode => (
 				<Flex
 					textAlign={"center"}
 					justifyContent={"space-between"}
@@ -79,13 +80,13 @@ const StatusList: React.FC<StatusListProps> = (
 					p={3}
 					mb={3}
 					key={index}
-					onClick={() => handleFlexClick(jobListingStatus.value)}
+					onClick={(): void => handleFlexClick(jobListingStatus.value)}
 					className={"make-pointer"}
 				>
 					<Checkbox
 						id={jobListingStatus.value}
-						isChecked={checkedStates[jobListingStatus.value] || false}
-						onChange={(e) => e.stopPropagation()}
+						isChecked={checkedStatuses[jobListingStatus.value] || false}
+						onChange={(): void => handleFlexClick(jobListingStatus.value)}
 					>
 						{jobListingStatus.label}
 					</Checkbox>
