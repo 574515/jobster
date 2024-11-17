@@ -3,7 +3,7 @@ import React from "react";
 import {Tooltip} from "@chakra-ui/react";
 import {FaNotesMedical, FaNoteSticky} from "react-icons/fa6";
 import {CustomAddNoteIconProps} from "../../models/interfaces.ts";
-import {CustomIconProps} from "../../models/types.ts";
+import {CustomIconProps} from "../../models/customComponentsTypes.ts";
 
 const CustomAddNoteIcon: React.FC<CustomAddNoteIconProps> = (
 	{item, onAddEditNoteOpen}

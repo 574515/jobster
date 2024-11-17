@@ -4,8 +4,11 @@ import {FormControl, FormErrorMessage, FormLabel} from "@chakra-ui/react";
 import {CreatableSelect, GroupBase} from "chakra-react-select";
 import {Controller} from "react-hook-form";
 import {CustomSelectTagProps} from "../../models/interfaces.ts";
-import {AddEditJobNameType} from "../../models/componentsTypes.ts";
-import {CategorySelectionGroupModel, CategorySelectionModel} from "../../models/types.ts";
+import {
+	AddEditJobNameType,
+	CategorySelectionGroupModel,
+	CategorySelectionModel
+} from "../../models/customComponentsTypes.ts";
 import {FaCaretRight} from "react-icons/fa6";
 
 import "../../styles/componentStyle.css";

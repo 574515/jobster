@@ -35,7 +35,7 @@ import {format} from "date-fns";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {statusesToSet} from "../../helpers/constants.ts";
-import {ModalSelectType} from "../../models/componentsTypes.ts";
+import {ModalSelectType} from "../../models/customComponentsTypes.ts";
 import {JobActions} from "../AppActions.action.ts";
 import {toast} from "../../helpers/customToast.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";

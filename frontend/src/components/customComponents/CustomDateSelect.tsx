@@ -8,7 +8,7 @@ import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {Controller} from "react-hook-form";
 import {useRecoilValue} from "recoil";
 import {CustomDateSelectProps} from "../../models/interfaces.ts";
-import {AddEditJobNameType, AddEditPoolNameType} from "../../models/componentsTypes.ts";
+import {AddEditConnectionNameType, AddEditJobNameType} from "../../models/customComponentsTypes.ts";
 
 const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 	{
@@ -65,7 +65,7 @@ const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 		) : (
 			<Controller
 				control={poolControl}
-				name={name as AddEditPoolNameType}
+				name={name as AddEditConnectionNameType}
 				render={({field}) => (
 					<FormControl
 						py={py ?? 0}
