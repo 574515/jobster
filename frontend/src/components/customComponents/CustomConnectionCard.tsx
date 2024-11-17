@@ -1,5 +1,11 @@
 import React from "react";
-import {CustomPoolCardProps} from "../../models/interfaces.ts";
+
+import userLocaleAtom from "../../atoms/userLocaleAtom.ts"
+import useDeleteItem from "../../hooks/useDeleteItem.ts";
+import AddEditNote from "../AddEditNote.tsx";
+import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
+
+import {CustomConnectionCardProps} from "../../models/interfaces.ts";
 import {
 	AlertDialog,
 	AlertDialogBody,
@@ -18,39 +24,39 @@ import {
 	useDisclosure
 } from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
+import {useRecoilValue} from "recoil";
+import {ConnectionActions} from "../AppActions.action.ts";
 import {format} from "date-fns";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
-import {useRecoilValue} from "recoil";
-import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
-import {PoolActions} from "../AppActions.action.ts";
-import {PoolDeletionResponseModel} from "../../models/componentsTypes.ts";
-import {toast} from "../../helpers/customToast.ts";
+import {ConstantItemNames} from "../../helpers/enums.ts";
 
-const CustomPoolCard: React.FC<CustomPoolCardProps> = (
-	{userJob, setIsLoading, getAllListings}
+const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
+	{item, getAllItems}
 ) => {
 	const userLocale = useRecoilValue(userLocaleAtom);
 	const {isOpen, onOpen, onClose} = useDisclosure();
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
 	const [customColor, setCustomColor] = React.useState<string>("#00b300");
+	const {
+		isOpen: isAddEditNoteOpen,
+		onOpen: onAddEditNoteOpen,
+		onClose: onAddEditNoteClose,
+	} = useDisclosure();
 
 	React.useEffect(() => {
-		if (!customColor)
-			setCustomColor("#FFFFFF");
+		if (!customColor) setCustomColor("#FFFFFF");
 	}, [customColor]);
 
-	const handleLinkOpen = () => window.open(userJob.jobLink, '_blank');
+	const handleLinkOpen = () => window.open(item.jobLink, '_blank');
 
-	const handleDelete = async () => {
-		setIsLoading(true);
-		await PoolActions
-			.deletePoolListing(userJob._id)
-			.then((response: PoolDeletionResponseModel) => {
-				void toast(`Pool "${response.company}" Deleted Successfully`, 'success');
-				getAllListings();
-			})
-			.catch((err) => console.log(err))
-			.finally(() => setIsLoading(false));
+	const {handleDelete} = useDeleteItem(
+		{getAllItems, item, deleteAction: ConnectionActions.deleteMyConnection}
+	);
+
+	const getTag = () => {
+		if (item.dateSent)
+			return format(item.dateSent, TIME_FORMATS[userLocale]);
+		else return "";
 	}
 
 	return (
@@ -70,7 +76,8 @@ const CustomPoolCard: React.FC<CustomPoolCardProps> = (
 							Connected
 						</Tag>
 						<HStack>
-							{userJob.jobLink && <LinkIcon
+							<CustomAddNoteIcon item={item} onAddEditNoteOpen={onAddEditNoteOpen}/>
+							{item.jobLink && <LinkIcon
                                 color={"gray.200"}
                                 className={"make-pointer"}
                                 onClick={handleLinkOpen}
@@ -90,7 +97,7 @@ const CustomPoolCard: React.FC<CustomPoolCardProps> = (
 						mt={2}
 						wordBreak={"break-all"}
 					>
-						{userJob.company}
+						{item.company}
 					</Heading>
 					<Tag
 						className={"prevent-select"}
@@ -103,8 +110,7 @@ const CustomPoolCard: React.FC<CustomPoolCardProps> = (
 						mt={4}
 						mb={2}
 					>
-
-						{format(userJob.dateSent, TIME_FORMATS[userLocale])}
+						{getTag()}
 					</Tag>
 				</CardBody>
 			</Card>
@@ -116,9 +122,9 @@ const CustomPoolCard: React.FC<CustomPoolCardProps> = (
 				<AlertDialogOverlay>
 					<AlertDialogContent>
 						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-							Delete Company Pool Tracker
+							Delete Job Connection Tracker
 							<br/>
-							[{userJob.company}]
+							[{item.company}]
 						</AlertDialogHeader>
 						<AlertDialogBody>
 							Are You sure You want to <span className={"importantText"}>delete</span> it?
@@ -137,8 +143,15 @@ const CustomPoolCard: React.FC<CustomPoolCardProps> = (
 					</AlertDialogContent>
 				</AlertDialogOverlay>
 			</AlertDialog>
+			<AddEditNote
+				isAddEditNoteOpen={isAddEditNoteOpen}
+				onAddEditNoteClose={onAddEditNoteClose}
+				item={item}
+				getAllItems={getAllItems}
+				identifier={ConstantItemNames.MY_CONNECTIONS}
+			/>
 		</React.Fragment>
 	);
 }
 
-export default CustomPoolCard;
+export default CustomConnectionCard;
