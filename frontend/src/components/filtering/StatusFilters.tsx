@@ -1,16 +1,15 @@
+import React from "react";
+
 import {FiltersType} from "../../models/componentsTypes.ts";
 import {AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box} from "@chakra-ui/react";
-import React from "react";
 import {StatusFiltersProps} from "../../models/interfaces.ts";
 
-const StatusFilters: React.FC<StatusFiltersProps> = (
-	{listOfFilters}
-) => {
+const StatusFilters: React.FC<StatusFiltersProps> = ({listOfFilters}) => {
 	return (listOfFilters.map((filter: FiltersType, index: number) => (
 			<AccordionItem key={index}>
 				<h2>
 					<AccordionButton>
-						<Box className={filter.className} as='span' flex='1' textAlign='center'>
+						<Box className={"prevent-select"} as='span' flex='1' textAlign='center'>
 							{filter.filterName}
 						</Box>
 						<AccordionIcon/>
