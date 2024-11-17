@@ -1,37 +1,24 @@
-import {FormControl, FormLabel} from "@chakra-ui/react";
+import React from "react";
+
+import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
+
+import {Checkbox, FormControl, FormLabel, HStack} from "@chakra-ui/react";
 import {SingleDatepicker} from "chakra-dayzed-datepicker";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {Controller} from "react-hook-form";
 import {useRecoilValue} from "recoil";
-import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
-import React from "react";
 import {CustomDateSelectProps} from "../../models/interfaces.ts";
-import {AddEditJobNameType, AddEditPoolNameType, CustomDateSelectPropsType} from "../../models/componentsTypes.ts";
+import {AddEditJobNameType, AddEditPoolNameType} from "../../models/componentsTypes.ts";
 
 const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 	{
 		jobControl, poolControl, name, py, className,
-		label, definedDate, setDate, percentWidth, minDate,
-		isRequired = false,
+		label, definedDate, setDate, minDate,
+		isRequired = false, hasCheckbox = false,
+		hasClosingDate, setHasClosingDate,
 	}
 ) => {
-	const userLocale = useRecoilValue(userLocaleAtom)
-	const [propsConfigs, setPropsConfigs] = React.useState<CustomDateSelectPropsType>({
-		triggerBtnProps: {
-			width: "50%",
-		}
-	});
-
-	React.useEffect(() => {
-		if (percentWidth) {
-			const transformedPercentWidth = `${percentWidth}%`;
-			setPropsConfigs({
-				triggerBtnProps: {
-					width: transformedPercentWidth,
-				}
-			});
-		}
-	}, [percentWidth]);
+	const userLocale = useRecoilValue<string>(userLocaleAtom);
 
 	return (
 		jobControl ? (
@@ -39,7 +26,6 @@ const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 				control={jobControl}
 				name={name as AddEditJobNameType}
 				render={({field}) => {
-					console.log(field);
 					return <FormControl
 						py={py ?? 0}
 						className={className}
@@ -47,17 +33,32 @@ const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 						isRequired={isRequired}
 					>
 						{label && <FormLabel mx={0}>{label}</FormLabel>}
-						<SingleDatepicker
-							date={definedDate}
-							onDateChange={(date) => {
-								field.onChange(date);
-								setDate(date);
-							}}
-							configs={{dateFormat: TIME_FORMATS[userLocale],}}
-							propsConfigs={propsConfigs}
-							minDate={minDate}
-							maxDate={new Date(new Date().getFullYear() + 1, 11, 31)}
-						/>
+						<HStack>
+							<SingleDatepicker
+								date={definedDate}
+								onDateChange={(date) => {
+									field.onChange(date);
+									setDate(date);
+								}}
+								configs={{dateFormat: TIME_FORMATS[userLocale],}}
+								propsConfigs={{
+									triggerBtnProps: {
+										width: "100%",
+									}
+								}}
+								minDate={minDate}
+								maxDate={new Date(new Date().getFullYear() + 1, 11, 31)}
+								disabled={hasCheckbox ? !hasClosingDate : false}
+							/>
+							{hasCheckbox && (
+								<Checkbox
+									onChange={() => {
+										if (setHasClosingDate)
+											setHasClosingDate(!hasClosingDate);
+									}}
+								/>
+							)}
+						</HStack>
 					</FormControl>
 				}}
 			/>
@@ -79,7 +80,11 @@ const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 								setDate(date);
 							}}
 							configs={{dateFormat: TIME_FORMATS[userLocale],}}
-							propsConfigs={propsConfigs}
+							propsConfigs={{
+								triggerBtnProps: {
+									width: "100%",
+								}
+							}}
 						/>
 					</FormControl>
 				)}
