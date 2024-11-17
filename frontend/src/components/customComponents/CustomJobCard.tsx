@@ -1,14 +1,14 @@
-import React, {useEffect} from "react";
+import React from "react";
+
+import useDeleteItem from "../../hooks/useDeleteItem.ts";
+import AddEditNote from "../AddEditNote.tsx";
+import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
+import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
+import loadingAtom from "../../atoms/loadingAtom.ts";
+import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
+
 import {CustomJobCardProps} from "../../models/interfaces.ts";
 import {
-	AlertDialog,
-	AlertDialogBody,
-	AlertDialogContent,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogOverlay,
-	Button,
-	ButtonGroup,
 	Card,
 	CardBody,
 	CardFooter,
@@ -27,25 +27,23 @@ import {
 	Tag,
 	Text,
 	Textarea,
-	Tooltip,
 	useDisclosure,
 	VStack
 } from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
-import '../../styles/componentStyle.css';
 import {format} from "date-fns";
-import {useRecoilValue} from "recoil";
-import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
+import {useRecoilValue, useSetRecoilState} from "recoil";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {statusesToSet} from "../../helpers/constants.ts";
-import {JobDeletionResponseModel, ModalSelectType} from "../../models/componentsTypes.ts";
+import {ModalSelectType} from "../../models/componentsTypes.ts";
 import {JobActions} from "../AppActions.action.ts";
 import {toast} from "../../helpers/customToast.ts";
-import {FaRegNoteSticky} from "react-icons/fa6";
+import {ConstantItemNames} from "../../helpers/enums.ts";
 
+import '../../styles/componentStyle.css';
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (
-	{userJob, setIsLoading, getAllListings}
+	{item, getAllItems}
 ) => {
 	const {
 		isOpen: isDeleteOpen,
@@ -57,13 +55,19 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 		onOpen: onStatusChangeOpen,
 		onClose: onStatusChangeClose
 	} = useDisclosure();
+	const {
+		isOpen: isAddEditNoteOpen,
+		onOpen: onAddEditNoteOpen,
+		onClose: onAddEditNoteClose,
+	} = useDisclosure();
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
-	const userLocale = useRecoilValue(userLocaleAtom);
+	const userLocale = useRecoilValue<string>(userLocaleAtom);
 	const [textareaHeight, setTextareaHeight] = React.useState<string>("0vh");
 	const [tagShadow, setTagShadow] = React.useState<string>("");
+	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 
-	useEffect(() => {
-		const lengthOfDesc = userJob.description?.length;
+	React.useEffect(() => {
+		const lengthOfDesc = item.description?.length;
 		if (lengthOfDesc) {
 			const lessThan500 = lengthOfDesc <= 500;
 			const moreThan500LessThan1000 = lengthOfDesc > 500 && lengthOfDesc <= 1000;
@@ -72,32 +76,22 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 			if (moreThan500LessThan1000) setTextareaHeight("20vh");
 			if (moreThan1000) setTextareaHeight("25vh");
 		}
-	}, [userJob.description?.length]);
+	}, [item.description?.length]);
 
-	useEffect(() => setTagShadow(`inset 0 0 0px 1px ${userJob.status.color}`), [userJob.status.color]);
+	React.useEffect(() => setTagShadow(`inset 0 0 0px 1px ${item.status.color}`), [item.status.color]);
 
-	const handleDelete = async () => {
-		setIsLoading(true);
-		await JobActions
-			.deleteJobListing(userJob._id)
-			.then((response: JobDeletionResponseModel) => {
-				void toast(`Job "${response.jobTitle}" Deleted Successfully`, 'success');
-				getAllListings();
-			})
-			.catch((err) => console.log(err))
-			.finally(() => setIsLoading(false));
-	}
+	const {handleDelete} = useDeleteItem({getAllItems, item, deleteAction: JobActions.deleteMyJob});
 
-	const handleLinkOpen = () => window.open(userJob.jobLink, '_blank');
+	const handleLinkOpen = () => window.open(item.jobLink, '_blank');
 
 	const handleTagChange = (status: ModalSelectType) => {
-		if (status.value === userJob.status.value) return undefined;
+		if (status.value === item.status.value) return undefined;
 		setIsLoading(true);
 		JobActions
-			.changeJobStatus(userJob._id, status)
+			.changeMyJobStatus(item._id, status)
 			.then(() => {
-				void toast(`Job "${userJob.jobTitle}" Updated Successfully`, 'success');
-				getAllListings();
+				void toast(`Job "${item.jobTitle}" Updated Successfully`, 'success');
+				getAllItems();
 			})
 			.catch((error) => void toast(error.response.data.error, 'error'))
 			.finally(() => setIsLoading(false));
@@ -105,25 +99,19 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 
 	const getTagClassName = (status: ModalSelectType) => {
 		const className = "prevent-select";
-		return status.value === userJob.status.value ? className : `${className} make-pointer`;
+		return status.value === item.status.value ? className : `${className} make-pointer`;
 	}
 
 	const getTagVariant = (status: ModalSelectType) => {
-		return status.value === userJob.status.value ? 'solid' : 'outline';
+		return status.value === item.status.value ? 'solid' : 'outline';
 	}
 
 	const getTagBackground = (status: ModalSelectType) => {
-		return status.value === userJob.status.value ? userJob.status.color : undefined;
+		return status.value === item.status.value ? item.status.color : undefined;
 	}
 
 	const getTagColor = (status: ModalSelectType) => {
-		return status.value === userJob.status.value ? "black" : "white";
-	}
-
-	const setNoteLabel = () => {
-		if (userJob.jobLink)
-			return userJob.jobLink;
-		else return "Add Note";
+		return status.value === item.status.value ? "black" : "white";
 	}
 
 	return (
@@ -137,26 +125,15 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 							w={"50%"}
 							justifyContent={"center"}
 							variant='outline'
-							color={userJob.status.color}
+							color={item.status.color}
 							shadow={tagShadow}
 							onClick={onStatusChangeOpen}
 						>
-							{userJob.status.label}
+							{item.status.label}
 						</Tag>
 						<HStack>
-							<Tooltip
-								label={setNoteLabel()}
-								hasArrow
-							>
-								<span>
-									<FaRegNoteSticky
-										color={"#FEFF9C"}
-										className={"make-pointer"}
-									/>
-									{/*	TODO: New modal for input, tooltip if exists */}
-								</span>
-							</Tooltip>
-							{userJob.jobLink && <LinkIcon
+							<CustomAddNoteIcon item={item} onAddEditNoteOpen={onAddEditNoteOpen}/>
+							{item.jobLink && <LinkIcon
                                 color={"gray.200"}
                                 onClick={handleLinkOpen}
                                 className={"make-pointer"}
@@ -170,11 +147,11 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					</HStack>
 				</CardHeader>
 				<CardBody py={2}>
-					<Text>{userJob.company}</Text>
+					<Text>{item.company}</Text>
 					<Heading size='md'>
-						<Link href={userJob.jobLink}>{userJob.jobTitle}</Link>
+						<Link href={item.jobLink}>{item.jobTitle}</Link>
 					</Heading>
-					{userJob.description &&
+					{item.description &&
                         <Textarea
                             readOnly
                             mt={3}
@@ -182,17 +159,12 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
                             maxHeight={"25vh"}
                             resize={"none"}
                             height={textareaHeight}
-                            value={userJob.description}
+                            value={item.description}
                         />
 					}
-				</CardBody>
-				<CardFooter pt={0}>
-					<HStack justifyContent={"space-between"} width={'100%'}>
+					<HStack mb={2} mt={4} width={'100%'}>
 						<VStack w={"100%"}>
-							<Text
-								className={"prevent-select"}
-								color={"gray.400"}
-							>
+							<Text className={"prevent-select"} color={"gray.400"}>
 								Date Applied
 							</Text>
 							<Tag
@@ -204,61 +176,56 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 								colorScheme={"green"}
 								color={"gray.400"}
 							>
-
-								{format(userJob.dateApplied, TIME_FORMATS[userLocale])}
+								{format(item.dateApplied, TIME_FORMATS[userLocale])}
 							</Tag>
 						</VStack>
-						<VStack w={"100%"}>
-							<Text
-								className={"prevent-select"}
-								color={"gray.400"}
-							>
-								Closing Date
-							</Text>
-							<Tag
-								className={"prevent-select"}
-								size={'lg'}
-								w={"100%"}
-								justifyContent={"center"}
-								variant='outline'
-								colorScheme={"red"}
-								color={"gray.400"}
-							>
-								{userJob.closingDate && format(userJob.closingDate, TIME_FORMATS[userLocale])}
-							</Tag>
-						</VStack>
+						{item.closingDate && <VStack w={"100%"}>
+                            <Text className={"prevent-select"} color={"gray.400"}>
+                                Closing Date
+                            </Text>
+                            <Tag
+                                className={"prevent-select"}
+                                size={'lg'}
+                                w={"100%"}
+                                justifyContent={"center"}
+                                variant='outline'
+                                colorScheme={"red"}
+                                color={"gray.400"}
+                            >
+								{format(item.closingDate, TIME_FORMATS[userLocale])}
+                            </Tag>
+                        </VStack>}
 					</HStack>
-				</CardFooter>
+				</CardBody>
+				{item.category.length > 0 &&
+                    <CardFooter maxW={"sm"} gap={2} p={2}
+                                bg={"#1b212b"}
+                                borderBottomRadius={"0.375rem"}
+                                flexWrap={"wrap"}
+                                alignItems={"center"}
+                    >
+						{item.category?.map((cat, index) => (
+							<Tag
+								key={index}
+								className={"prevent-select"}
+								size={'md'}
+								variant='outline'
+								color={cat.color ?? "rgba(254, 178, 178, 0.8)"}
+								shadow={`inset 0 0 0px 1px ${cat.color ?? "rgba(254, 178, 178, 0.8)"}`}
+							>
+								{cat.label}
+							</Tag>
+						))}
+                    </CardFooter>}
 			</Card>
-			<AlertDialog
-				isOpen={isDeleteOpen}
-				onClose={onDeleteClose}
-				leastDestructiveRef={cancelRef}
-			>
-				<AlertDialogOverlay>
-					<AlertDialogContent>
-						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-							Delete Job Application Tracker
-							<br/>
-							[{userJob.jobTitle}]
-						</AlertDialogHeader>
-						<AlertDialogBody>
-							Are You sure You want to <span className={"importantText"}>delete</span> it?
-							<br/>You can not undo this action afterwards.
-						</AlertDialogBody>
-						<AlertDialogFooter>
-							<ButtonGroup gap={2}>
-								<Button variant={"outline"} onClick={handleDelete} colorScheme='red'>
-									Delete
-								</Button>
-								<Button variant={"outline"} onClick={onDeleteClose} ref={cancelRef}>
-									Cancel
-								</Button>
-							</ButtonGroup>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialogOverlay>
-			</AlertDialog>
+			<CustomDeleteAlert
+				isDeleteOpen={isDeleteOpen}
+				onDeleteClose={onDeleteClose}
+				item={item}
+				handleDelete={handleDelete}
+				cancelRef={cancelRef}
+				type={"Job Application Tracker"}
+			/>
 			<Modal
 				isOpen={isStatusChangeOpen}
 				onClose={onStatusChangeClose}
@@ -295,6 +262,13 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					</ModalBody>
 				</ModalContent>
 			</Modal>
+			<AddEditNote
+				isAddEditNoteOpen={isAddEditNoteOpen}
+				onAddEditNoteClose={onAddEditNoteClose}
+				item={item}
+				getAllItems={getAllItems}
+				identifier={ConstantItemNames.MY_JOBS}
+			/>
 		</React.Fragment>
 	);
 }
