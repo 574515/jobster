@@ -1,9 +1,10 @@
 import React from 'react';
+
 import userAtom from '../atoms/userAtom.ts';
 import authScreenAtom from "../atoms/authScreenAtom.ts";
 
 import {useNavigate} from 'react-router-dom';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 import {toast} from "../helpers/customToast.ts";
 import {AuthContextType, CustomUser, UserToken} from "../models/contextTypes.ts";
 import {authInstance} from "../api/axiosInstances.ts";
@@ -15,9 +16,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 	const storedTokensString = localStorage.getItem('userToken');
 	const storedTokens: UserToken | null = storedTokensString ? JSON.parse(storedTokensString) : null;
 	const [userToken, setUserToken] = React.useState<UserToken | null>(storedTokens);
-	const setUser = useSetRecoilState<CustomUser | null>(userAtom);
-	const setAuthScreen = useSetRecoilState(authScreenAtom);
-	const user = useRecoilValue(userAtom);
+	const setAuthScreen = useSetRecoilState<string>(authScreenAtom);
+	const [user, setUser] = useRecoilState<CustomUser | null>(userAtom);
 	const navigate = useNavigate();
 
 	const loginUser = async (inputs: object) => {
@@ -27,8 +27,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 				setUserToken(res.data);
 				localStorage.setItem('userToken', JSON.stringify(res.data));
 				setUser(res.data);
-				navigate('/');
 				toast('Login Successful', 'success', 2000);
+				navigate('/');
 			})
 			.catch((err) => {
 				toast('Username or password does not exists', 'error');
@@ -37,7 +37,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 	};
 
 	const registerUser = async (inputs: object) => {
-		console.log(inputs);
 		await authInstance
 			.post('/signup', inputs)
 			.then(() => {
@@ -45,10 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 				toast('Registration Successful', 'success', 2000);
 			})
 			.catch((err) => {
-				// TODO: Fix on backend so it's consistent
-				const errorMessage = err.response ?
-					err.response.data.error : err.data.error;
-				toast(errorMessage, 'error');
+				toast(err.data.error, 'error');
 				return Promise.reject(err);
 			});
 	};
@@ -60,8 +56,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 				setUserToken(null);
 				setUser(null);
 				localStorage.removeItem('userToken');
-				navigate('/auth');
 				toast('You have been logged out', 'success');
+				navigate('/auth');
 			})
 			.catch((err) => {
 				toast(err.response?.data?.error, 'error');
