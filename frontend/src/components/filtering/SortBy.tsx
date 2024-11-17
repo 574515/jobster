@@ -1,68 +1,94 @@
 import React from "react";
+
+import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
+
 import {SortByProps} from "../../models/interfaces.ts";
 import {FormControl, Select} from "@chakra-ui/react";
-import {sortByJobOptions, sortByPoolOptions} from "../../helpers/constants.ts";
-import {AllPoolListingsResponseModel, SortByOptionType} from "../../models/componentsTypes.ts";
+import {homeScreenPages, sortByOptions} from "../../helpers/constants.ts";
+import {SortByOptionType} from "../../models/componentsTypes.ts";
+import {useRecoilValue} from "recoil";
+import {MyConnectionResponseModel, MyJobResponseModel} from "../../models/types.ts";
 
 const SortBy: React.FC<SortByProps> = (
 	{
-		isPool = false, userJobListings, setUserJobListings,
-		userPoolListings, setUserPoolListings
+		allMyJobs, setAllMyJobs,
+		allMyConnections, setAllMyConnections,
+		allMyFutureApplications, setAllMyFutureApplications,
 	}
 ) => {
 	const [sortOptions, setSortOptions] = React.useState<SortByOptionType[]>([]);
+	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 
-	React.useEffect(() => setSortOptions(isPool ? sortByPoolOptions : sortByJobOptions), [isPool]);
+	React.useEffect(() => setSortOptions(sortByOptions[homeScreenState]), [homeScreenState]);
 
 	const handleSort = (e: React.BaseSyntheticEvent) => {
-		if (!isPool) {
-			if (userJobListings && setUserJobListings) {
-				const sortingValue: string = e.target.value;
-				let sortBy, order;
-				if (sortingValue.includes("Date Applied")) {
-					sortBy = 'dateApplied';
-					order = sortingValue.includes("Newest") ? 'newest' : 'oldest';
-				} else {
-					sortBy = 'closingDate';
-					order = sortingValue.includes("Later") ? 'later' : 'sooner';
-				}
-				setUserJobListings([...userJobListings].sort((a, b) => {
-					const dateA: number = new Date(a[sortBy]).getTime();
-					const dateB: number = new Date(b[sortBy]).getTime();
-					if (order === 'newest' || order === 'later') {
-						return dateB - dateA;
+		switch (homeScreenState) {
+			case homeScreenPages.MY_JOBS: {
+				if (allMyJobs && setAllMyJobs) {
+					const sortingValue: string = e.target.value;
+					let sortBy, order;
+					if (sortingValue.includes("Date Applied")) {
+						sortBy = 'dateApplied';
+						order = sortingValue.includes("Newest") ? 'newest' : 'oldest';
 					} else {
-						return dateA - dateB;
+						sortBy = 'closingDate';
+						order = sortingValue.includes("Later") ? 'later' : 'sooner';
 					}
-				}));
+					setAllMyJobs([...allMyJobs].sort(
+						(a: MyJobResponseModel, b: MyJobResponseModel) => {
+							const dateA: number = new Date(a[sortBy]).getTime();
+							const dateB: number = new Date(b[sortBy]).getTime();
+							if (order === 'newest' || order === 'later') return dateB - dateA;
+							else return dateA - dateB;
+						})
+					);
+				}
+				break;
 			}
-		} else {
-			if (userPoolListings && setUserPoolListings) {
-				const sortingValue: string = e.target.value;
-				const order = sortingValue.includes("Newest") ? 'newest' : 'oldest';
-				setUserPoolListings([...userPoolListings].sort((a: AllPoolListingsResponseModel, b: AllPoolListingsResponseModel) => {
-					const dateA: number = new Date(a["dateSent"]).getTime();
-					const dateB: number = new Date(b["dateSent"]).getTime();
-					return order === 'newest' ? dateB - dateA : dateA - dateB;
-				}));
+			case homeScreenPages.MY_CONNECTIONS: {
+				if (allMyConnections && setAllMyConnections) {
+					const sortingValue: string = e.target.value;
+					const order = sortingValue.includes("Newest") ? 'newest' : 'oldest';
+					setAllMyConnections([...allMyConnections].sort((a: MyConnectionResponseModel, b: MyConnectionResponseModel) => {
+						const dateSentA: Date | string | undefined = a["dateSent"];
+						const dateSentB: Date | string | undefined = b["dateSent"];
+						if (dateSentA && dateSentB) {
+							const dateA: number = new Date(dateSentA).getTime();
+							const dateB: number = new Date(dateSentB).getTime();
+							return order === 'newest' ? dateB - dateA : dateA - dateB;
+						}
+						return -1;
+					}));
+				}
+				break;
+			}
+			case homeScreenPages.MY_FUTURE_APPLICATIONS: {
+				if (allMyFutureApplications && setAllMyFutureApplications) {
+					const sortingValue: string = e.target.value;
+					const order = sortingValue.includes("Later") ? 'later' : 'sooner';
+					setAllMyFutureApplications([...allMyFutureApplications].sort((a, b) => {
+						const closingDateA: Date | string | undefined = a["closingDate"];
+						const closingDateB: Date | string | undefined = b["closingDate"];
+						if (closingDateA && closingDateB) {
+							const dateA: number = new Date(closingDateA).getTime();
+							const dateB: number = new Date(closingDateB).getTime();
+							return order === 'later' ? dateB - dateA : dateA - dateB;
+						}
+						return -1;
+					}));
+				}
+				break;
 			}
 		}
 	};
 
-
 	return (
 		<FormControl w={"100%"}>
-			<Select
-				onChange={handleSort}
-				textAlign={"center"}
-			>
+			<Select onChange={handleSort} textAlign={"center"}>
 				{sortOptions.map((option: SortByOptionType, index: number) => {
 					const combinedOption = `${option.whatDate} [${option.when}]`;
 					return (
-						<option
-							defaultValue={index === 0 ? combinedOption : undefined}
-							key={index}
-						>
+						<option defaultValue={index === 0 ? combinedOption : undefined} key={index}>
 							{combinedOption}
 						</option>
 					);
