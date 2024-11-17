@@ -27,13 +27,13 @@ import {RegisterValidationSchema} from "../helpers/validators.ts";
 import {forbiddenUsernames, getDefaultValues} from "../helpers/constants.ts";
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaCircleUser, FaLock} from "react-icons/fa6";
-import {SignupValues} from "../models/componentsTypes.ts";
+import {SignupValuesType} from "../models/componentsTypes.ts";
 import {AuthContextType} from "../models/contextTypes.ts";
 
 import '../styles/style.css'
 
 const SignupCard = () => {
-	const [signUpInputs, setSignUpInputs] = React.useState<SignupValues>({
+	const [signUpInputs, setSignUpInputs] = React.useState<SignupValuesType>({
 		username: "",
 		password: "",
 		repeatPassword: "",
@@ -49,12 +49,12 @@ const SignupCard = () => {
 		mode: "onChange"
 	});
 	const {colorMode} = useColorMode();
-	
+
 	const isUsernameForbidden = () => {
 		return forbiddenUsernames.includes(signUpInputs.username);
 	}
 
-	const handleSignup = async (data: SignupValues) => {
+	const handleSignup = async (data: SignupValuesType) => {
 		if (isUsernameForbidden()) {
 			void toast(`Username ${signUpInputs.username} is not allowed.`, "warning");
 			return;
