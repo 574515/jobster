@@ -23,7 +23,7 @@ import {useSetRecoilState} from 'recoil';
 import {useForm} from 'react-hook-form';
 import {LoginValidationSchema} from "../helpers/validators.js";
 import {getDefaultValues} from "../helpers/constants.js";
-import {LoginValues} from "../models/componentsTypes.ts";
+import {LoginValuesType} from "../models/componentsTypes.ts";
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaLock, FaUser} from "react-icons/fa6";
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
@@ -38,7 +38,7 @@ const LoginCard = () => {
 	const methods = useForm({resolver: LoginValidationSchema, ...getDefaultValues("login"), mode: "onSubmit",});
 	const {colorMode} = useColorMode();
 
-	const handleLogin = async (data: LoginValues) => {
+	const handleLogin = async (data: LoginValuesType) => {
 		setIsLoading(true);
 		if (loginUser)
 			await loginUser(data)
