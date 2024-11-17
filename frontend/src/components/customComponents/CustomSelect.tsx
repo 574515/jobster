@@ -3,13 +3,13 @@ import React from "react";
 import {FormControl, FormErrorMessage, FormLabel} from "@chakra-ui/react";
 import {Select} from "chakra-react-select";
 import {Controller} from "react-hook-form";
-import {CustomSelectProps} from "../../models/interfaces.ts";
+import {CustomSelectSelectProps} from "../../models/interfaces.ts";
 import {AddEditJobNameType} from "../../models/componentsTypes.ts";
 
-const CustomSelect: React.FC<CustomSelectProps> = (
+const CustomSelect: React.FC<CustomSelectSelectProps> = (
 	{
 		choices, control, name, py, className,
-		label, definedValue,
+		label, definedValue, placeholder,
 		isClearable = true, isRequired = false,
 	}
 ) => {
@@ -35,6 +35,7 @@ const CustomSelect: React.FC<CustomSelectProps> = (
 				>
 					{label && <FormLabel>{label}</FormLabel>}
 					<Select
+						placeholder={placeholder}
 						menuPlacement={"auto"}
 						name={name}
 						ref={ref}
