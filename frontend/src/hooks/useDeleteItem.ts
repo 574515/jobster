@@ -7,9 +7,6 @@ import {useRecoilValue, useSetRecoilState} from "recoil";
 import {constantItemName} from "../helpers/constants.ts";
 import {toast} from "../helpers/customToast.ts";
 import {DeleteItemHookProps} from "../models/interfaces.ts";
-import {handleError} from "../helpers/errorHandler.ts";
-import {AxiosError} from "axios";
-import {ErrorResponseType} from "../models/componentsTypes.ts";
 import {DeleteItemType} from "../models/hookTypes.ts";
 
 const useDeleteItem = (
@@ -30,7 +27,7 @@ const useDeleteItem = (
 					void toast(`${itemName} "${response.deletedProperty}" Deleted Successfully`, 'success');
 					getAllItems();
 				})
-				.catch((error: AxiosError<ErrorResponseType>) => handleError(error))
+				.catch((error) => void toast(error.response.data.error, 'error'))
 				.finally(() => setIsLoading(false));
 		}, [item, setIsLoading, deleteAction, itemName, getAllItems]);
 
