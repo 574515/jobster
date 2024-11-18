@@ -23,7 +23,7 @@ import {useSetRecoilState} from 'recoil';
 import {useForm} from 'react-hook-form';
 import {LoginValidationSchema} from "../helpers/validators.js";
 import {getDefaultValues} from "../helpers/constants.js";
-import {LoginValuesType} from "../models/componentsTypes.ts";
+import {LoginValuesType} from "../models/types.ts";
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaLock, FaUser} from "react-icons/fa6";
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
