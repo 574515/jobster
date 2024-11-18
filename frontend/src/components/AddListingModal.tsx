@@ -1,17 +1,14 @@
 import React from "react";
 
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
-import CustomDateSelect from "./customComponents/CustomDateSelect.tsx";
-import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
-import CustomSelect from "./customComponents/CustomSelect.tsx";
-import CustomTagSelect from "./customComponents/CustomTagSelect.tsx";
+import loadingAtom from "../atoms/loadingAtom.ts";
+import userLocaleAtom from "../atoms/userLocaleAtom.ts";
+import AddMyConnectionTabPanel from "./addPanels/AddMyConnectionTabPanel.tsx";
+import AddMyFutureApplicationTabPanel from "./addPanels/AddMyFutureApplicationTabPanel.tsx";
+import AddMyJobTabPanel from "./addPanels/AddMyJobTabPanel.tsx";
 
 import {
-	ButtonGroup,
 	Divider,
-	FormControl,
-	FormLabel,
-	HStack,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -20,19 +17,13 @@ import {
 	ModalOverlay,
 	Tab,
 	TabList,
-	TabPanel,
 	TabPanels,
-	Tabs,
-	VStack
+	Tabs
 } from "@chakra-ui/react";
-import {DateSelectType,} from "../models/componentsTypes.ts";
-import {InputControl, ResetButton, SubmitButton, TextareaControl} from "react-hook-form-chakra";
-import {addModalTabs, Constants, homeScreenPages, statusesToSet} from "../helpers/constants.ts";
-import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action.ts";
-import {toast} from "../helpers/customToast.ts";
-import {AddEditJobModalProps} from "../models/interfaces.ts";
-import {useRecoilState} from "recoil";
 import {
+	CategorySelectionModel,
+	DateSelectType,
+	ModalSelectType,
 	MyConnectionRequestModel,
 	MyConnectionResponseModel,
 	MyConnectionTransformedRequestModel,
@@ -41,10 +32,13 @@ import {
 	MyFutureApplicationTransformedRequestModel,
 	MyJobRequestModel,
 	MyJobResponseModel,
-	MyJobTransformedRequestModel
+	MyJobTransformedRequestModel,
 } from "../models/types.ts";
-import {CategorySelectionModel, ModalSelectType} from "../models/customComponentsTypes.ts";
-import {jobListingCategories} from "../helpers/categories.ts";
+import {addModalTabs, Constants, homeScreenPages, statusesToSet} from "../helpers/constants.ts";
+import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action.ts";
+import {toast} from "../helpers/customToast.ts";
+import {AddEditJobModalProps} from "../models/interfaces.ts";
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 const AddListingModal: React.FC<AddEditJobModalProps> = (
 	{
@@ -52,10 +46,11 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 		getAllMyFutureApplications, myJobMethods, myConnectionMethods, myFutureApplicationMethods
 	}
 ) => {
+	const userLocale = useRecoilValue<string>(userLocaleAtom);
 	const [homeScreenState, setHomeScreenState] = useRecoilState<string>(homeScreenAtom);
 	const [currentTab, setCurrentTab] = React.useState<number>(0);
 	const [statuses, setStatuses] = React.useState<ModalSelectType[]>([]);
-	const [isLoading, setIsLoading] = React.useState<boolean>(false);
+	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 	const [dateApplied, setDateApplied] = React.useState<Date>(new Date());
 	const [closingDate, setClosingDate] = React.useState<Date>(new Date());
 	const [closingDateMFA, setClosingDateMFA] = React.useState<Date>(new Date(+new Date() + Constants.DAY_IN_MILLISECONDS));
@@ -66,15 +61,10 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 
 	React.useEffect(() => setCurrentTab(addModalTabs[homeScreenState]), [homeScreenState]);
 
-	const handleReset = () => {
-		myJobMethods.reset();
-		myConnectionMethods.reset();
-		myFutureApplicationMethods.reset();
-	};
 	const handleMyJobSave = (data: MyJobRequestModel) => {
 		setIsLoading(true);
 		const newCategories: CategorySelectionModel[] = [];
-		data.category.map((cat: CategorySelectionModel) => {
+		data?.category?.map((cat: CategorySelectionModel) => {
 			if (!cat.color) cat.color = "#FF0000";
 			newCategories.push(cat);
 		});
@@ -87,15 +77,15 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			status: data.status,
 			userId: user._id,
 			dateApplied: data.dateApplied,
-			closingDate: hasClosingDate ? data.closingDate : "",
-			note: data.note ?? null,
+			closingDate: hasClosingDate ? data.closingDate : undefined,
+			note: data.note ?? undefined,
 		};
 		JobActions
 			.postMyNewJob(transformedData)
 			.then((response: MyJobResponseModel): void => {
 				onClose();
 				void toast(`Job "${response.jobTitle}" Added Successfully`, 'success');
-				handleReset();
+				myJobMethods.reset();
 				setDateApplied(new Date());
 				setClosingDate(new Date());
 				getAllMyJobs();
@@ -118,7 +108,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			.then((response: MyConnectionResponseModel) => {
 				onClose();
 				void toast(`Connection For "${response.company}" Added Successfully`, 'success');
-				handleReset();
+				myConnectionMethods.reset();
 				getAllMyConnections();
 				setHomeScreenState(homeScreenPages.MY_CONNECTIONS);
 			})
@@ -140,7 +130,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			.then((response: MyFutureApplicationResponseModel) => {
 				onClose();
 				void toast(`My Future Application for ${response.jobLink} Added Successfully`, 'success');
-				handleReset();
+				myFutureApplicationMethods.reset();
 				getAllMyFutureApplications();
 				setHomeScreenState(homeScreenPages.MY_FUTURE_APPLICATIONS);
 			})
@@ -169,7 +159,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 		},
 	];
 
-	const poolDateSelects: DateSelectType[] = [
+	const myConnectionDateSelects: DateSelectType[] = [
 		{
 			label: "Date Sent",
 			name: "dateSent",
@@ -216,223 +206,26 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 							<Tab>Future Application</Tab>
 						</TabList>
 						<TabPanels>
-							<TabPanel>
-								<CustomFormProvider formProviderData={myJobMethods}>
-									<VStack as="form" onSubmit={myJobMethods.handleSubmit(handleMyJobSave)}>
-										<InputControl
-											py={2}
-											className="prevent-select"
-											name="company"
-											label="Company"
-											inputProps={{
-												placeholder: 'Company',
-											}}
-											isRequired
-										/>
-										<InputControl
-											py={2}
-											className="prevent-select"
-											name="jobTitle"
-											label="Job Title"
-											inputProps={{
-												placeholder: 'Job Title',
-											}}
-											isRequired
-										/>
-										<FormControl py={2} className={"prevent-select"}>
-											<FormLabel>Job Description</FormLabel>
-											<TextareaControl
-												name={'description'}
-												textareaProps={{
-													placeholder: 'Job Description',
-												}}
-											/>
-										</FormControl>
-										<CustomTagSelect
-											name={"category"}
-											className={"prevent-select"}
-											py={2}
-											choices={jobListingCategories}
-											label={"Job Category"}
-											control={myJobMethods.control}
-										/>
-										<InputControl
-											py={2}
-											className="prevent-select"
-											name="jobLink"
-											label="Job Link"
-											inputProps={{
-												placeholder: 'https://linktojob.com',
-											}}
-										/>
-										<HStack w={"100%"} py={2}>
-											{jobDateSelects.map((date, index: number) => (
-												<CustomDateSelect
-													key={index}
-													{...date}
-													control={myJobMethods.control}
-													className={"prevent-select"}
-												/>
-											))}
-										</HStack>
-										<CustomSelect
-											name={"status"}
-											className={"prevent-select"}
-											py={2}
-											choices={statuses}
-											label={"Job Status"}
-											control={myJobMethods.control}
-											isRequired={true}
-											placeholder={"Select Status"}
-										/>
-										<FormControl py={2} className={"prevent-select"}>
-											<FormLabel>Note</FormLabel>
-											<TextareaControl name={'note'}/>
-										</FormControl>
-										<ButtonGroup my={2} w={"100%"}>
-											<SubmitButton
-												isLoading={isLoading}
-												loadingText="Submitting..."
-												width="full"
-												colorScheme={"green"}
-												variant={"outline"}
-											>
-												Save
-											</SubmitButton>
-											<ResetButton
-												isLoading={isLoading}
-												width="full"
-												onClick={handleReset}
-												colorScheme={"red"}
-												variant={"outline"}
-											>Reset</ResetButton>
-										</ButtonGroup>
-									</VStack>
-								</CustomFormProvider>
-							</TabPanel>
-							<TabPanel>
-								<CustomFormProvider formProviderData={myConnectionMethods}>
-									<VStack
-										as="form"
-										onSubmit={myConnectionMethods.handleSubmit(handleMyConnectionSave)}
-									>
-										<InputControl
-											pt={4}
-											pb={2}
-											className="prevent-select"
-											name="company"
-											label="Company"
-											inputProps={{
-												placeholder: 'Company',
-											}}
-											isRequired={true}
-										/>
-										<InputControl
-											py={2}
-											className="prevent-select"
-											name="jobLink"
-											label="Job Link"
-											inputProps={{
-												placeholder: 'https://linktojob.com',
-											}}
-										/>
-										<HStack w={"100%"} py={2}>
-											{poolDateSelects.map((date, index: number) => (
-												<CustomDateSelect
-													key={index}
-													{...date}
-													control={myConnectionMethods.control}
-													className={"prevent-select"}
-												/>
-											))}
-										</HStack>
-										<ButtonGroup my={2} w={"100%"}>
-											<SubmitButton
-												isLoading={isLoading}
-												loadingText="Submitting..."
-												width="full"
-												colorScheme={"green"}
-												variant={"outline"}
-											>
-												Save
-											</SubmitButton>
-											<ResetButton
-												isLoading={isLoading}
-												width="full"
-												onClick={handleReset}
-												colorScheme={"red"}
-												variant={"outline"}
-											>Reset</ResetButton>
-										</ButtonGroup>
-									</VStack>
-								</CustomFormProvider>
-							</TabPanel>
-							<TabPanel>
-								<CustomFormProvider formProviderData={myFutureApplicationMethods}>
-									<VStack
-										as="form"
-										onSubmit={myFutureApplicationMethods.handleSubmit(handleToApplySave)}
-									>
-										<InputControl
-											py={2}
-											className="prevent-select"
-											name="company"
-											label="Company"
-											inputProps={{
-												placeholder: 'Company',
-											}}
-										/>
-										<InputControl
-											py={2}
-											className="prevent-select"
-											name="jobTitle"
-											label="Job Title"
-											inputProps={{
-												placeholder: 'Job Title',
-											}}
-										/>
-										<InputControl
-											py={2}
-											className="prevent-select"
-											name="jobLink"
-											label="Job Link"
-											inputProps={{
-												placeholder: 'https://linktojob.com',
-											}}
-											isRequired
-										/>
-										<HStack w={"100%"} py={2}>
-											{myFutureApplicationsDateSelects.map((date, index: number) => (
-												<CustomDateSelect
-													key={index}
-													{...date}
-													control={myFutureApplicationMethods.control}
-													className={"prevent-select"}
-													minDate={new Date()}
-												/>
-											))}
-										</HStack>
-										<ButtonGroup my={2} w={"100%"}>
-											<SubmitButton
-												isLoading={isLoading}
-												loadingText="Submitting..."
-												width="full"
-												colorScheme={"green"}
-												variant={"outline"}
-											>
-												Save
-											</SubmitButton>
-											<ResetButton
-												isLoading={isLoading}
-												width="full"
-												onClick={handleReset}
-												colorScheme={"red"}
-												variant={"outline"}
-											>Reset</ResetButton>
-										</ButtonGroup>
-									</VStack>
-								</CustomFormProvider>
-							</TabPanel>
+							<AddMyJobTabPanel
+								myJobMethods={myJobMethods}
+								myJobDateSelects={jobDateSelects}
+								userLocale={userLocale}
+								dateApplied={dateApplied}
+								statuses={statuses}
+								handleMyJobSave={handleMyJobSave}
+							/>
+							<AddMyConnectionTabPanel
+								myConnectionMethods={myConnectionMethods}
+								myConnectionDateSelects={myConnectionDateSelects}
+								userLocale={userLocale}
+								handleMyConnectionSave={handleMyConnectionSave}
+							/>
+							<AddMyFutureApplicationTabPanel
+								myFutureApplicationMethods={myFutureApplicationMethods}
+								myFutureApplicationsDateSelects={myFutureApplicationsDateSelects}
+								userLocale={userLocale}
+								handleToApplySave={handleToApplySave}
+							/>
 						</TabPanels>
 					</Tabs>
 				</ModalBody>
