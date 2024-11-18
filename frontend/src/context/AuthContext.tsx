@@ -6,7 +6,7 @@ import authScreenAtom from "../atoms/authScreenAtom.ts";
 import {useNavigate} from 'react-router-dom';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import {toast} from "../helpers/customToast.ts";
-import {AuthContextType, CustomUser, UserToken} from "../models/contextTypes.ts";
+import {AuthContextType, CustomUser, UserToken} from "../models/types.ts";
 import {authInstance} from "../api/axiosInstances.ts";
 import {AuthProviderProps} from "../models/interfaces.ts";
 
