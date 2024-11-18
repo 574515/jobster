@@ -1,14 +1,21 @@
 import React from "react";
-import {Control, FieldValues, UseFormReturn} from "react-hook-form";
+import {FieldValues, UseFormReturn} from "react-hook-form";
 import {
-	AddEditJobType,
-	AddEditPoolType,
-	AllJobListingsResponseModel,
-	AllPoolListingsResponseModel,
-	BasicModalSelectTypeLV,
-	FiltersType
-} from "./componentsTypes.ts";
-import {CustomUser} from "./contextTypes.ts";
+	CustomUser,
+	DateSelectType,
+	DeleteItemItemType,
+	DeleteItemType,
+	FiltersType,
+	ModalSelectType,
+	MyConnectionRequestModel,
+	MyConnectionResponseModel,
+	MyFutureApplicationRequestModel,
+	MyFutureApplicationResponseModel,
+	MyJobRequestModel,
+	MyJobResponseModel,
+} from "./types.ts";
+import {ConstantItemNames} from "../helpers/enums.ts";
+import {UseFormMyConnectionType, UseFormMyFutureApplicationType, UseFormMyJobType} from "./helperTypes.ts";
 
 export interface AuthProviderProps {
 	children: React.ReactNode;
@@ -19,90 +26,70 @@ export interface CustomFormProviderProps<T extends FieldValues> {
 	formProviderData: UseFormReturn<T>;
 }
 
-interface CustomCardProps {
-	setIsLoading(isLoading: boolean): void;
+export interface CustomJobCardProps {
+	item: MyJobResponseModel;
 
-	getAllListings(): void;
+	getAllItems(): void;
 }
 
-export interface CustomJobCardProps extends CustomCardProps {
-	userJob: AllJobListingsResponseModel;
+export interface CustomConnectionCardProps {
+	item: MyConnectionResponseModel;
+
+	getAllItems(): void;
 }
 
-export interface CustomPoolCardProps extends CustomCardProps {
-	userJob: AllPoolListingsResponseModel;
+export interface CustomFutureApplicationCardProps {
+	item: MyFutureApplicationResponseModel;
+
+	getAllItems(): void;
 }
 
 export interface AddEditJobModalProps {
 	isOpen: boolean;
 	user: CustomUser;
-	jobMethods: UseFormReturn<AddEditJobType>;
-	poolMethods: UseFormReturn<AddEditPoolType>;
-
-	getAllJobListings(): void;
-
-	getAllPoolListings(): void;
+	myJobMethods: UseFormReturn<UseFormMyJobType>;
+	myConnectionMethods: UseFormReturn<UseFormMyConnectionType>;
+	myFutureApplicationMethods: UseFormReturn<UseFormMyFutureApplicationType>;
 
 	onClose(): void;
+
+	getAllMyJobs(): void;
+
+	getAllMyConnections(): void;
+
+	getAllMyFutureApplications(): void;
 }
 
 export interface LoadingOverlayProps {
 	isLoading: boolean;
 }
 
-type CustomSelectionProps = {
-	name: string;
-	py?: number;
-	className: string;
-	label?: string;
-	minDate?: Date;
-	isRequired?: boolean;
-}
-
-export interface CustomDateSelectProps extends CustomSelectionProps {
-	jobControl?: Control<AddEditJobType>;
-	poolControl?: Control<AddEditPoolType>;
-	definedDate: Date;
-	percentWidth?: number;
-
-	setDate(date: Date): void;
-}
-
-export interface CustomSelectProps extends CustomSelectionProps {
-	control: Control<AddEditJobType>;
-	choices: BasicModalSelectTypeLV[];
-	definedValue?: BasicModalSelectTypeLV;
-	isClearable?: boolean;
-	disabled?: boolean;
-}
-
 export interface MyJobsProps {
-	isLoading: boolean;
-	isPool?: boolean;
-	userJobListings: AllJobListingsResponseModel[];
-	userPoolListings: AllPoolListingsResponseModel[];
+	allMyJobs: MyJobResponseModel[];
+	allMyConnections: MyConnectionResponseModel[];
+	allMyFutureApplications: MyFutureApplicationResponseModel[];
 
-	setIsLoading(isLoading: boolean): void;
+	getAllMyJobs(): void;
 
-	getAllJobListings(): void;
+	getAllMyConnections(): void;
 
-	getAllPoolListings(): void;
+	getAllMyFutureApplications(): void;
 }
 
 export interface StatusListProps {
-	jobListings: AllJobListingsResponseModel[];
-	checkedStates: Record<string, boolean>;
+	jobListings: MyJobResponseModel[];
+	checkedStatuses: Record<string, boolean>;
 
-	setCheckedStates: (updater: (prevState: Record<string, boolean>) => Record<string, boolean>) => void;
+	setCheckedStatuses(updater: (prevState: Record<string, boolean>) => Record<string, boolean>): void;
 }
 
 export interface FilterProps {
-	checkedStates: Record<string, boolean>;
-	userJobListings: AllJobListingsResponseModel[];
+	checkedStatuses: Record<string, boolean>;
+	allMyJobs: MyJobResponseModel[];
 
-	setCheckedStates: (updater: (prevState: Record<string, boolean>) => Record<string, boolean>) => void;
+	setCheckedStatuses(updater: (prevState: Record<string, boolean>) => Record<string, boolean>): void;
 
-	setSearchedListings(searchListings: AllJobListingsResponseModel[]): void;
+	setMyJobsFiltered(searchListings: MyJobResponseModel[]): void;
 
 	setFilterActive(filterActive: number): void;
 }
@@ -112,17 +99,79 @@ export interface StatusFiltersProps {
 }
 
 export interface TextSearchProps {
-	userJobListings: AllJobListingsResponseModel[];
+	allMyJobs: MyJobResponseModel[];
 
-	setSearchedListings(searchListings: AllJobListingsResponseModel[]): void;
+	setMyJobsFiltered(searchListings: MyJobResponseModel[]): void;
 }
 
 export interface SortByProps {
-	isPool?: boolean;
-	userJobListings?: AllJobListingsResponseModel[];
-	userPoolListings?: AllPoolListingsResponseModel[];
+	allMyJobs?: MyJobResponseModel[];
+	allMyConnections?: MyConnectionResponseModel[];
+	allMyFutureApplications?: MyFutureApplicationResponseModel[];
 
-	setUserJobListings?(searchListings: AllJobListingsResponseModel[]): void;
+	setAllMyJobs?(searchListings: MyJobResponseModel[]): void;
 
-	setUserPoolListings?(searchListings: AllPoolListingsResponseModel[]): void;
+	setAllMyConnections?(searchListings: MyConnectionResponseModel[]): void;
+
+	setAllMyFutureApplications?(searchListings: MyFutureApplicationResponseModel[]): void;
+}
+
+export interface AddNoteProps {
+	isAddEditNoteOpen: boolean;
+	item: MyJobResponseModel | MyConnectionResponseModel | MyFutureApplicationResponseModel;
+	identifier: ConstantItemNames;
+
+	onAddEditNoteClose(): void;
+
+	getAllItems(): void;
+}
+
+export interface CustomDeleteAlertProps {
+	isDeleteOpen: boolean;
+	cancelRef: React.RefObject<HTMLButtonElement>;
+	item: MyJobResponseModel | MyConnectionResponseModel | MyFutureApplicationResponseModel;
+	type: string;
+
+	handleDelete(): void;
+
+	onDeleteClose(): void;
+}
+
+export interface CustomAddNoteIconProps {
+	item: MyJobResponseModel | MyConnectionResponseModel | MyFutureApplicationResponseModel;
+
+	onAddEditNoteOpen(): void;
+}
+
+
+export interface DeleteItemHookProps {
+	item: DeleteItemItemType;
+	deleteAction: (id: string) => Promise<DeleteItemType>;
+	getAllItems: () => void;
+}
+
+export interface AddMyJobTabPanelProps {
+	myJobMethods: UseFormReturn<UseFormMyJobType>;
+	myJobDateSelects: DateSelectType[];
+	userLocale: string;
+	dateApplied: Date;
+	statuses: ModalSelectType[];
+
+	handleMyJobSave(data: MyJobRequestModel): void;
+}
+
+export interface AddMyConnectionTabPanelProps {
+	myConnectionMethods: UseFormReturn<UseFormMyConnectionType>;
+	myConnectionDateSelects: DateSelectType[];
+	userLocale: string;
+
+	handleMyConnectionSave(data: MyConnectionRequestModel): void;
+}
+
+export interface AddMyFutureApplicationTabPanelProps {
+	myFutureApplicationMethods: UseFormReturn<UseFormMyFutureApplicationType>;
+	myFutureApplicationsDateSelects: DateSelectType[];
+	userLocale: string;
+
+	handleToApplySave(data: MyFutureApplicationRequestModel): void;
 }

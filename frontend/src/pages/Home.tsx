@@ -250,7 +250,6 @@ const Home = () => {
 										getAllMyConnections={getAllMyConnections}
 										allMyFutureApplications={userToApplyListings}
 										getAllMyFutureApplications={getAllMyFutureApplications}
-										myJobMethods={myJobMethods}
 									/>
 								)}
 								{homeScreenState === homeScreenPages.MY_CONNECTIONS && (

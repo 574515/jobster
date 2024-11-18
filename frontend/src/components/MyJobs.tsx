@@ -16,7 +16,7 @@ const MyJobs: React.FC<MyJobsProps> = (
 	{
 		allMyJobs, allMyConnections,
 		getAllMyJobs, getAllMyConnections,
-		allMyFutureApplications, getAllMyFutureApplications, myJobMethods
+		allMyFutureApplications, getAllMyFutureApplications
 	}
 ) => {
 	const [templateColumns, setTemplateColumns] = React.useState<string>("");
@@ -31,7 +31,7 @@ const MyJobs: React.FC<MyJobsProps> = (
 	return (
 		<VStack minW={'75%'}>
 			<Grid templateColumns={templateColumns} gap={5} w={"100%"}>
-				{homeScreenState === homeScreenPages.MY_JOBS && (allMyJobs && allMyJobs.length > 0) && myJobMethods && !isLoading &&
+				{homeScreenState === homeScreenPages.MY_JOBS && (allMyJobs && allMyJobs.length > 0) && !isLoading &&
 					allMyJobs.map((listing: MyJobResponseModel, index: number) => (
 						<Box key={index}>
 							<CustomJobCard
