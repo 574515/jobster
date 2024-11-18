@@ -56,8 +56,8 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 	);
 
 	const getTag = () => {
-		if (item.closingDate)
-			return format(item.closingDate, TIME_FORMATS[userLocale]);
+		if (item.closingDateMFA)
+			return format(item.closingDateMFA, TIME_FORMATS[userLocale]);
 		else return "";
 	}
 
