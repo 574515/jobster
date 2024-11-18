@@ -2,8 +2,7 @@ import React, {ChangeEvent, useEffect} from 'react';
 
 import {StatusListProps} from "../../models/interfaces.ts";
 import {Checkbox, Flex, Text} from "@chakra-ui/react";
-import {StatusSelectType} from "../../models/componentsTypes.ts";
-import {MyJobResponseModel} from "../../models/types.ts";
+import {MyJobResponseModel, StatusSelectType} from "../../models/types.ts";
 
 const StatusList: React.FC<StatusListProps> = (
 	{jobListings, checkedStatuses, setCheckedStatuses}

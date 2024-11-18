@@ -1,6 +1,6 @@
 import React from "react";
 
-import {FiltersType} from "../../models/componentsTypes.ts";
+import {FiltersType} from "../../models/types.ts";
 import {AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box} from "@chakra-ui/react";
 import {StatusFiltersProps} from "../../models/interfaces.ts";
 

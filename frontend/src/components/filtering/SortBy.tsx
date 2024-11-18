@@ -5,9 +5,8 @@ import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
 import {SortByProps} from "../../models/interfaces.ts";
 import {FormControl, Select} from "@chakra-ui/react";
 import {homeScreenPages, sortByOptions} from "../../helpers/constants.ts";
-import {SortByOptionType} from "../../models/componentsTypes.ts";
+import {MyConnectionResponseModel, MyJobResponseModel, SortByOptionType} from "../../models/types.ts";
 import {useRecoilValue} from "recoil";
-import {MyConnectionResponseModel, MyJobResponseModel} from "../../models/types.ts";
 
 const SortBy: React.FC<SortByProps> = (
 	{
@@ -67,11 +66,11 @@ const SortBy: React.FC<SortByProps> = (
 					const sortingValue: string = e.target.value;
 					const order = sortingValue.includes("Later") ? 'later' : 'sooner';
 					setAllMyFutureApplications([...allMyFutureApplications].sort((a, b) => {
-						const closingDateA: Date | string | undefined = a["closingDate"];
-						const closingDateB: Date | string | undefined = b["closingDate"];
-						if (closingDateA && closingDateB) {
-							const dateA: number = new Date(closingDateA).getTime();
-							const dateB: number = new Date(closingDateB).getTime();
+						const closingDateMFAA: Date | string | undefined = a["closingDateMFA"];
+						const closingDateMFAB: Date | string | undefined = b["closingDateMFA"];
+						if (closingDateMFAA && closingDateMFAB) {
+							const dateA: number = new Date(closingDateMFAA).getTime();
+							const dateB: number = new Date(closingDateMFAB).getTime();
 							return order === 'later' ? dateB - dateA : dateA - dateB;
 						}
 						return -1;
