@@ -1,5 +1,5 @@
 import {atom} from 'recoil';
-import {CustomUser} from "../models/contextTypes.ts";
+import {CustomUser} from "../models/types.ts";
 
 const userAtom = atom<CustomUser | null>({
 	key: 'userAtom',
