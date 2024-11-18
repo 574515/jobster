@@ -26,7 +26,14 @@ import {
 import {useRecoilState, useRecoilValue} from "recoil";
 import {useForm} from "react-hook-form";
 import {ConnectionActions, JobActions, ToApplyActions} from "../components/AppActions.action.ts";
-import {HomeScreenPagesType} from "../models/componentsTypes.ts";
+import {
+	AuthContextType,
+	CustomUser,
+	HomeScreenPagesType,
+	MyConnectionResponseModel,
+	MyFutureApplicationResponseModel,
+	MyJobResponseModel
+} from "../models/types.ts";
 import {
 	defaultMyConnectionValues,
 	defaultMyFutureApplicationValues,
@@ -34,10 +41,8 @@ import {
 	homeScreenPages,
 	homeScreenPagesList
 } from "../helpers/constants.ts";
-import {AuthContextType, CustomUser} from "../models/contextTypes.ts";
 import {MyConnectionValidationSchema, MyJobValidationSchema, MyToApplyValidationSchema} from "../helpers/validators.ts";
 import {ConstantItemNames} from "../helpers/enums.ts";
-import {MyConnectionResponseModel, MyFutureApplicationResponseModel, MyJobResponseModel} from "../models/types.ts";
 import {toast} from "../helpers/customToast.ts";
 import {FaArrowRightFromBracket, FaPlus} from "react-icons/fa6";
 
@@ -113,7 +118,6 @@ const Home = () => {
 	const myJobMethods = useForm({
 		resolver: MyJobValidationSchema,
 		defaultValues: defaultMyJobValues,
-		mode: "onTouched",
 	});
 
 	const myConnectionMethods = useForm({
