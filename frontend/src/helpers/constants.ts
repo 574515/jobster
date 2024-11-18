@@ -1,69 +1,80 @@
-import {BasicModalSelectTypeLV, ModalSelectType, SortByOptionType} from "../models/componentsTypes.ts";
+import {HomeScreenPagesType, SortByOptionType} from '../models/componentsTypes.ts';
+import {DefaultStringKeyNumberModel, DefaultStringKeyStringModel} from '../models/types.ts';
+import {ModalSelectType} from '../models/customComponentsTypes.ts';
 
 export const Constants = {
 	MIN_LENGTH_COMPANY_NAME: 2,
 	MAX_LENGTH_COMPANY_NAME: 64,
-
 	MIN_LENGTH_JOB_NAME: 2,
 	MAX_LENGTH_JOB_NAME: 256,
-
+	MAX_LENGTH_NOTE: 1024,
+	MAX_CATEGORIES: 5,
 	DAY_IN_MILLISECONDS: 86400000,
-
 	MIN_LENGTH_USERNAME: 3,
 	MAX_LENGTH_USERNAME: 16,
-
 	PASSWORD_MIN_LENGTH: 8,
 };
 
+export const homeScreenPages = {
+	MY_JOBS: 'myJobs',
+	MY_CONNECTIONS: 'myConnections',
+	MY_FUTURE_APPLICATIONS: 'myFutureApplications'
+};
+
 const defaultLoginValues = {
-	username: "",
-	password: ""
+	username: '',
+	password: ''
 };
 
 const defaultRegisterValues = {
-	username: "",
-	password: "",
-	repeatPassword: "",
-}
+	username: '',
+	password: '',
+	repeatPassword: '',
+};
 
 export const getDefaultValues = (mode: string) => {
 	switch (mode) {
-		case "login":
+		case 'login':
 			return defaultLoginValues;
-		case "register":
+		case 'register':
 			return defaultRegisterValues;
 		default:
 			return {}
 	}
-}
+};
 
 export const forbiddenUsernames = [
-	"admin",
-	"root",
+	'admin',
+	'root',
 ];
 
-export const defaultNewPoolValues = {
-	company: "",
-	jobLink: "",
+export const defaultMyConnectionValues = {
+	company: '',
+	jobLink: '',
 	dateSent: new Date(),
-}
+};
 
-export const defaultNewJobValues = {
-	company: "",
-	jobTitle: "",
-	description: "",
-	category: {
-		value: "",
-		label: "",
-	},
-	jobLink: "",
+export const defaultMyFutureApplicationValues = {
+	company: '',
+	jobTitle: '',
+	jobLink: '',
+	closingDateMFA: new Date(),
+};
+
+export const defaultMyJobValues = {
+	company: '',
+	jobTitle: '',
+	description: '',
+	category: [],
+	jobLink: '',
 	status: {
-		value: "",
-		label: "",
-		color: ""
+		value: '',
+		label: '',
+		color: ''
 	},
 	closingDate: new Date(),
 	dateApplied: new Date(),
+	note: '',
 };
 
 export const statusesToSet: ModalSelectType[] = [
@@ -88,6 +99,11 @@ export const statusesToSet: ModalSelectType[] = [
 		color: '#9856F2',
 	},
 	{
+		value: 'cancelled',
+		label: 'Cancelled',
+		color: '#D646C0',
+	},
+	{
 		value: 'referral',
 		label: 'Referral',
 		color: '#F7A71B',
@@ -99,64 +115,76 @@ export const statusesToSet: ModalSelectType[] = [
 	},
 ];
 
-export const jobListingCategories: BasicModalSelectTypeLV[] = [
+const sortByMyJobOptions: SortByOptionType[] = [
 	{
-		value: 'blue',
-		label: 'Blue',
+		whatDate: 'Date Applied',
+		when: 'Newest',
 	},
 	{
-		value: 'purple',
-		label: 'Purple',
+		whatDate: 'Date Applied',
+		when: 'Oldest',
 	},
 	{
-		value: 'red',
-		label: 'Red',
+		whatDate: 'Closing Date',
+		when: 'Later',
 	},
 	{
-		value: 'orange',
-		label: 'Orange',
-	},
-	{
-		value: 'yellow',
-		label: 'Yellow',
-	},
-	{
-		value: 'green',
-		label: 'Green',
+		whatDate: 'Closing Date',
+		when: 'Sooner',
 	},
 ];
 
-export const sortByJobOptions: SortByOptionType[] = [
+const sortByMyConnections: SortByOptionType[] = [
 	{
-		whatDate: "Date Applied",
-		when: "Newest",
+		whatDate: 'Date Sent',
+		when: 'Newest',
 	},
 	{
-		whatDate: "Date Applied",
-		when: "Oldest",
-	},
-	{
-		whatDate: "Closing Date",
-		when: "Later",
-	},
-	{
-		whatDate: "Closing Date",
-		when: "Sooner",
+		whatDate: 'Date Sent',
+		when: 'Oldest',
 	},
 ];
 
-export const sortByPoolOptions: SortByOptionType[] = [
+const sortByMyFutureApplications: SortByOptionType[] = [
 	{
-		whatDate: "Date Sent",
-		when: "Newest",
+		whatDate: 'Closing Date',
+		when: 'Later',
 	},
 	{
-		whatDate: "Date Sent",
-		when: "Oldest",
+		whatDate: 'Closing Date',
+		when: 'Sooner',
 	},
-]
+];
 
-export const homeScreenPages = {
-	MY_JOBS: "myJobs",
-	POOL: "pool",
+export const sortByOptions = {
+	[homeScreenPages.MY_JOBS]: sortByMyJobOptions,
+	[homeScreenPages.MY_CONNECTIONS]: sortByMyConnections,
+	[homeScreenPages.MY_FUTURE_APPLICATIONS]: sortByMyFutureApplications,
+};
+
+export const constantItemName: DefaultStringKeyStringModel = {
+	myJobs: 'My Job',
+	myConnections: 'My Connection',
+	myFutureApplications: 'My Future Application',
+};
+
+export const homeScreenPagesList: HomeScreenPagesType[] = [
+	{
+		title: 'My Jobs',
+		value: homeScreenPages.MY_JOBS,
+	},
+	{
+		title: 'My Connections',
+		value: homeScreenPages.MY_CONNECTIONS,
+	},
+	{
+		title: 'My Future Applications',
+		value: homeScreenPages.MY_FUTURE_APPLICATIONS,
+	}
+];
+
+export const addModalTabs: DefaultStringKeyNumberModel = {
+	[homeScreenPages.MY_JOBS]: 0,
+	[homeScreenPages.MY_CONNECTIONS]: 1,
+	[homeScreenPages.MY_FUTURE_APPLICATIONS]: 2,
 };
