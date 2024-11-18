@@ -29,3 +29,15 @@
 .addListing:hover {
     border-bottom: 1px solid #aaa;
 }
+
+.numberOfCharacters {
+    position: relative;
+    top: 0;
+}
+
+.customSelectGroupLabel {
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.05rem;
+}
