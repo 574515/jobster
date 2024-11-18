@@ -27,11 +27,10 @@ import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action
 import {toast} from "../helpers/customToast.ts";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {NoteValidationSchema} from "../helpers/validators.ts";
-import {MyJobCreationResponseType, NoteFormValues} from "../models/componentsTypes.ts";
+import {MyJobCreationResponseType, MyJobResponseModel, NoteFormValues} from "../models/types.ts";
 import {Constants} from "../helpers/constants.ts";
 import {useRecoilState} from "recoil";
 import {ConstantItemNames} from "../helpers/enums.ts";
-import {MyJobResponseModel} from "../models/types.ts";
 
 import '../styles/componentStyle.css'
 

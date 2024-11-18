@@ -27,8 +27,7 @@ import {RegisterValidationSchema} from "../helpers/validators.ts";
 import {forbiddenUsernames, getDefaultValues} from "../helpers/constants.ts";
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaCircleUser, FaLock} from "react-icons/fa6";
-import {SignupValuesType} from "../models/types.ts";
-import {AuthContextType} from "../models/contextTypes.ts";
+import {AuthContextType, SignupValuesType} from "../models/types.ts";
 
 import '../styles/style.css'
 
