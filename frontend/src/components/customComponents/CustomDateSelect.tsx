@@ -8,73 +8,32 @@ import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {Controller} from "react-hook-form";
 import {useRecoilValue} from "recoil";
 import {CustomDateSelectProps} from "../../models/interfaces.ts";
-import {AddEditConnectionNameType, AddEditJobNameType} from "../../models/customComponentsTypes.ts";
+import {AddEditJobNameType} from "../../models/customComponentsTypes.ts";
 
 const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 	{
-		jobControl, poolControl, name, py, className,
-		label, definedDate, setDate, minDate,
+		control, name, py, className, label, definedDate,
+		setDate, minDate, hasClosingDate, setHasClosingDate,
 		isRequired = false, hasCheckbox = false,
-		hasClosingDate, setHasClosingDate,
 	}
 ) => {
 	const userLocale = useRecoilValue<string>(userLocaleAtom);
 
 	return (
-		jobControl ? (
-			<Controller
-				control={jobControl}
-				name={name as AddEditJobNameType}
-				render={({field}) => {
-					return <FormControl
-						py={py ?? 0}
-						className={className}
-						textAlign={"center"}
-						isRequired={isRequired}
-					>
-						{label && <FormLabel mx={0}>{label}</FormLabel>}
-						<HStack>
-							<SingleDatepicker
-								date={definedDate}
-								onDateChange={(date) => {
-									field.onChange(date);
-									setDate(date);
-								}}
-								configs={{dateFormat: TIME_FORMATS[userLocale],}}
-								propsConfigs={{
-									triggerBtnProps: {
-										width: "100%",
-									}
-								}}
-								minDate={minDate}
-								maxDate={new Date(new Date().getFullYear() + 1, 11, 31)}
-								disabled={hasCheckbox ? !hasClosingDate : false}
-							/>
-							{hasCheckbox && (
-								<Checkbox
-									onChange={() => {
-										if (setHasClosingDate)
-											setHasClosingDate(!hasClosingDate);
-									}}
-								/>
-							)}
-						</HStack>
-					</FormControl>
-				}}
-			/>
-		) : (
-			<Controller
-				control={poolControl}
-				name={name as AddEditConnectionNameType}
-				render={({field}) => (
-					<FormControl
-						py={py ?? 0}
-						className={className}
-						textAlign={"center"}
-					>
-						{label && <FormLabel mx={0} textAlign={"center"}>{label}</FormLabel>}
+		<Controller
+			control={control}
+			name={name as AddEditJobNameType}
+			render={({field}) => {
+				return <FormControl
+					py={py ?? 0}
+					className={className}
+					textAlign={"center"}
+					isRequired={isRequired}
+				>
+					{label && <FormLabel mx={0}>{label}</FormLabel>}
+					<HStack>
 						<SingleDatepicker
-							date={(field.value as Date) ?? definedDate}
+							date={definedDate}
 							onDateChange={(date) => {
 								field.onChange(date);
 								setDate(date);
@@ -85,11 +44,23 @@ const CustomDateSelect: React.FC<CustomDateSelectProps> = (
 									width: "100%",
 								}
 							}}
+							minDate={minDate}
+							maxDate={new Date(new Date().getFullYear() + 1, 11, 31)}
+							disabled={hasCheckbox ? !hasClosingDate : false}
 						/>
-					</FormControl>
-				)}
-			/>
-		));
+						{hasCheckbox && (
+							<Checkbox
+								onChange={() => {
+									if (setHasClosingDate)
+										setHasClosingDate(!hasClosingDate);
+								}}
+							/>
+						)}
+					</HStack>
+				</FormControl>
+			}}
+		/>
+	);
 }
 
 export default CustomDateSelect;
