@@ -7,7 +7,7 @@ import {useRecoilValue, useSetRecoilState} from "recoil";
 import {constantItemName} from "../helpers/constants.ts";
 import {toast} from "../helpers/customToast.ts";
 import {DeleteItemHookProps} from "../models/interfaces.ts";
-import {DeleteItemType} from "../models/hookTypes.ts";
+import {DeleteItemType} from "../models/types.ts";
 
 const useDeleteItem = (
 	{item, deleteAction, getAllItems}: DeleteItemHookProps
