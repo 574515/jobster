@@ -1,5 +1,11 @@
 import React from "react";
 
+import homeScreenAtom from "../atoms/homeScreenAtom.ts";
+import CustomDateSelect from "./customComponents/CustomDateSelect.tsx";
+import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
+import CustomSelect from "./customComponents/CustomSelect.tsx";
+import CustomTagSelect from "./customComponents/CustomTagSelect.tsx";
+
 import {
 	ButtonGroup,
 	Divider,
@@ -19,91 +25,89 @@ import {
 	Tabs,
 	VStack
 } from "@chakra-ui/react";
-import {
-	AddEditJobType,
-	AddEditPoolType,
-	AddEditToApplyType,
-	DateSelectType,
-	JobCreationResponseModel,
-	ModalSelectType,
-	MyFutureApplicationResponseModel,
-	PoolCreationResponseModel,
-	TransformedAddEditJobProps,
-	TransformedAddEditPoolType,
-	TransformedAddEditToApplyType
-} from "../models/componentsTypes.ts";
+import {DateSelectType,} from "../models/componentsTypes.ts";
 import {InputControl, ResetButton, SubmitButton, TextareaControl} from "react-hook-form-chakra";
-import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
-import {Constants, homeScreenPages, jobListingCategories, statusesToSet} from "../helpers/constants.ts";
-import CustomSelect from "./customComponents/CustomSelect.tsx";
+import {addModalTabs, Constants, homeScreenPages, statusesToSet} from "../helpers/constants.ts";
 import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action.ts";
 import {toast} from "../helpers/customToast.ts";
 import {AddEditJobModalProps} from "../models/interfaces.ts";
-import CustomDateSelect from "./customComponents/CustomDateSelect.tsx";
-import {useSetRecoilState} from "recoil";
-import homeScreenAtom from "../atoms/homeScreenAtom.ts";
+import {useRecoilState} from "recoil";
+import {
+	MyConnectionRequestModel,
+	MyConnectionResponseModel,
+	MyConnectionTransformedRequestModel,
+	MyFutureApplicationRequestModel,
+	MyFutureApplicationResponseModel,
+	MyFutureApplicationTransformedRequestModel,
+	MyJobRequestModel,
+	MyJobResponseModel,
+	MyJobTransformedRequestModel
+} from "../models/types.ts";
+import {CategorySelectionModel, ModalSelectType} from "../models/customComponentsTypes.ts";
+import {jobListingCategories} from "../helpers/categories.ts";
 
 const AddListingModal: React.FC<AddEditJobModalProps> = (
 	{
-		isOpen, onClose, user,
-		getAllMyJobListings, getAllMyConnections, getAllMyToApply,
-		jobMethods, poolMethods, toApplyMethods
+		isOpen, onClose, user, getAllMyJobs, getAllMyConnections,
+		getAllMyFutureApplications, myJobMethods, myConnectionMethods, myFutureApplicationMethods
 	}
 ) => {
-	const setHomeScreenState = useSetRecoilState(homeScreenAtom);
-	const handleJobReset = () => {
-		if (jobMethods) jobMethods.reset();
-	}
-	const handlePoolReset = () => {
-		if (poolMethods) poolMethods.reset();
-	}
-	const handleMyFutureApplicationsReset = () => {
-		if (toApplyMethods) toApplyMethods.reset();
-	}
+	const [homeScreenState, setHomeScreenState] = useRecoilState<string>(homeScreenAtom);
+	const [currentTab, setCurrentTab] = React.useState<number>(0);
 	const [statuses, setStatuses] = React.useState<ModalSelectType[]>([]);
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const [dateApplied, setDateApplied] = React.useState<Date>(new Date());
 	const [closingDate, setClosingDate] = React.useState<Date>(new Date());
-	const [closingDateMFA, setClosingDateMFA] = React.useState<Date>(new Date());
+	const [closingDateMFA, setClosingDateMFA] = React.useState<Date>(new Date(+new Date() + Constants.DAY_IN_MILLISECONDS));
 	const [dateSent, setDateSent] = React.useState<Date>(new Date());
-	const [tomorrowDate, setTomorrowDate] = React.useState<Date>(new Date(+new Date() + Constants.DAY_IN_MILLISECONDS));
+	const [hasClosingDate, setHasClosingDate] = React.useState<boolean>(false);
 
 	React.useEffect(() => setStatuses(statusesToSet), []);
 
-	React.useEffect(() => {
-		if (!tomorrowDate)
-			setTomorrowDate(new Date(+new Date() + Constants.DAY_IN_MILLISECONDS));
-	}, [tomorrowDate]);
+	React.useEffect(() => setCurrentTab(addModalTabs[homeScreenState]), [homeScreenState]);
 
-	const handleJobSave = (data: AddEditJobType) => {
+	const handleReset = () => {
+		myJobMethods.reset();
+		myConnectionMethods.reset();
+		myFutureApplicationMethods.reset();
+	};
+	const handleMyJobSave = (data: MyJobRequestModel) => {
 		setIsLoading(true);
-		const transformedData: TransformedAddEditJobProps = {
+		const newCategories: CategorySelectionModel[] = [];
+		data.category.map((cat: CategorySelectionModel) => {
+			if (!cat.color) cat.color = "#FF0000";
+			newCategories.push(cat);
+		});
+		const transformedData: MyJobTransformedRequestModel = {
 			company: data.company,
 			jobTitle: data.jobTitle,
 			jobLink: data.jobLink,
 			description: data.description,
-			category: data.category,
+			category: newCategories ?? data.category,
 			status: data.status,
 			userId: user._id,
 			dateApplied: data.dateApplied,
-			closingDate: data.closingDate,
+			closingDate: hasClosingDate ? data.closingDate : "",
+			note: data.note ?? null,
 		};
 		JobActions
 			.postMyNewJob(transformedData)
-			.then((response: JobCreationResponseModel) => {
-				void toast(`Job "${response.name}" Added Successfully`, 'success');
-				getAllMyJobListings();
-				setHomeScreenState(homeScreenPages.MY_JOBS);
+			.then((response: MyJobResponseModel): void => {
 				onClose();
-				handleJobReset();
+				void toast(`Job "${response.jobTitle}" Added Successfully`, 'success');
+				handleReset();
+				setDateApplied(new Date());
+				setClosingDate(new Date());
+				getAllMyJobs();
+				setHomeScreenState(homeScreenPages.MY_JOBS);
 			})
-			.catch((error) => void toast(error.response.data.error, 'error'))
+			.catch((err) => void toast(err.response.data.error, 'error'))
 			.finally(() => setIsLoading(false));
 	};
 
-	const handlePoolSave = (data: AddEditPoolType) => {
+	const handleMyConnectionSave = (data: MyConnectionRequestModel) => {
 		setIsLoading(true);
-		const transformedData: TransformedAddEditPoolType = {
+		const transformedData: MyConnectionTransformedRequestModel = {
 			company: data.company,
 			jobLink: data.jobLink,
 			dateSent: data.dateSent,
@@ -111,36 +115,36 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 		};
 		ConnectionActions
 			.postMyConnection(transformedData)
-			.then((response: PoolCreationResponseModel) => {
-				void toast(`Connection For "${response.company}" Added Successfully`, 'success');
+			.then((response: MyConnectionResponseModel) => {
 				onClose();
-				handlePoolReset();
+				void toast(`Connection For "${response.company}" Added Successfully`, 'success');
+				handleReset();
 				getAllMyConnections();
 				setHomeScreenState(homeScreenPages.MY_CONNECTIONS);
 			})
-			.catch((error) => void toast(error.response.data.error, 'error'))
+			.catch((err) => void toast(err.response.data.error, 'error'))
 			.finally(() => setIsLoading(false));
 	};
 
-	const handleToApplySave = (data: AddEditToApplyType) => {
+	const handleToApplySave = (data: MyFutureApplicationRequestModel) => {
 		setIsLoading(true);
-		const transformedData: TransformedAddEditToApplyType = {
+		const transformedData: MyFutureApplicationTransformedRequestModel = {
 			company: data.company,
 			jobLink: data.jobLink,
 			jobTitle: data.jobTitle,
-			closingDate: data.closingDate,
+			closingDateMFA: data.closingDateMFA,
 			userId: user._id,
 		};
 		ToApplyActions
 			.postMyToApply(transformedData)
 			.then((response: MyFutureApplicationResponseModel) => {
-				void toast(`My Future Application for ${response.jobLink} Added Successfully`, 'success');
 				onClose();
-				handleMyFutureApplicationsReset();
-				getAllMyToApply();
+				void toast(`My Future Application for ${response.jobLink} Added Successfully`, 'success');
+				handleReset();
+				getAllMyFutureApplications();
 				setHomeScreenState(homeScreenPages.MY_FUTURE_APPLICATIONS);
 			})
-			.catch((error) => void toast(error.response.data.error, 'error'))
+			.catch((err) => void toast(err.response.data.error, 'error'))
 			.finally(() => setIsLoading(false));
 	}
 
@@ -149,13 +153,19 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			label: "Applied Date",
 			name: "dateApplied",
 			definedDate: dateApplied,
+			isRequired: true,
 			setDate: setDateApplied,
 		},
 		{
 			label: "Closing Date",
 			name: "closingDate",
 			definedDate: closingDate,
+			isRequired: false,
+			hasCheckbox: true,
+			isCheckboxChecked: false,
+			hasClosingDate: hasClosingDate,
 			setDate: setClosingDate,
+			setHasClosingDate: setHasClosingDate,
 		},
 	];
 
@@ -194,7 +204,12 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 				<ModalCloseButton my={2}/>
 				<Divider mb={'1rem'}/>
 				<ModalBody>
-					<Tabs isFitted colorScheme={"gray"}>
+					<Tabs
+						isFitted
+						colorScheme={"gray"}
+						defaultIndex={currentTab}
+						onChange={(tabNumber: number): void => setCurrentTab(tabNumber)}
+					>
 						<TabList>
 							<Tab>Job</Tab>
 							<Tab>Connection</Tab>
@@ -202,11 +217,8 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 						</TabList>
 						<TabPanels>
 							<TabPanel>
-								<CustomFormProvider formProviderData={jobMethods}>
-									<VStack
-										as="form"
-										onSubmit={jobMethods.handleSubmit(handleJobSave)}
-									>
+								<CustomFormProvider formProviderData={myJobMethods}>
+									<VStack as="form" onSubmit={myJobMethods.handleSubmit(handleMyJobSave)}>
 										<InputControl
 											py={2}
 											className="prevent-select"
@@ -214,10 +226,8 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											label="Company"
 											inputProps={{
 												placeholder: 'Company',
-												maxLength: 64, // TODO: Apply the rules
 											}}
 											isRequired
-
 										/>
 										<InputControl
 											py={2}
@@ -231,15 +241,20 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 										/>
 										<FormControl py={2} className={"prevent-select"}>
 											<FormLabel>Job Description</FormLabel>
-											<TextareaControl name={'description'}/>
+											<TextareaControl
+												name={'description'}
+												textareaProps={{
+													placeholder: 'Job Description',
+												}}
+											/>
 										</FormControl>
-										<CustomSelect
+										<CustomTagSelect
 											name={"category"}
 											className={"prevent-select"}
 											py={2}
 											choices={jobListingCategories}
 											label={"Job Category"}
-											control={jobMethods.control}
+											control={myJobMethods.control}
 										/>
 										<InputControl
 											py={2}
@@ -255,10 +270,8 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 												<CustomDateSelect
 													key={index}
 													{...date}
-													jobControl={jobMethods.control}
+													control={myJobMethods.control}
 													className={"prevent-select"}
-													percentWidth={100}
-													isRequired={true}
 												/>
 											))}
 										</HStack>
@@ -268,9 +281,14 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											py={2}
 											choices={statuses}
 											label={"Job Status"}
-											control={jobMethods.control}
+											control={myJobMethods.control}
 											isRequired={true}
+											placeholder={"Select Status"}
 										/>
+										<FormControl py={2} className={"prevent-select"}>
+											<FormLabel>Note</FormLabel>
+											<TextareaControl name={'note'}/>
+										</FormControl>
 										<ButtonGroup my={2} w={"100%"}>
 											<SubmitButton
 												isLoading={isLoading}
@@ -284,7 +302,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											<ResetButton
 												isLoading={isLoading}
 												width="full"
-												onClick={handleJobReset}
+												onClick={handleReset}
 												colorScheme={"red"}
 												variant={"outline"}
 											>Reset</ResetButton>
@@ -293,10 +311,10 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 								</CustomFormProvider>
 							</TabPanel>
 							<TabPanel>
-								<CustomFormProvider formProviderData={poolMethods}>
+								<CustomFormProvider formProviderData={myConnectionMethods}>
 									<VStack
 										as="form"
-										onSubmit={poolMethods.handleSubmit(handlePoolSave)}
+										onSubmit={myConnectionMethods.handleSubmit(handleMyConnectionSave)}
 									>
 										<InputControl
 											pt={4}
@@ -323,9 +341,8 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 												<CustomDateSelect
 													key={index}
 													{...date}
-													poolControl={poolMethods.control}
+													control={myConnectionMethods.control}
 													className={"prevent-select"}
-													percentWidth={100}
 												/>
 											))}
 										</HStack>
@@ -342,7 +359,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											<ResetButton
 												isLoading={isLoading}
 												width="full"
-												onClick={handlePoolReset}
+												onClick={handleReset}
 												colorScheme={"red"}
 												variant={"outline"}
 											>Reset</ResetButton>
@@ -351,10 +368,10 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 								</CustomFormProvider>
 							</TabPanel>
 							<TabPanel>
-								<CustomFormProvider formProviderData={toApplyMethods}>
+								<CustomFormProvider formProviderData={myFutureApplicationMethods}>
 									<VStack
 										as="form"
-										onSubmit={toApplyMethods.handleSubmit(handleToApplySave)}
+										onSubmit={myFutureApplicationMethods.handleSubmit(handleToApplySave)}
 									>
 										<InputControl
 											py={2}
@@ -389,11 +406,9 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 												<CustomDateSelect
 													key={index}
 													{...date}
-													jobControl={jobMethods.control}
+													control={myFutureApplicationMethods.control}
 													className={"prevent-select"}
-													percentWidth={100}
 													minDate={new Date()}
-													definedDate={tomorrowDate}
 												/>
 											))}
 										</HStack>
@@ -410,7 +425,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 											<ResetButton
 												isLoading={isLoading}
 												width="full"
-												onClick={handleJobReset}
+												onClick={handleReset}
 												colorScheme={"red"}
 												variant={"outline"}
 											>Reset</ResetButton>
