@@ -2,18 +2,27 @@ import React from "react";
 
 import loadingAtom from "../../atoms/loadingAtom.ts";
 import CustomFormProvider from "../customComponents/CustomFormProvider.tsx";
-import CustomTagSelect from "../customComponents/CustomTagSelect.tsx";
-import CustomSelect from "../customComponents/CustomSelect.tsx";
 
-import {ButtonGroup, Checkbox, FormControl, FormLabel, HStack, TabPanel, VStack} from "@chakra-ui/react";
+import {
+	ButtonGroup,
+	Checkbox,
+	FormControl,
+	FormErrorMessage,
+	FormLabel,
+	HStack,
+	TabPanel,
+	VStack
+} from "@chakra-ui/react";
 import {InputControl, ResetButton, SubmitButton, TextareaControl} from "react-hook-form-chakra";
-import {jobListingCategories} from "../../helpers/categories.ts";
 import {Controller} from "react-hook-form";
 import {SingleDatepicker} from "chakra-dayzed-datepicker";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
-import {DateSelectType} from "../../models/types.ts";
+import {CategorySelectionModel, DateSelectType} from "../../models/types.ts";
 import {useRecoilValue} from "recoil";
 import {AddMyJobTabPanelProps} from "../../models/interfaces.ts";
+import {CreatableSelect, GroupBase, Select} from "chakra-react-select";
+import {jobListingCategories} from "../../helpers/categories.ts";
+import {FaCaretRight} from "react-icons/fa6";
 
 const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 	{
@@ -22,6 +31,10 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 	}
 ) => {
 	const isLoading = useRecoilValue<boolean>(loadingAtom);
+
+	const formatGroupLabel = (data: GroupBase<CategorySelectionModel>) => (
+		<span className={"customSelectGroupLabel"}><FaCaretRight/>&nbsp;{data.label}</span>
+	);
 
 	return (
 		<TabPanel>
@@ -50,13 +63,52 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 							textareaProps={{placeholder: 'Job Description'}}
 						/>
 					</FormControl>
-					<CustomTagSelect
+					<Controller
 						name={"category"}
-						className={"prevent-select"}
-						py={2}
-						choices={jobListingCategories}
-						label={"Job Category"}
-						control={myJobMethods.control}
+						render={(
+							{
+								field: {onChange, onBlur, name, ref, value},
+								fieldState: {error},
+							}) => (
+							<FormControl
+								py={2}
+								className={"prevent-select"}
+								isInvalid={!!error}
+								id={name}
+							>
+								<FormLabel>Job Category</FormLabel>
+								<CreatableSelect
+									isLoading={isLoading}
+									isDisabled={isLoading}
+									menuPlacement="auto"
+									name={name}
+									placeholder={"Select or Add Your Own Category"}
+									ref={ref}
+									onChange={(selectedOptions) => onChange(selectedOptions)}
+									onBlur={onBlur}
+									closeMenuOnSelect={false}
+									options={jobListingCategories}
+									isClearable
+									isMulti
+									formatGroupLabel={formatGroupLabel}
+									value={value || []}
+									onCreateOption={(inputValue) => {
+										const newOption: CategorySelectionModel = {
+											label: inputValue[0].toUpperCase() + inputValue.slice(1),
+											value: inputValue,
+											color: "#26A69A",
+										};
+										const updatedSelections = [...(value || []), newOption];
+										onChange(updatedSelections);
+									}}
+									isOptionDisabled={(option: CategorySelectionModel) =>
+										(value && value.length >= 5) &&
+										!value.some((v: CategorySelectionModel) => v.value === option.value)
+									}
+								/>
+								<FormErrorMessage>{error && error.message}</FormErrorMessage>
+							</FormControl>
+						)}
 					/>
 					<InputControl
 						py={2}
@@ -104,15 +156,27 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 							/>
 						))}
 					</HStack>
-					<CustomSelect
+					<Controller
 						name={"status"}
-						className={"prevent-select"}
-						py={2}
-						choices={statuses}
-						label={"Job Status"}
-						control={myJobMethods.control}
-						isRequired={true}
-						placeholder={"Select Status"}
+						render={({field, fieldState: {error}}) => (
+							<FormControl
+								py={2}
+								className={"prevent-select"}
+								isInvalid={!!error}
+								id={"status"}
+								isRequired={true}
+							>
+								<FormLabel>Job Status</FormLabel>
+								<Select
+									placeholder={"Select Status"}
+									menuPlacement={"auto"}
+									onChange={field.onChange}
+									options={statuses}
+									value={field.value}
+								/>
+								<FormErrorMessage>{error && error.message}</FormErrorMessage>
+							</FormControl>
+						)}
 					/>
 					<FormControl py={2} className={"prevent-select"}>
 						<FormLabel>Note</FormLabel>
