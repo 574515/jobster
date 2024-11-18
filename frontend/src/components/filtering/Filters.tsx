@@ -5,7 +5,7 @@ import StatusFilters from "./StatusFilters.tsx";
 import TextSearch from "./TextSearch.tsx";
 
 import {Accordion} from "@chakra-ui/react";
-import {FiltersType} from "../../models/componentsTypes.ts";
+import {FiltersType} from "../../models/types.ts";
 import {FilterProps} from "../../models/interfaces.ts";
 
 const Filters: React.FC<FilterProps> = (
