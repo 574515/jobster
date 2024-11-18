@@ -1,6 +1,6 @@
-import {Formats} from "../models/otherTypes.ts";
+import {DefaultStringKeyStringModel} from "../models/types.ts";
 
-export const TIME_FORMATS: Formats = {
+export const TIME_FORMATS: DefaultStringKeyStringModel = {
 	"af-ZA": "yyyy/MM/dd",
 	"am-ET": "d/M/yyyy",
 	"ar-AE": "dd/MM/yyyy",
