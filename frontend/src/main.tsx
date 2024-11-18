@@ -7,7 +7,7 @@ import {RecoilRoot} from "recoil";
 import {BrowserRouter} from "react-router-dom";
 import {ChakraProvider, ColorModeScript, extendTheme} from "@chakra-ui/react";
 import {mode} from "@chakra-ui/theme-tools";
-import {ThemeType} from "./models/componentsTypes.ts";
+import {ThemeType} from "./models/types.ts";
 
 import './index.css'
 
@@ -35,6 +35,7 @@ const colors = {
 const theme = extendTheme({config, styles, colors});
 
 createRoot(document.getElementById('root')!).render(
+	// TODO: Remove Restrict before deployment
 	<React.StrictMode>
 		<RecoilRoot>
 			<BrowserRouter>
