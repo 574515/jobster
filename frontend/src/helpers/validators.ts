@@ -47,6 +47,7 @@ export const MyJobValidationSchema = yupResolver(Yup.object({
 		})).max(
 		Constants.MAX_CATEGORIES, `You can pick up to ${Constants.MAX_CATEGORIES} categories`
 	),
+	note: Yup.string(),
 	jobLink: Yup.string(),
 	status: Yup.object({
 		value: Yup.string().required(),

@@ -1,6 +1,10 @@
-import {HomeScreenPagesType, SortByOptionType} from '../models/componentsTypes.ts';
-import {DefaultStringKeyNumberModel, DefaultStringKeyStringModel} from '../models/types.ts';
-import {ModalSelectType} from '../models/customComponentsTypes.ts';
+import {
+	DefaultStringKeyNumberModel,
+	DefaultStringKeyStringModel,
+	HomeScreenPagesType,
+	ModalSelectType,
+	SortByOptionType
+} from '../models/types.ts';
 
 export const Constants = {
 	MIN_LENGTH_COMPANY_NAME: 2,
