@@ -30,7 +30,7 @@ export const RegisterValidationSchema = yupResolver(Yup.object({
 		.oneOf([Yup.ref('password')], 'Passwords must match'),
 }));
 
-export const NewJobValidationSchema = yupResolver(Yup.object({
+export const MyJobValidationSchema = yupResolver(Yup.object({
 	company: Yup.string()
 		.min(Constants.MIN_LENGTH_COMPANY_NAME, `Company name has to be at least ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
 		.max(Constants.MAX_LENGTH_COMPANY_NAME, `Company name can not be more than ${Constants.MAX_LENGTH_COMPANY_NAME} characters`)
@@ -40,11 +40,13 @@ export const NewJobValidationSchema = yupResolver(Yup.object({
 		.max(Constants.MAX_LENGTH_JOB_NAME, `Job title can not be more than ${Constants.MAX_LENGTH_JOB_NAME} characters`)
 		.required(),
 	description: Yup.string(),
-	category: Yup
-		.object({
+	category: Yup.array().of(
+		Yup.object({
 			value: Yup.string(),
 			label: Yup.string(),
-		}),
+		})).max(
+		Constants.MAX_CATEGORIES, `You can pick up to ${Constants.MAX_CATEGORIES} categories`
+	),
 	jobLink: Yup.string(),
 	status: Yup.object({
 		value: Yup.string().required(),
@@ -55,11 +57,27 @@ export const NewJobValidationSchema = yupResolver(Yup.object({
 	closingDate: Yup.date(),
 }));
 
-export const NewConnectionValidationSchema = yupResolver(Yup.object({
+export const NoteValidationSchema = yupResolver(Yup.object({
+	note: Yup.string()
+		.max(Constants.MAX_LENGTH_NOTE, `Note cannot be more than ${Constants.MAX_LENGTH_NOTE} characters`),
+}));
+
+export const MyConnectionValidationSchema = yupResolver(Yup.object({
 	company: Yup.string()
 		.min(Constants.MIN_LENGTH_COMPANY_NAME, `Company name has to be at least ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
 		.max(Constants.MAX_LENGTH_COMPANY_NAME, `Company name can not be more than ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
 		.required(),
 	jobLink: Yup.string(),
 	dateSent: Yup.date(),
+}));
+
+export const MyToApplyValidationSchema = yupResolver(Yup.object({
+	company: Yup.string()
+		.min(Constants.MIN_LENGTH_COMPANY_NAME, `Company name has to be at least ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
+		.max(Constants.MAX_LENGTH_COMPANY_NAME, `Company name can not be more than ${Constants.MIN_LENGTH_COMPANY_NAME} characters`),
+	jobTitle: Yup.string()
+		.min(Constants.MIN_LENGTH_JOB_NAME, `Job title has to be at least ${Constants.MIN_LENGTH_JOB_NAME} characters`)
+		.max(Constants.MAX_LENGTH_JOB_NAME, `Job title can not be more than ${Constants.MAX_LENGTH_JOB_NAME} characters`),
+	jobLink: Yup.string().required(),
+	closingDateMFA: Yup.date(),
 }));
