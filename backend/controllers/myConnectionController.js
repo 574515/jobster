@@ -5,25 +5,33 @@ const addMyConnection = async (req, res) => {
     try {
         const { company, jobLink, dateSent, userId } = req.body;
         const myConnection = new MyConnection({
-            company, jobLink, dateSent, userId
+            company, jobLink, dateSent, user: userId
         });
         await myConnection.save();
-        if (myConnection) res.status(201).json(myConnection);
-        else res.status(400).json({ error: 'Invalid connection data' });
+        if (myConnection) res.status(201).json(myConnection); else res.status(400).json({ error: 'Invalid connection data' });
     } catch (err) {
         res.status(500).json({ error: err.message });
         console.log(`Error in connection creation: ${err.message}`);
     }
 };
 
+const handleNote = async (req, res) => {
+    const { connectionId } = req.params;
+    const { note } = req.body;
+    try {
+        let myJob = await MyConnection.findOneAndUpdate({ _id: connectionId }, { $set: { note } }, null);
+        res.status(200).json(myJob);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log(`Error in update note my job: ${err.message}`);
+    }
+};
+
 const deleteMyConnection = async (req, res) => {
     try {
         const { connectionId } = req.params;
-        const myConnection = await MyConnection.findByIdAndDelete(
-            { _id: connectionId }, null
-        ).select("company");
-        if (myConnection) res.status(200).json(myConnection);
-        else res.status(404).json({ error: 'No connection found' })
+        const myConnection = await MyConnection.findByIdAndDelete({ _id: connectionId }, null);
+        if (myConnection) res.status(200).json({ deletedProperty: myConnection["company"] }); else res.status(404).json({ error: 'No connection found' })
     } catch (err) {
         res.status(500).json({ error: err.message });
         console.log(`Error in connection deletion: ${err.message}`);
@@ -33,9 +41,7 @@ const deleteMyConnection = async (req, res) => {
 const getAllConnections = async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await User.findOne(
-            { _id: userId }, null, { lean: true }
-        );
+        const user = await User.findOne({ _id: userId }, null, { lean: true });
         if (!user) return res.status(404).json({ error: 'User not found' });
         const allConnections = await MyConnection
             .find({ user: userId }, null, { lean: true })
@@ -43,8 +49,7 @@ const getAllConnections = async (req, res) => {
             .select('-user')
             .select('-__v')
             .sort({ dateSent: -1 });
-        if (allConnections) res.status(201).json(allConnections);
-        else res.status(400).json({ error: 'Invalid connections data' });
+        if (allConnections) res.status(201).json(allConnections); else res.status(400).json({ error: 'Invalid connections data' });
     } catch (err) {
         res.status(500).json({ error: err.message });
         console.log(`Error in get connections: ${err.message}`);
@@ -52,7 +57,5 @@ const getAllConnections = async (req, res) => {
 };
 
 export {
-    addMyConnection,
-    deleteMyConnection,
-    getAllConnections
+    addMyConnection, handleNote, deleteMyConnection, getAllConnections
 }
