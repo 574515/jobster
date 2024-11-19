@@ -6,8 +6,6 @@ const myFutureApplicationSchema = new mongoose.Schema({
         },
         jobTitle: {
             type: String,
-            minLength: 2,
-            maxLength: 256,
         },
         jobLink: {
             type: String,
@@ -15,6 +13,11 @@ const myFutureApplicationSchema = new mongoose.Schema({
         },
         closingDate: {
             type: Date,
+        },
+        note: {
+            type: String,
+            maxLength: 1024,
+            default: null,
         },
         user: {
             type: mongoose.Types.ObjectId,

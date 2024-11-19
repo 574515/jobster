@@ -13,6 +13,11 @@ const myConnectionSchema = new mongoose.Schema({
         dateSent: {
             type: Date,
         },
+        note: {
+            type: String,
+            maxLength: 1024,
+            default: null,
+        },
         user: {
             type: mongoose.Types.ObjectId,
             ref: "User"

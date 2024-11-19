@@ -26,7 +26,11 @@ const myJobSchema = new mongoose.Schema({
         },
         category: {
             type: Array,
-            of: String,
+            of: {
+                label: String,
+                value: String,
+                color: String,
+            },
         },
         dateApplied: {
             type: Date,
@@ -34,7 +38,11 @@ const myJobSchema = new mongoose.Schema({
         },
         closingDate: {
             type: Date,
-            required: true,
+        },
+        note: {
+            type: String,
+            maxLength: 1024,
+            default: null,
         },
         user: {
             type: mongoose.Types.ObjectId,
