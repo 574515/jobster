@@ -6,7 +6,7 @@ import {StatusFiltersProps} from "../../models/interfaces.ts";
 
 const StatusFilters: React.FC<StatusFiltersProps> = ({listOfFilters}) => {
 	return (listOfFilters.map((filter: FiltersType, index: number) => (
-			<AccordionItem key={index}>
+			<AccordionItem key={index} borderStyle={index === 0 ? "none" : "solid"}>
 				<h2>
 					<AccordionButton>
 						<Box className={"prevent-select"} as='span' flex='1' textAlign='center'>

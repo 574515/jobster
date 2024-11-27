@@ -10,7 +10,7 @@ import {useRecoilValue} from "recoil";
 
 const SortBy: React.FC<SortByProps> = (
 	{
-		allMyJobs, setAllMyJobs,
+		allMyJobs, setAllMyJobs, isPhone,
 		allMyConnections, setAllMyConnections,
 		allMyFutureApplications, setAllMyFutureApplications,
 	}
@@ -18,7 +18,13 @@ const SortBy: React.FC<SortByProps> = (
 	const [sortOptions, setSortOptions] = React.useState<SortByOptionType[]>([]);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 
-	React.useEffect(() => setSortOptions(sortByOptions[homeScreenState]), [homeScreenState]);
+	React.useEffect(() => {
+		const sortOptions: SortByOptionType[] = sortByOptions[homeScreenState];
+		setSortOptions(isPhone ? sortOptions.map(item => ({
+			...item,
+			whatDate: `Sort By ${item.whatDate}`,
+		})) : sortOptions);
+	}, [homeScreenState, isPhone]);
 
 	const handleSort = (e: React.BaseSyntheticEvent) => {
 		switch (homeScreenState) {

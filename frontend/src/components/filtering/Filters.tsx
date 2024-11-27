@@ -37,7 +37,7 @@ const Filters: React.FC<FilterProps> = (
 	];
 
 	return (
-		<Accordion w={"100%"} onChange={(e: number) => setFilterActive(e)} allowToggle>
+		<Accordion w={"100%"} p={0} onChange={(e: number) => setFilterActive(e)} allowToggle>
 			<StatusFilters listOfFilters={listOfFilters}/>
 		</Accordion>
 	);

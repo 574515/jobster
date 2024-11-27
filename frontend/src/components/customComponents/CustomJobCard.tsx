@@ -9,6 +9,12 @@ import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
 
 import {CustomJobCardProps} from "../../models/interfaces.ts";
 import {
+	Accordion,
+	AccordionButton,
+	AccordionIcon,
+	AccordionItem,
+	AccordionPanel,
+	Box,
 	Card,
 	CardBody,
 	CardFooter,
@@ -24,6 +30,7 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
+	Show,
 	Tag,
 	Text,
 	Textarea,
@@ -38,7 +45,7 @@ import {statusesToSet} from "../../helpers/constants.ts";
 import {JobActions} from "../AppActions.action.ts";
 import {toast} from "../../helpers/customToast.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
-import {ModalSelectType} from "../../models/types.ts";
+import {LabelValueType, ModalSelectType} from "../../models/types.ts";
 
 import '../../styles/componentStyle.css';
 
@@ -62,21 +69,33 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 	} = useDisclosure();
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
 	const userLocale = useRecoilValue<string>(userLocaleAtom);
-	const [textareaHeight, setTextareaHeight] = React.useState<string>("0vh");
+	const [textareaDescHeight, setTextareaDescHeight] = React.useState<string>("0vh");
+	const [textareaNoteHeight, setTextareaNoteHeight] = React.useState<string>("0vh");
 	const [tagShadow, setTagShadow] = React.useState<string>("");
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 
 	React.useEffect(() => {
-		const lengthOfDesc = item.description?.length;
-		if (lengthOfDesc) {
-			const lessThan500 = lengthOfDesc <= 500;
-			const moreThan500LessThan1000 = lengthOfDesc > 500 && lengthOfDesc <= 1000;
-			const moreThan1000 = lengthOfDesc > 1000;
-			if (lessThan500) setTextareaHeight("10vh");
-			if (moreThan500LessThan1000) setTextareaHeight("20vh");
-			if (moreThan1000) setTextareaHeight("25vh");
+		if (window.innerWidth < 400) {
+			if (item.description && item.description.length > 350) setTextareaDescHeight("50vh")
+			if (item.note && item.note.length > 350) setTextareaNoteHeight("50vh");
+		} else {
+			const lengthOfDesc = item.description?.length;
+			if (lengthOfDesc) {
+				if (lengthOfDesc <= 500) {
+					setTextareaDescHeight("10vh");
+					setTextareaNoteHeight("10vh");
+				}
+				if (lengthOfDesc > 500 && lengthOfDesc <= 1000) {
+					setTextareaDescHeight("20vh");
+					setTextareaNoteHeight("20vh");
+				}
+				if (lengthOfDesc > 1000) {
+					setTextareaDescHeight("25vh");
+					setTextareaNoteHeight("25vh");
+				}
+			}
 		}
-	}, [item.description?.length]);
+	}, [item.description, item.note]);
 
 	React.useEffect(() => setTagShadow(`inset 0 0 0px 1px ${item.status.color}`), [item.status.color]);
 
@@ -85,7 +104,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 	const handleLinkOpen = () => window.open(item.jobLink, '_blank');
 
 	const handleTagChange = (status: ModalSelectType) => {
-		if (status.value === item.status.value) return undefined;
+		if (status.value === item.status.value) return;
 		setIsLoading(true);
 		JobActions
 			.changeMyJobStatus(item._id, status)
@@ -112,6 +131,26 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 
 	const getTagColor = (status: ModalSelectType) => {
 		return status.value === item.status.value ? "black" : "white";
+	}
+
+	const accordionItems: LabelValueType[] = [
+		{
+			label: "Description",
+			value: item.description,
+			height: textareaDescHeight,
+		},
+		{
+			label: "Note",
+			value: item.note,
+			height: textareaNoteHeight,
+			onClick: onAddEditNoteOpen,
+		},
+	];
+
+	const getValue = (): string => {
+		if (item.description && item.description.length > 0) return item.description;
+		if (item.note && item.note.length > 0) return item.note;
+		return '';
 	}
 
 	return (
@@ -151,17 +190,76 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					<Heading size='md'>
 						<Link href={item.jobLink}>{item.jobTitle}</Link>
 					</Heading>
-					{item.description &&
-                        <Textarea
-                            readOnly
-                            mt={3}
-                            className={"descriptionOutline"}
-                            maxHeight={"25vh"}
-                            resize={"none"}
-                            height={textareaHeight}
-                            value={item.description}
-                        />
-					}
+					<Show above={"sm"}>
+						{item.description &&
+                            <React.Fragment>
+                                <Show below={"md"}>
+                                    <Text mt={4}>Description</Text>
+                                </Show>
+                                <Textarea
+                                    readOnly
+                                    mt={3}
+                                    className={"descriptionOutline"}
+                                    maxHeight={"25vh"}
+                                    resize={"none"}
+                                    height={textareaDescHeight}
+                                    value={item.description}
+                                />
+                            </React.Fragment>
+						}
+					</Show>
+					<Show below={"md"}>
+						{(item.description && item.note) ?
+							(<Accordion allowMultiple defaultIndex={[]} mt={4}>
+								{accordionItems.map((accordionItem: LabelValueType, index: number) => (
+									<AccordionItem key={index} border={"none"}>
+										<AccordionButton
+											color={"#aaa"}
+											_expanded={{
+												color: "#fff"
+											}}
+											_hover={{
+												background: "none",
+											}}
+										>
+											<Box className={"prevent-select"} as='span' flex='1'
+											     textAlign='center'>
+												{accordionItem.label}
+											</Box>
+											<AccordionIcon/>
+										</AccordionButton>
+										<AccordionPanel pb={4} justifyContent={"center"}>
+											<Textarea
+												readOnly
+												mt={3}
+												className={"descriptionOutline"}
+												maxHeight={"25vh"}
+												resize={"none"}
+												height={accordionItem.height}
+												value={accordionItem.value}
+												onClick={() => accordionItem.onClick && accordionItem.onClick()}
+											/>
+										</AccordionPanel>
+									</AccordionItem>
+								))}
+							</Accordion>)
+							: (item.description || item.note) && (
+							<React.Fragment>
+								<Text mt={2}>
+									{item.description ? 'Description' : 'Note'}
+								</Text>
+								<Textarea
+									readOnly
+									mt={3}
+									className={"descriptionOutline"}
+									maxHeight={"25vh"}
+									resize={"none"}
+									height={item.description ? textareaDescHeight : textareaNoteHeight}
+									value={getValue()}
+								/>
+							</React.Fragment>
+						)}
+					</Show>
 					<HStack mb={2} mt={4} width={'100%'}>
 						<VStack w={"100%"}>
 							<Text className={"prevent-select"} color={"gray.400"}>
@@ -232,6 +330,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 				isCentered
 				scrollBehavior={"inside"}
 				closeOnEsc={true}
+				size={{base: "xs", md: "lg"}}
 			>
 				<ModalOverlay/>
 				<ModalContent>
@@ -241,7 +340,8 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					<ModalCloseButton my={2}/>
 					<Divider mb={'1rem'}/>
 					<ModalBody pt={2} pb={4} px={4}>
-						<Grid templateColumns='repeat(2, 1fr)' gap={2} w={"100%"} h={"100%"}>
+						<Grid templateColumns={{base: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)'}} gap={2} w={"100%"}
+						      h={"100%"}>
 							{statusesToSet.map((status: ModalSelectType, index: number) => (
 								<Tag
 									className={getTagClassName(status)}

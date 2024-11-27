@@ -1,33 +1,29 @@
 import React from "react";
-
-import AuthContext from "../context/AuthContext.tsx";
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import loadingAtom from "../atoms/loadingAtom.ts";
 import userAtom from "../atoms/userAtom.ts";
 import AddListingModal from "../components/AddListingModal.tsx";
-import Filters from "../components/filtering/Filters.tsx";
 import LoadingOverlay from "../components/LoadingOverlay.tsx";
 import MyJobs from "../components/MyJobs.tsx";
-import SortBy from "../components/filtering/SortBy.tsx";
 
 import {
+	Accordion,
+	AccordionButton,
+	AccordionIcon,
+	AccordionItem,
+	AccordionPanel,
 	Badge,
-	Button,
-	ButtonGroup,
-	Divider,
+	Box,
 	Flex,
-	Heading,
-	HStack,
+	Show,
 	Text,
 	Tooltip,
-	useDisclosure,
-	VStack
+	useDisclosure
 } from "@chakra-ui/react";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {useForm} from "react-hook-form";
 import {ConnectionActions, JobActions, ToApplyActions} from "../components/AppActions.action.ts";
 import {
-	AuthContextType,
 	CustomUser,
 	HomeScreenPagesType,
 	MyConnectionResponseModel,
@@ -38,18 +34,17 @@ import {
 	defaultMyConnectionValues,
 	defaultMyFutureApplicationValues,
 	defaultMyJobValues,
-	homeScreenPages,
-	homeScreenPagesList
+	homeScreenPages
 } from "../helpers/constants.ts";
 import {MyConnectionValidationSchema, MyJobValidationSchema, MyToApplyValidationSchema} from "../helpers/validators.ts";
 import {ConstantItemNames} from "../helpers/enums.ts";
 import {toast} from "../helpers/customToast.ts";
-import {FaArrowRightFromBracket, FaPlus} from "react-icons/fa6";
+import Header from "../components/Header.tsx";
+import CombinedFilters from "../components/filtering/CombinedFilters.tsx";
+
 
 const Home = () => {
 	const {onOpen, isOpen, onClose} = useDisclosure();
-	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
-	const logoutUser = authContext ? authContext.logoutUser : undefined;
 	const user = useRecoilValue<CustomUser | null>(userAtom);
 	const [isLoading, setIsLoading] = useRecoilState<boolean>(loadingAtom);
 	const [homeScreenState, setHomeScreenState] = useRecoilState<string>(homeScreenAtom);
@@ -130,15 +125,6 @@ const Home = () => {
 		defaultValues: defaultMyFutureApplicationValues,
 	});
 
-	const handleLogout = async () => {
-		setIsLoading(true);
-		if (logoutUser) {
-			await logoutUser()
-				.catch((err) => void toast(err.data.error, 'error'))
-				.finally(() => setIsLoading(false));
-		}
-	}
-
 	const handlePageClick = (pageValue: string) => {
 		if (pageValue === homeScreenPages.MY_JOBS && allMyJobs.length === 0) return;
 		if (pageValue === homeScreenPages.MY_CONNECTIONS && allMyConnections.length === 0) return;
@@ -209,97 +195,98 @@ const Home = () => {
 		<React.Fragment>
 			<LoadingOverlay isLoading={isLoading}/>
 			{user && (
-				<Flex justifyContent="center">
-					<React.Fragment>
-						<VStack alignItems="start" w="100%">
-							<HStack w="100%">
-								<HStack justifyContent="space-evenly" w="100%">
-									{homeScreenPagesList.map((page: HomeScreenPagesType, index: number): React.ReactNode => (
-										<Heading
-											my="1rem"
-											size="md"
-											key={index}
-											onClick={() => handlePageClick(page.value)}
-											className={getClassName(page)}
-											px={4}
-											py={2}
-											borderBottom={getBottomBorder(page)}
-											color={getColor(page)}
-										>
-											{getHeading(page)}
-										</Heading>
-									))}
-								</HStack>
-								<ButtonGroup>
-									<Button leftIcon={<FaPlus/>} variant="outline" colorScheme="gray" onClick={onOpen}>
-										Add
-									</Button>
-									<Button leftIcon={<FaArrowRightFromBracket/>} variant="outline" colorScheme="gray"
-									        onClick={handleLogout}>
-										Logout [{user.username}]
-									</Button>
-								</ButtonGroup>
-							</HStack>
-							<Divider/>
-							<HStack alignItems="start" w="100%">
-								{homeScreenState === homeScreenPages.MY_JOBS && (
-									<MyJobs
-										allMyJobs={filteredMyJobs}
-										getAllMyJobs={getAllMyJobs}
+				<React.Fragment>
+					<Header
+						handlePageClick={handlePageClick}
+						getClassName={getClassName}
+						getBottomBorder={getBottomBorder}
+						getColor={getColor}
+						getHeading={getHeading}
+						onOpen={onOpen}
+					/>
+					<Show below={"md"}>
+						<Accordion w={"100%"} allowToggle>
+							<AccordionItem border={"none"}>
+								<h2>
+									<AccordionButton>
+										<Box className={"prevent-select"} as='span' flex='1' textAlign='center'>
+											Filters
+										</Box>
+										<AccordionIcon/>
+									</AccordionButton>
+								</h2>
+								<AccordionPanel
+									justifyContent={"center"}
+									display={"flex"}
+									flexDirection={"column"}
+									p={0}
+								>
+									<CombinedFilters
+										allMyJobs={allMyJobs}
+										setAllMyJobs={setAllMyJobs}
+										setMyJobsFiltered={setMyJobsFiltered}
+										setFilterActive={setFilterActive}
+										setCheckedStatuses={setCheckedStatuses}
+										checkedStatuses={checkedStatuses}
+										setAllMyConnections={setAllMyConnections}
 										allMyConnections={allMyConnections}
-										getAllMyConnections={getAllMyConnections}
-										allMyFutureApplications={userToApplyListings}
-										getAllMyFutureApplications={getAllMyFutureApplications}
+										userToApplyListings={userToApplyListings}
+										setUserToApplyListings={setUserToApplyListings}
+										totalNumberOfListings={totalNumberOfListings}
 									/>
-								)}
-								{homeScreenState === homeScreenPages.MY_CONNECTIONS && (
-									<MyJobs
-										allMyJobs={filteredMyJobs}
-										getAllMyJobs={getAllMyJobs}
-										allMyConnections={allMyConnections}
-										getAllMyConnections={getAllMyConnections}
-										allMyFutureApplications={userToApplyListings}
-										getAllMyFutureApplications={getAllMyFutureApplications}
-									/>
-								)}
-								{homeScreenState === homeScreenPages.MY_FUTURE_APPLICATIONS && (
-									<MyJobs
-										allMyJobs={filteredMyJobs}
-										getAllMyJobs={getAllMyJobs}
-										allMyConnections={allMyConnections}
-										getAllMyConnections={getAllMyConnections}
-										allMyFutureApplications={userToApplyListings}
-										getAllMyFutureApplications={getAllMyFutureApplications}
-									/>
-								)}
-								<VStack w={"100%"}>
-									<VStack w={"100%"} p={3} justifyContent="center" gap={5}>
-										<Text className={"prevent-select"} fontWeight={"bold"}>Sort By</Text>
-										<SortBy
-											allMyJobs={allMyJobs}
-											setAllMyJobs={setAllMyJobs}
-											allMyConnections={allMyConnections}
-											setAllMyConnections={setAllMyConnections}
-											allMyFutureApplications={userToApplyListings}
-											setAllMyFutureApplications={setUserToApplyListings}
-										/>
-									</VStack>
-									{homeScreenState === homeScreenPages.MY_JOBS && (
-										<VStack w={"100%"} p={3} justifyContent="center" gap={5}>
-											<Filters
-												checkedStatuses={checkedStatuses}
-												setCheckedStatuses={setCheckedStatuses}
-												allMyJobs={allMyJobs}
-												setMyJobsFiltered={setMyJobsFiltered}
-												setFilterActive={setFilterActive}
-											/>
-											<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
-										</VStack>
-									)}
-								</VStack>
-							</HStack>
-						</VStack>
-					</React.Fragment>
+								</AccordionPanel>
+							</AccordionItem>
+						</Accordion>
+					</Show>
+					<Flex justifyContent={"space-evenly"} mt={4} mb={6}>
+						<React.Fragment>
+							{homeScreenState === homeScreenPages.MY_JOBS && (
+								<MyJobs
+									allMyJobs={filteredMyJobs}
+									getAllMyJobs={getAllMyJobs}
+									allMyConnections={allMyConnections}
+									getAllMyConnections={getAllMyConnections}
+									allMyFutureApplications={userToApplyListings}
+									getAllMyFutureApplications={getAllMyFutureApplications}
+								/>
+							)}
+							{homeScreenState === homeScreenPages.MY_CONNECTIONS && (
+								<MyJobs
+									allMyJobs={filteredMyJobs}
+									getAllMyJobs={getAllMyJobs}
+									allMyConnections={allMyConnections}
+									getAllMyConnections={getAllMyConnections}
+									allMyFutureApplications={userToApplyListings}
+									getAllMyFutureApplications={getAllMyFutureApplications}
+								/>
+							)}
+							{homeScreenState === homeScreenPages.MY_FUTURE_APPLICATIONS && (
+								<MyJobs
+									allMyJobs={filteredMyJobs}
+									getAllMyJobs={getAllMyJobs}
+									allMyConnections={allMyConnections}
+									getAllMyConnections={getAllMyConnections}
+									allMyFutureApplications={userToApplyListings}
+									getAllMyFutureApplications={getAllMyFutureApplications}
+								/>
+							)}
+							<Show above={"sm"}>
+								<CombinedFilters
+									allMyJobs={allMyJobs}
+									setAllMyJobs={setAllMyJobs}
+									setMyJobsFiltered={setMyJobsFiltered}
+									setFilterActive={setFilterActive}
+									setCheckedStatuses={setCheckedStatuses}
+									checkedStatuses={checkedStatuses}
+									setAllMyConnections={setAllMyConnections}
+									allMyConnections={allMyConnections}
+									userToApplyListings={userToApplyListings}
+									setUserToApplyListings={setUserToApplyListings}
+									totalNumberOfListings={totalNumberOfListings}
+								/>
+							</Show>
+						</React.Fragment>
+					</Flex>
 					<AddListingModal
 						isOpen={isOpen}
 						onClose={onClose}
@@ -311,7 +298,7 @@ const Home = () => {
 						myConnectionMethods={myConnectionMethods}
 						myFutureApplicationMethods={myFutureApplicationMethods}
 					/>
-				</Flex>
+				</React.Fragment>
 			)}
 		</React.Fragment>
 	);

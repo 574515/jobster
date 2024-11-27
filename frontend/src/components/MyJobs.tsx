@@ -19,17 +19,23 @@ const MyJobs: React.FC<MyJobsProps> = (
 		allMyFutureApplications, getAllMyFutureApplications
 	}
 ) => {
-	const [templateColumns, setTemplateColumns] = React.useState<string>("");
+	const [templateColumns, setTemplateColumns] = React.useState<{ [key: string]: string; }>();
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 	const isLoading = useRecoilValue<boolean>(loadingAtom);
 
 	React.useEffect(() => {
-		if (homeScreenState === homeScreenPages.MY_JOBS) setTemplateColumns('repeat(4, 1fr)');
-		else setTemplateColumns('repeat(5, 1fr)');
+		if (homeScreenState === homeScreenPages.MY_JOBS) setTemplateColumns({
+			sm: 'repeat(1, 1fr)',
+			md: 'repeat(4, 1fr)'
+		});
+		else setTemplateColumns({
+			sm: 'repeat(1, 1fr)',
+			md: 'repeat(5, 1fr)'
+		});
 	}, [homeScreenState]);
 
 	return (
-		<VStack minW={'75%'}>
+		<VStack minW={'75%'} w={"100%"}>
 			<Grid templateColumns={templateColumns} gap={5} w={"100%"}>
 				{homeScreenState === homeScreenPages.MY_JOBS && (allMyJobs && allMyJobs.length > 0) && !isLoading &&
 					allMyJobs.map((listing: MyJobResponseModel, index: number) => (
