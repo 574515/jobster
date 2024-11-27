@@ -218,3 +218,16 @@ export type DeleteItemType = {
 export type DeleteItemItemType = {
 	_id: string;
 }
+
+export type LabelValueType = {
+	height: string;
+	label?: string;
+	value?: string;
+
+	onClick?(): void;
+}
+
+export type WindowSizeType = {
+	height: number;
+	width: number;
+}

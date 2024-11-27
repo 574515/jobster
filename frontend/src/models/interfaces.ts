@@ -6,6 +6,7 @@ import {
 	DeleteItemItemType,
 	DeleteItemType,
 	FiltersType,
+	HomeScreenPagesType,
 	ModalSelectType,
 	MyConnectionRequestModel,
 	MyConnectionResponseModel,
@@ -42,6 +43,20 @@ export interface CustomFutureApplicationCardProps {
 	item: MyFutureApplicationResponseModel;
 
 	getAllItems(): void;
+}
+
+export interface HeaderProps {
+	handlePageClick(pageValue: string): void;
+
+	getClassName(page: HomeScreenPagesType): string;
+
+	getBottomBorder(page: HomeScreenPagesType): string | undefined;
+
+	getColor(page: HomeScreenPagesType): string;
+
+	getHeading(page: HomeScreenPagesType): React.ReactNode;
+
+	onOpen(): void;
 }
 
 export interface AddEditJobModalProps {
@@ -108,6 +123,7 @@ export interface SortByProps {
 	allMyJobs?: MyJobResponseModel[];
 	allMyConnections?: MyConnectionResponseModel[];
 	allMyFutureApplications?: MyFutureApplicationResponseModel[];
+	isPhone: boolean;
 
 	setAllMyJobs?(searchListings: MyJobResponseModel[]): void;
 
@@ -174,4 +190,24 @@ export interface AddMyFutureApplicationTabPanelProps {
 	userLocale: string;
 
 	handleToApplySave(data: MyFutureApplicationRequestModel): void;
+}
+
+export interface CombinedFiltersProps {
+	allMyJobs?: MyJobResponseModel[];
+	allMyConnections?: MyConnectionResponseModel[];
+	userToApplyListings?: MyFutureApplicationResponseModel[];
+	totalNumberOfListings: number;
+	checkedStatuses: Record<string, boolean>;
+
+	setAllMyJobs?(searchListings: MyJobResponseModel[]): void;
+
+	setAllMyConnections?(searchListings: MyConnectionResponseModel[]): void;
+
+	setUserToApplyListings?(searchListings: MyFutureApplicationResponseModel[]): void;
+
+	setCheckedStatuses(updater: (prevState: Record<string, boolean>) => Record<string, boolean>): void;
+
+	setMyJobsFiltered(searchListings: MyJobResponseModel[]): void;
+
+	setFilterActive(filterActive: number): void;
 }
