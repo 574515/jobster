@@ -8,7 +8,7 @@ import {homeScreenPages} from "../../helpers/constants.ts";
 import {CombinedFiltersProps} from "../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
 import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
-import {WindowSizeType} from "../../models/types.ts";
+import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
 const CombinedFilters: React.FC<CombinedFiltersProps> = (
 	{
@@ -25,27 +25,13 @@ const CombinedFilters: React.FC<CombinedFiltersProps> = (
 		totalNumberOfListings,
 	}
 ) => {
-	const [isPhone, setIsPhone] = React.useState<boolean>(false);
-	const [windowSize, setWindowSize] = React.useState<WindowSizeType>({
-		width: window.innerWidth,
-		height: window.innerHeight
-	});
-
-	React.useEffect(() => {
-		const handleResize = () => setWindowSize({width: window.innerWidth, height: window.innerHeight});
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, []);
-
-	React.useEffect(() => setIsPhone(windowSize.width < 400), [windowSize.width]);
-
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 
 	return (
 		<VStack w={"100%"} alignItems={"center"} px={4} gap={2}>
 			{!isPhone && <Text className={"prevent-select"} fontWeight={"bold"}>Sort By</Text>}
 			<SortBy
-				isPhone={isPhone}
 				allMyJobs={allMyJobs}
 				setAllMyJobs={setAllMyJobs}
 				allMyConnections={allMyConnections}

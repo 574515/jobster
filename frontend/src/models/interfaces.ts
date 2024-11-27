@@ -123,7 +123,6 @@ export interface SortByProps {
 	allMyJobs?: MyJobResponseModel[];
 	allMyConnections?: MyConnectionResponseModel[];
 	allMyFutureApplications?: MyFutureApplicationResponseModel[];
-	isPhone: boolean;
 
 	setAllMyJobs?(searchListings: MyJobResponseModel[]): void;
 

@@ -20,7 +20,7 @@ import {
 	Tooltip,
 	useDisclosure
 } from "@chakra-ui/react";
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {useForm} from "react-hook-form";
 import {ConnectionActions, JobActions, ToApplyActions} from "../components/AppActions.action.ts";
 import {
@@ -28,7 +28,8 @@ import {
 	HomeScreenPagesType,
 	MyConnectionResponseModel,
 	MyFutureApplicationResponseModel,
-	MyJobResponseModel
+	MyJobResponseModel,
+	WindowSizeType
 } from "../models/types.ts";
 import {
 	defaultMyConnectionValues,
@@ -41,6 +42,8 @@ import {ConstantItemNames} from "../helpers/enums.ts";
 import {toast} from "../helpers/customToast.ts";
 import Header from "../components/Header.tsx";
 import CombinedFilters from "../components/filtering/CombinedFilters.tsx";
+import SortBy from "../components/filtering/SortBy.tsx";
+import isPhoneAtom from "../atoms/isPhoneAtom.ts";
 
 
 const Home = () => {
@@ -56,6 +59,19 @@ const Home = () => {
 	const [checkedStatuses, setCheckedStatuses] = React.useState<Record<string, boolean>>({});
 	const [totalNumberOfListings, setTotalNumberOfListings] = React.useState<number>(0);
 	const [filterActive, setFilterActive] = React.useState<number>(0);
+	const setIsPhone = useSetRecoilState<boolean>(isPhoneAtom);
+	const [windowSize, setWindowSize] = React.useState<WindowSizeType>({
+		width: window.innerWidth,
+		height: window.innerHeight
+	});
+
+	React.useEffect(() => {
+		const handleResize = () => setWindowSize({width: window.innerWidth, height: window.innerHeight});
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	React.useEffect(() => setIsPhone(windowSize.width < 400), [setIsPhone, windowSize.width]);
 
 	const getAllMyJobs = React.useCallback(() => {
 		if (user) {
@@ -204,40 +220,53 @@ const Home = () => {
 						getHeading={getHeading}
 						onOpen={onOpen}
 					/>
-					<Show below={"md"}>
-						<Accordion w={"100%"} allowToggle>
-							<AccordionItem border={"none"}>
-								<h2>
-									<AccordionButton>
-										<Box className={"prevent-select"} as='span' flex='1' textAlign='center'>
-											Filters
-										</Box>
-										<AccordionIcon/>
-									</AccordionButton>
-								</h2>
-								<AccordionPanel
-									justifyContent={"center"}
-									display={"flex"}
-									flexDirection={"column"}
-									p={0}
-								>
-									<CombinedFilters
-										allMyJobs={allMyJobs}
-										setAllMyJobs={setAllMyJobs}
-										setMyJobsFiltered={setMyJobsFiltered}
-										setFilterActive={setFilterActive}
-										setCheckedStatuses={setCheckedStatuses}
-										checkedStatuses={checkedStatuses}
-										setAllMyConnections={setAllMyConnections}
-										allMyConnections={allMyConnections}
-										userToApplyListings={userToApplyListings}
-										setUserToApplyListings={setUserToApplyListings}
-										totalNumberOfListings={totalNumberOfListings}
-									/>
-								</AccordionPanel>
-							</AccordionItem>
-						</Accordion>
-					</Show>
+					{homeScreenState === homeScreenPages.MY_JOBS ? (
+						<Show below={"md"}>
+							<Accordion w={"100%"} allowToggle>
+								<AccordionItem border={"none"}>
+									<h2>
+										<AccordionButton>
+											<Box className={"prevent-select"} as='span' flex='1' textAlign='center'>
+												Filters
+											</Box>
+											<AccordionIcon/>
+										</AccordionButton>
+									</h2>
+									<AccordionPanel
+										justifyContent={"center"}
+										display={"flex"}
+										flexDirection={"column"}
+										p={0}
+									>
+										<CombinedFilters
+											allMyJobs={allMyJobs}
+											setAllMyJobs={setAllMyJobs}
+											setMyJobsFiltered={setMyJobsFiltered}
+											setFilterActive={setFilterActive}
+											setCheckedStatuses={setCheckedStatuses}
+											checkedStatuses={checkedStatuses}
+											setAllMyConnections={setAllMyConnections}
+											allMyConnections={allMyConnections}
+											userToApplyListings={userToApplyListings}
+											setUserToApplyListings={setUserToApplyListings}
+											totalNumberOfListings={totalNumberOfListings}
+										/>
+									</AccordionPanel>
+								</AccordionItem>
+							</Accordion>
+						</Show>
+					) : (
+						<Show below={"md"}>
+							<SortBy
+								allMyJobs={allMyJobs}
+								setAllMyJobs={setAllMyJobs}
+								allMyConnections={allMyConnections}
+								setAllMyConnections={setAllMyConnections}
+								allMyFutureApplications={userToApplyListings}
+								setAllMyFutureApplications={setUserToApplyListings}
+							/>
+						</Show>
+					)}
 					<Flex justifyContent={"space-evenly"} mt={4} mb={6}>
 						<React.Fragment>
 							{homeScreenState === homeScreenPages.MY_JOBS && (

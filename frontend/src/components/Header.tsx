@@ -1,4 +1,4 @@
-import {homeScreenPagesList} from "../helpers/constants.ts";
+import {homeScreenPages, homeScreenPagesList} from "../helpers/constants.ts";
 import {AuthContextType, CustomUser, HomeScreenPagesType} from "../models/types.ts";
 import React from "react";
 import {Button, ButtonGroup, Divider, Flex, Heading, VStack} from "@chakra-ui/react";
@@ -9,6 +9,7 @@ import {useRecoilValue, useSetRecoilState} from "recoil";
 import loadingAtom from "../atoms/loadingAtom.ts";
 import userAtom from "../atoms/userAtom.ts";
 import {HeaderProps} from "../models/interfaces.ts";
+import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 
 const Header: React.FC<HeaderProps> = (
 	{
@@ -19,6 +20,7 @@ const Header: React.FC<HeaderProps> = (
 	const logoutUser = authContext ? authContext.logoutUser : undefined;
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 	const user = useRecoilValue<CustomUser | null>(userAtom);
+	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 
 	const handleLogout = async () => {
 		setIsLoading(true);
@@ -64,7 +66,7 @@ const Header: React.FC<HeaderProps> = (
 					</Button>
 				</ButtonGroup>
 			</Flex>
-			<Divider/>
+			{homeScreenState === homeScreenPages.MY_JOBS && <Divider/>}
 		</VStack>
 	);
 }

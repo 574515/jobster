@@ -7,16 +7,18 @@ import {FormControl, Select} from "@chakra-ui/react";
 import {homeScreenPages, sortByOptions} from "../../helpers/constants.ts";
 import {MyConnectionResponseModel, MyJobResponseModel, SortByOptionType} from "../../models/types.ts";
 import {useRecoilValue} from "recoil";
+import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
 const SortBy: React.FC<SortByProps> = (
 	{
-		allMyJobs, setAllMyJobs, isPhone,
+		allMyJobs, setAllMyJobs,
 		allMyConnections, setAllMyConnections,
 		allMyFutureApplications, setAllMyFutureApplications,
 	}
 ) => {
 	const [sortOptions, setSortOptions] = React.useState<SortByOptionType[]>([]);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 
 	React.useEffect(() => {
 		const sortOptions: SortByOptionType[] = sortByOptions[homeScreenState];
