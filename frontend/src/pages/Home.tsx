@@ -221,7 +221,7 @@ const Home = () => {
 						onOpen={onOpen}
 					/>
 					{homeScreenState === homeScreenPages.MY_JOBS ? (
-						<Show below={"md"}>
+						<Show below={"xl"}>
 							<Accordion w={"100%"} allowToggle>
 								<AccordionItem border={"none"}>
 									<h2>
@@ -256,7 +256,7 @@ const Home = () => {
 							</Accordion>
 						</Show>
 					) : (
-						<Show below={"md"}>
+						<Show below={"xl"}>
 							<SortBy
 								allMyJobs={allMyJobs}
 								setAllMyJobs={setAllMyJobs}
@@ -299,7 +299,7 @@ const Home = () => {
 									getAllMyFutureApplications={getAllMyFutureApplications}
 								/>
 							)}
-							<Show above={"sm"}>
+							<Show above={"xl"}>
 								<CombinedFilters
 									allMyJobs={allMyJobs}
 									setAllMyJobs={setAllMyJobs}
