@@ -44,6 +44,7 @@ import Header from "../components/Header.tsx";
 import CombinedFilters from "../components/filtering/CombinedFilters.tsx";
 import SortBy from "../components/filtering/SortBy.tsx";
 import isPhoneAtom from "../atoms/isPhoneAtom.ts";
+import {useTranslation} from "react-i18next";
 
 
 const Home = () => {
@@ -70,6 +71,8 @@ const Home = () => {
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
+
+	const {t} = useTranslation();
 
 	React.useEffect(() => setIsPhone(windowSize.width < 400), [setIsPhone, windowSize.width]);
 
@@ -186,7 +189,7 @@ const Home = () => {
 		);
 		const content = (
 			<Text>
-				{page.title}
+				{t(page.title)}
 				{badge}
 			</Text>
 		);

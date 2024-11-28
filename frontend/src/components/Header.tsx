@@ -11,6 +11,7 @@ import userAtom from "../atoms/userAtom.ts";
 import {HeaderProps} from "../models/interfaces.ts";
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
+import {useTranslation} from "react-i18next";
 
 const Header: React.FC<HeaderProps> = (
 	{
@@ -22,6 +23,7 @@ const Header: React.FC<HeaderProps> = (
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 	const user = useRecoilValue<CustomUser | null>(userAtom);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
+	const {t} = useTranslation();
 
 	const handleLogout = async () => {
 		setIsLoading(true);
@@ -58,12 +60,12 @@ const Header: React.FC<HeaderProps> = (
 				<ButtonGroup mt={{base: "1rem", sm: "unset"}}>
 					<Button leftIcon={<FaPlus/>} variant="outline" colorScheme="gray"
 					        onClick={onOpen}>
-						Add
+						{t('add')}
 					</Button>
 					<Button leftIcon={<FaArrowRightFromBracket/>} variant="outline"
 					        colorScheme="gray"
 					        onClick={handleLogout}>
-						Logout [{user.username}]
+						{t('logOut')} [{user.username}]
 					</Button>
 					<CustomLanguageSwitcher/>
 				</ButtonGroup>

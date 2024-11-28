@@ -1,4 +1,7 @@
 {
-  "welcome": "Welcome",
-  "currencySymbol": "£"
+  "logOut": "Log Out",
+  "My Jobs": "My Jobs",
+  "My Connections": "My Connections",
+  "My Future Applications": "My Future Applications",
+  "add": "Add"
 }
