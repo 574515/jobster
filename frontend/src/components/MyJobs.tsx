@@ -24,13 +24,19 @@ const MyJobs: React.FC<MyJobsProps> = (
 	const isLoading = useRecoilValue<boolean>(loadingAtom);
 
 	React.useEffect(() => {
-		if (homeScreenState === homeScreenPages.MY_JOBS) setTemplateColumns({
-			sm: 'repeat(1, 1fr)',
-			md: 'repeat(4, 1fr)'
-		});
+		if (homeScreenState === homeScreenPages.MY_JOBS)
+			setTemplateColumns({
+				base: 'repeat(1, 1fr)',
+				md: 'repeat(2, 1fr)',
+				lg: 'repeat(3, 1fr)',
+				'2xl': 'repeat(4, 1fr)',
+			});
 		else setTemplateColumns({
-			sm: 'repeat(1, 1fr)',
-			md: 'repeat(5, 1fr)'
+			base: 'repeat(1, 1fr)',
+			sm: 'repeat(2, 1fr)',
+			md: 'repeat(3, 1fr)',
+			lg: 'repeat(4, 1fr)',
+			'2xl': 'repeat(5, 1fr)',
 		});
 	}, [homeScreenState]);
 
