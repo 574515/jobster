@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = (
 				justifyContent="space-evenly"
 				w="100%"
 				alignItems={"center"}
-				flexDirection={{base: "column-reverse", md: "row"}}
+				flexDirection={{base: "column-reverse", xl: "row"}}
 			>
 				{homeScreenPagesList.map((page: HomeScreenPagesType, index: number): React.ReactNode => (
 					<Heading
