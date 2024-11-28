@@ -231,3 +231,9 @@ export type WindowSizeType = {
 	height: number;
 	width: number;
 }
+
+export type CustomLanguageSwitcherProps = {
+	languageCode: string;
+	flagCode: string;
+	label: string;
+}

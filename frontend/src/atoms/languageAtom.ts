@@ -1,6 +1,8 @@
-import {atom} from 'recoil';
+import {atom, RecoilState} from 'recoil';
 
-export const languageAtom = atom({
+const languageAtom: RecoilState<string> = atom({
 	key: 'languageAtom',
 	default: 'en-GB',
 });
+
+export default languageAtom;
