@@ -27,7 +27,7 @@ import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action
 import {toast} from "../helpers/customToast.ts";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {NoteValidationSchema} from "../helpers/validators.ts";
-import {MyJobCreationResponseType, MyJobResponseModel, NoteFormValues} from "../models/types.ts";
+import {MyJobResponseModel, NoteFormValues} from "../models/types.ts";
 import {Constants} from "../helpers/constants.ts";
 import {useRecoilState} from "recoil";
 import {ConstantItemNames} from "../helpers/enums.ts";
@@ -63,7 +63,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		setIsLoading(true);
 		if (identifier === ConstantItemNames.MY_JOBS) {
 			JobActions.handleNote(item._id, note)
-				.then((data: MyJobCreationResponseType) => {
+				.then((data: MyJobResponseModel) => {
 					void toast(`${data.jobTitle}'s Note Updated Successfully`, 'success');
 					getAllItems();
 				})
@@ -110,6 +110,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 			isCentered
 			scrollBehavior={"inside"}
 			closeOnEsc={true}
+			size={{base: "xs", md: "lg"}}
 		>
 			<ModalOverlay/>
 			<ModalContent>

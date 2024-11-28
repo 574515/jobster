@@ -48,6 +48,7 @@ import {ConstantItemNames} from "../../helpers/enums.ts";
 import {LabelValueType, ModalSelectType} from "../../models/types.ts";
 
 import '../../styles/componentStyle.css';
+import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (
 	{item, getAllItems}
@@ -70,32 +71,23 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
 	const userLocale = useRecoilValue<string>(userLocaleAtom);
 	const [textareaDescHeight, setTextareaDescHeight] = React.useState<string>("0vh");
-	const [textareaNoteHeight, setTextareaNoteHeight] = React.useState<string>("0vh");
 	const [tagShadow, setTagShadow] = React.useState<string>("");
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 
 	React.useEffect(() => {
 		if (window.innerWidth < 400) {
 			if (item.description && item.description.length > 350) setTextareaDescHeight("50vh")
-			if (item.note && item.note.length > 350) setTextareaNoteHeight("50vh");
 		} else {
 			const lengthOfDesc = item.description?.length;
 			if (lengthOfDesc) {
-				if (lengthOfDesc <= 500) {
-					setTextareaDescHeight("10vh");
-					setTextareaNoteHeight("10vh");
-				}
-				if (lengthOfDesc > 500 && lengthOfDesc <= 1000) {
-					setTextareaDescHeight("20vh");
-					setTextareaNoteHeight("20vh");
-				}
-				if (lengthOfDesc > 1000) {
-					setTextareaDescHeight("25vh");
-					setTextareaNoteHeight("25vh");
-				}
+				if (lengthOfDesc <= 500) setTextareaDescHeight("10vh");
+				if (lengthOfDesc > 500 && lengthOfDesc <= 1000) setTextareaDescHeight("20vh");
+				if (lengthOfDesc > 1000) setTextareaDescHeight("25vh");
 			}
 		}
 	}, [item.description, item.note]);
+
+	const textareaNoteHeight = useNoteBoxHeight(item.note);
 
 	React.useEffect(() => setTagShadow(`inset 0 0 0px 1px ${item.status.color}`), [item.status.color]);
 
@@ -256,6 +248,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 									resize={"none"}
 									height={item.description ? textareaDescHeight : textareaNoteHeight}
 									value={getValue()}
+									onClick={() => item.note && onAddEditNoteOpen()}
 								/>
 							</React.Fragment>
 						)}

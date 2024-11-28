@@ -8,14 +8,6 @@ import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
 import {CustomFutureApplicationCardProps} from "../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
 import {
-	AlertDialog,
-	AlertDialogBody,
-	AlertDialogContent,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogOverlay,
-	Button,
-	ButtonGroup,
 	Card,
 	CardBody,
 	CardHeader,
@@ -23,6 +15,7 @@ import {
 	HStack,
 	Tag,
 	Text,
+	Textarea,
 	useDisclosure,
 	VStack
 } from "@chakra-ui/react";
@@ -31,6 +24,8 @@ import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
 import {ToApplyActions} from "../AppActions.action.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
+import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
+import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 
 const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = (
 	{getAllItems, item}
@@ -60,6 +55,8 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 			return format(item.closingDateMFA, TIME_FORMATS[userLocale]);
 		else return "";
 	}
+
+	const noteBoxHeight = useNoteBoxHeight(item.note);
 
 	return (
 		<React.Fragment>
@@ -99,6 +96,23 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 							{item.jobTitle}
 						</Heading>
 					</VStack>
+					{item.note && (
+						<React.Fragment>
+							<Text mt={2}>
+								Note
+							</Text>
+							<Textarea
+								readOnly
+								mt={3}
+								className={"descriptionOutline"}
+								maxHeight={"25vh"}
+								resize={"none"}
+								height={noteBoxHeight}
+								value={item.note}
+								onClick={() => item.note && onAddEditNoteOpen()}
+							/>
+						</React.Fragment>
+					)}
 					<Tag
 						className={"prevent-select"}
 						size={'lg'}
@@ -114,35 +128,14 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 					</Tag>
 				</CardBody>
 			</Card>
-			<AlertDialog
-				isOpen={isOpen}
-				onClose={onClose}
-				leastDestructiveRef={cancelRef}
-			>
-				<AlertDialogOverlay>
-					<AlertDialogContent>
-						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-							Delete My Future Application Tracker
-							<br/>
-							[{item.jobLink}]
-						</AlertDialogHeader>
-						<AlertDialogBody>
-							Are You sure You want to <span className={"importantText"}>delete</span> it?
-							<br/>You can not undo this action afterwards.
-						</AlertDialogBody>
-						<AlertDialogFooter>
-							<ButtonGroup gap={2}>
-								<Button variant={"outline"} onClick={handleDelete} colorScheme='red'>
-									Delete
-								</Button>
-								<Button variant={"outline"} onClick={onClose} ref={cancelRef}>
-									Cancel
-								</Button>
-							</ButtonGroup>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialogOverlay>
-			</AlertDialog>
+			<CustomDeleteAlert
+				isDeleteOpen={isOpen}
+				onDeleteClose={onClose}
+				item={item}
+				handleDelete={handleDelete}
+				cancelRef={cancelRef}
+				type={"My Future Application Tracker"}
+			/>
 			<AddEditNote
 				isAddEditNoteOpen={isAddEditNoteOpen}
 				onAddEditNoteClose={onAddEditNoteClose}

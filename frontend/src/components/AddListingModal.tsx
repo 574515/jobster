@@ -39,6 +39,7 @@ import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action
 import {toast} from "../helpers/customToast.ts";
 import {AddEditJobModalProps} from "../models/interfaces.ts";
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+import isPhoneAtom from "../atoms/isPhoneAtom.ts";
 
 const AddListingModal: React.FC<AddEditJobModalProps> = (
 	{
@@ -56,6 +57,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 	const [closingDateMFA, setClosingDateMFA] = React.useState<Date>(new Date(+new Date() + Constants.DAY_IN_MILLISECONDS));
 	const [dateSent, setDateSent] = React.useState<Date>(new Date());
 	const [hasClosingDate, setHasClosingDate] = React.useState<boolean>(false);
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 
 	React.useEffect(() => setStatuses(statusesToSet), []);
 
@@ -184,7 +186,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			isCentered
 			scrollBehavior={"inside"}
 			closeOnEsc={true}
-			size={"xl"}
+			size={{base: "xs", md: "lg"}}
 		>
 			<ModalOverlay/>
 			<ModalContent>
@@ -193,7 +195,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 				</ModalHeader>
 				<ModalCloseButton my={2}/>
 				<Divider mb={'1rem'}/>
-				<ModalBody>
+				<ModalBody px={isPhone ? 4 : 8} py={isPhone ? 2 : 2}>
 					<Tabs
 						isFitted
 						colorScheme={"gray"}

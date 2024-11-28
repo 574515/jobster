@@ -6,6 +6,7 @@ import CustomFormProvider from "../customComponents/CustomFormProvider.tsx";
 import {
 	ButtonGroup,
 	Checkbox,
+	Flex,
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
@@ -23,6 +24,7 @@ import {AddMyJobTabPanelProps} from "../../models/interfaces.ts";
 import {CreatableSelect, GroupBase, Select} from "chakra-react-select";
 import {jobListingCategories} from "../../helpers/categories.ts";
 import {FaCaretRight} from "react-icons/fa6";
+import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
 const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 	{
@@ -31,13 +33,14 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 	}
 ) => {
 	const isLoading = useRecoilValue<boolean>(loadingAtom);
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 
 	const formatGroupLabel = (data: GroupBase<CategorySelectionModel>) => (
 		<span className={"customSelectGroupLabel"}><FaCaretRight/>&nbsp;{data.label}</span>
 	);
 
 	return (
-		<TabPanel>
+		<TabPanel px={isPhone ? "unset" : "initial"} py={2}>
 			<CustomFormProvider formProviderData={myJobMethods}>
 				<VStack as="form" onSubmit={myJobMethods.handleSubmit(handleMyJobSave)}>
 					<InputControl
@@ -117,7 +120,7 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 						label="Job Link"
 						inputProps={{placeholder: 'https://linktojob.com'}}
 					/>
-					<HStack w={"100%"} py={2}>
+					<Flex w={"100%"} py={2} columnGap={4} flexDirection={isPhone ? "column" : "row"}>
 						{myJobDateSelects.map((date: DateSelectType, index: number) => (
 							<Controller
 								key={index}
@@ -155,7 +158,7 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 								)}
 							/>
 						))}
-					</HStack>
+					</Flex>
 					<Controller
 						name={"status"}
 						render={({field, fieldState: {error}}) => (

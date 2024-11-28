@@ -6,29 +6,15 @@ import AddEditNote from "../AddEditNote.tsx";
 import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
 
 import {CustomConnectionCardProps} from "../../models/interfaces.ts";
-import {
-	AlertDialog,
-	AlertDialogBody,
-	AlertDialogContent,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogOverlay,
-	Button,
-	ButtonGroup,
-	Card,
-	CardBody,
-	CardHeader,
-	Heading,
-	HStack,
-	Tag,
-	useDisclosure
-} from "@chakra-ui/react";
+import {Card, CardBody, CardHeader, Heading, HStack, Tag, Text, Textarea, useDisclosure} from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
 import {useRecoilValue} from "recoil";
 import {ConnectionActions} from "../AppActions.action.ts";
 import {format} from "date-fns";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
+import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
+import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 
 const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 	{item, getAllItems}
@@ -42,6 +28,7 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 		onOpen: onAddEditNoteOpen,
 		onClose: onAddEditNoteClose,
 	} = useDisclosure();
+	// const [noteBoxHeight, setNoteBoxHeight] = React.useState<string>("");
 
 	React.useEffect(() => {
 		if (!customColor) setCustomColor("#FFFFFF");
@@ -58,6 +45,8 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 			return format(item.dateSent, TIME_FORMATS[userLocale]);
 		else return "";
 	}
+
+	const noteBoxHeight = useNoteBoxHeight(item.note);
 
 	return (
 		<React.Fragment>
@@ -99,6 +88,23 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 					>
 						{item.company}
 					</Heading>
+					{item.note && (
+						<React.Fragment>
+							<Text mt={2}>
+								Note
+							</Text>
+							<Textarea
+								readOnly
+								mt={3}
+								className={"descriptionOutline"}
+								maxHeight={"25vh"}
+								resize={"none"}
+								height={noteBoxHeight}
+								value={item.note}
+								onClick={() => item.note && onAddEditNoteOpen()}
+							/>
+						</React.Fragment>
+					)}
 					<Tag
 						className={"prevent-select"}
 						size={'lg'}
@@ -114,35 +120,14 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 					</Tag>
 				</CardBody>
 			</Card>
-			<AlertDialog
-				isOpen={isOpen}
-				onClose={onClose}
-				leastDestructiveRef={cancelRef}
-			>
-				<AlertDialogOverlay>
-					<AlertDialogContent>
-						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-							Delete Job Connection Tracker
-							<br/>
-							[{item.company}]
-						</AlertDialogHeader>
-						<AlertDialogBody>
-							Are You sure You want to <span className={"importantText"}>delete</span> it?
-							<br/>You can not undo this action afterwards.
-						</AlertDialogBody>
-						<AlertDialogFooter>
-							<ButtonGroup gap={2}>
-								<Button variant={"outline"} onClick={handleDelete} colorScheme='red'>
-									Delete
-								</Button>
-								<Button variant={"outline"} onClick={onClose} ref={cancelRef}>
-									Cancel
-								</Button>
-							</ButtonGroup>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialogOverlay>
-			</AlertDialog>
+			<CustomDeleteAlert
+				isDeleteOpen={isOpen}
+				onDeleteClose={onClose}
+				item={item}
+				handleDelete={handleDelete}
+				cancelRef={cancelRef}
+				type={"Job Connection Tracker"}
+			/>
 			<AddEditNote
 				isAddEditNoteOpen={isAddEditNoteOpen}
 				onAddEditNoteClose={onAddEditNoteClose}
