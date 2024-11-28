@@ -10,6 +10,7 @@ import loadingAtom from "../atoms/loadingAtom.ts";
 import userAtom from "../atoms/userAtom.ts";
 import {HeaderProps} from "../models/interfaces.ts";
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
+import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
 
 const Header: React.FC<HeaderProps> = (
 	{
@@ -64,6 +65,7 @@ const Header: React.FC<HeaderProps> = (
 					        onClick={handleLogout}>
 						Logout [{user.username}]
 					</Button>
+					<CustomLanguageSwitcher/>
 				</ButtonGroup>
 			</Flex>
 			{homeScreenState === homeScreenPages.MY_JOBS && <Divider/>}
