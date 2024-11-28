@@ -16,6 +16,7 @@ import {
 	Tag,
 	Text,
 	Textarea,
+	Tooltip,
 	useDisclosure,
 	VStack
 } from "@chakra-ui/react";
@@ -26,6 +27,7 @@ import {ToApplyActions} from "../AppActions.action.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
 import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
+import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
 
 const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = (
 	{getAllItems, item}
@@ -50,17 +52,28 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 		{getAllItems, item, deleteAction: ToApplyActions.deleteMyToApply}
 	);
 
+	const [closingDateMFATooltipOpen, setClosingDateMFATooltipOpen] = React.useState<boolean>(false);
+	const closingDateMFATooltipLabel = useTooltipLabel(item.closingDateMFA);
+
 	const getTag = () => {
-		if (item.closingDateMFA)
-			return format(item.closingDateMFA, TIME_FORMATS[userLocale]);
-		else return "";
+		if (item.closingDateMFA) {
+			return (
+				<Tooltip
+					label={<span>{closingDateMFATooltipLabel}</span>}
+					isOpen={closingDateMFATooltipOpen}
+				>
+					{format(item.closingDateMFA, TIME_FORMATS[userLocale])}
+				</Tooltip>
+			)
+
+		} else return "";
 	}
 
 	const noteBoxHeight = useNoteBoxHeight(item.note);
 
 	return (
 		<React.Fragment>
-			<Card maxW='sm' colorScheme={"red"}>
+			<Card colorScheme={"red"}>
 				<CardHeader pb={2}>
 					<HStack justifyContent={"space-between"}>
 						<Tag
@@ -123,6 +136,9 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 						color={"gray.400"}
 						mt={4}
 						mb={2}
+						onClick={() => setClosingDateMFATooltipOpen(!closingDateMFATooltipOpen)}
+						onMouseEnter={() => setClosingDateMFATooltipOpen(true)}
+						onMouseLeave={() => setClosingDateMFATooltipOpen(false)}
 					>
 						{getTag()}
 					</Tag>

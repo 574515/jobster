@@ -6,15 +6,27 @@ import AddEditNote from "../AddEditNote.tsx";
 import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
 
 import {CustomConnectionCardProps} from "../../models/interfaces.ts";
-import {Card, CardBody, CardHeader, Heading, HStack, Tag, Text, Textarea, useDisclosure} from "@chakra-ui/react";
+import {
+	Card,
+	CardBody,
+	CardHeader,
+	Heading,
+	HStack,
+	Tag,
+	Text,
+	Textarea,
+	Tooltip,
+	useDisclosure
+} from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
 import {useRecoilValue} from "recoil";
 import {ConnectionActions} from "../AppActions.action.ts";
-import {format} from "date-fns";
-import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
 import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
+import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
+import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
+import {format} from 'date-fns';
 
 const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 	{item, getAllItems}
@@ -40,17 +52,28 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 		{getAllItems, item, deleteAction: ConnectionActions.deleteMyConnection}
 	);
 
+	const [dateSentTooltipOpen, setDateSentTooltipOpen] = React.useState<boolean>(false);
+	const dateSentTooltipLabel = useTooltipLabel(item.dateSent);
+
 	const getTag = () => {
-		if (item.dateSent)
-			return format(item.dateSent, TIME_FORMATS[userLocale]);
-		else return "";
+		if (item.dateSent) {
+			return (
+				<Tooltip
+					label={<span>{dateSentTooltipLabel}</span>}
+					isOpen={dateSentTooltipOpen}
+				>
+					{format(item.dateSent, TIME_FORMATS[userLocale])}
+				</Tooltip>
+			)
+
+		} else return "";
 	}
 
 	const noteBoxHeight = useNoteBoxHeight(item.note);
 
 	return (
 		<React.Fragment>
-			<Card maxW='sm' colorScheme={"red"}>
+			<Card colorScheme={"red"}>
 				<CardHeader pb={2}>
 					<HStack justifyContent={"space-between"}>
 						<Tag
@@ -115,6 +138,9 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 						color={"gray.400"}
 						mt={4}
 						mb={2}
+						onClick={() => setDateSentTooltipOpen(!dateSentTooltipOpen)}
+						onMouseEnter={() => setDateSentTooltipOpen(true)}
+						onMouseLeave={() => setDateSentTooltipOpen(false)}
 					>
 						{getTag()}
 					</Tag>

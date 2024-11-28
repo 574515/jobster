@@ -34,11 +34,14 @@ import {
 	Tag,
 	Text,
 	Textarea,
+	Tooltip,
 	useDisclosure,
 	VStack
 } from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
-import {format} from "date-fns";
+import {format} from 'date-fns';
+
+
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {statusesToSet} from "../../helpers/constants.ts";
@@ -49,6 +52,7 @@ import {LabelValueType, ModalSelectType} from "../../models/types.ts";
 
 import '../../styles/componentStyle.css';
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
+import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (
 	{item, getAllItems}
@@ -145,9 +149,15 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 		return '';
 	}
 
+	const [dateAppliedTooltipOpen, setDateAppliedTooltipOpen] = React.useState<boolean>(false);
+	const [closingDateTooltipOpen, setClosingDateTooltipOpen] = React.useState<boolean>(false);
+
+	const dateAppliedTooltipLabel = <span>{useTooltipLabel(item.dateApplied)}</span>;
+	const closingDateTooltipLabel = <span>{useTooltipLabel(item.closingDate)}</span>;
+
 	return (
 		<React.Fragment>
-			<Card maxW='sm' colorScheme={"red"}>
+			<Card colorScheme={"red"}>
 				<CardHeader pb={2}>
 					<HStack justifyContent={"space-between"}>
 						<Tag
@@ -266,8 +276,16 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 								variant='outline'
 								colorScheme={"green"}
 								color={"gray.400"}
+								onClick={() => setDateAppliedTooltipOpen(!dateAppliedTooltipOpen)}
+								onMouseEnter={() => setDateAppliedTooltipOpen(true)}
+								onMouseLeave={() => setDateAppliedTooltipOpen(false)}
 							>
-								{format(item.dateApplied, TIME_FORMATS[userLocale])}
+								<Tooltip
+									label={dateAppliedTooltipLabel}
+									isOpen={dateAppliedTooltipOpen}
+								>
+									{format(item.dateApplied, TIME_FORMATS[userLocale])}
+								</Tooltip>
 							</Tag>
 						</VStack>
 						{item.closingDate && <VStack w={"100%"}>
@@ -282,14 +300,22 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
                                 variant='outline'
                                 colorScheme={"red"}
                                 color={"gray.400"}
+                                onClick={() => setClosingDateTooltipOpen(!closingDateTooltipOpen)}
+                                onMouseEnter={() => setClosingDateTooltipOpen(true)}
+                                onMouseLeave={() => setClosingDateTooltipOpen(false)}
                             >
-								{format(item.closingDate, TIME_FORMATS[userLocale])}
+                                <Tooltip
+                                    label={closingDateTooltipLabel}
+                                    isOpen={closingDateTooltipOpen}
+                                >
+									{format(item.closingDate, TIME_FORMATS[userLocale])}
+                                </Tooltip>
                             </Tag>
                         </VStack>}
 					</HStack>
 				</CardBody>
 				{(item?.category && item.category.length > 0) &&
-                    <CardFooter maxW={"sm"} gap={2} p={2}
+                    <CardFooter gap={2} p={2}
                                 bg={"#1b212b"}
                                 borderBottomRadius={"0.375rem"}
                                 flexWrap={"wrap"}
