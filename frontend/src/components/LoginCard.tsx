@@ -114,7 +114,7 @@ const LoginCard = () => {
 								<HStack spacing={5} w={"100%"} my={2}>
 									<SubmitButton
 										isLoading={isLoading}
-										loadingText="Submitting..."
+										loadingText={t("authentication.Submitting")}
 										width="100%"
 										margin={"auto"}
 									>{t("authentication.LogIn")}</SubmitButton>

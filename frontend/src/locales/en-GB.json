@@ -3,10 +3,13 @@
     "Login": "Login",
     "Username": "Username",
     "Password": "Password",
+    "RepeatPassword": "Repeat Password",
     "LogIn": "Log In",
     "noAccount": "Don't have an account?",
     "SignUp": "Sign Up",
-    "logOut": "Log Out"
+    "logOut": "Log Out",
+    "Submitting": "Submitting...",
+    "haveAccount": "Have an account?"
   },
   "My Jobs": "My Jobs",
   "My Connections": "My Connections",

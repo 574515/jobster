@@ -1,9 +1,10 @@
 import React from 'react';
 
-import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import AuthContext from "../context/AuthContext.tsx";
 import authScreenAtom from "../atoms/authScreenAtom.ts";
 import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
+import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
+import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
 
 import {toast} from "../helpers/customToast.ts";
 import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
@@ -28,6 +29,7 @@ import {forbiddenUsernames, getDefaultValues} from "../helpers/constants.ts";
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaCircleUser, FaLock} from "react-icons/fa6";
 import {AuthContextType, SignupValuesType} from "../models/types.ts";
+import {useTranslation} from "react-i18next";
 
 import '../styles/style.css'
 
@@ -48,6 +50,7 @@ const SignupCard = () => {
 		mode: "onChange"
 	});
 	const {colorMode} = useColorMode();
+	const {t} = useTranslation();
 
 	const isUsernameForbidden = () => {
 		return forbiddenUsernames.includes(signUpInputs.username);
@@ -55,7 +58,7 @@ const SignupCard = () => {
 
 	const handleSignup = async (data: SignupValuesType) => {
 		if (isUsernameForbidden()) {
-			void toast(`Username ${signUpInputs.username} is not allowed.`, "warning");
+			void toast(`${t("username")} ${signUpInputs.username} ${t("notAllowedUsername")}`, "warning");
 			return;
 		}
 		setIsLoading(true);
@@ -91,7 +94,7 @@ const SignupCard = () => {
 						>
 							<Stack align={'center'} mb={12}>
 								<Heading className="prevent-select" fontSize={'4xl'} textAlign="center">
-									Sign up
+									{t("authentication.SignUp")}
 								</Heading>
 							</Stack>
 							<Stack spacing={4} className={`custom-inputs-${colorMode}`}>
@@ -104,7 +107,7 @@ const SignupCard = () => {
 										inputProps={{autoFocus: true}}
 										className="prevent-select"
 										name="username"
-										label="Username"
+										label={t("authentication.Username")}
 										isRequired
 										sx={{boxShadow: "none"}}
 										leftElement={
@@ -121,7 +124,7 @@ const SignupCard = () => {
 									<InputControl
 										className="prevent-select"
 										name="password"
-										label="Password"
+										label={t("authentication.Password")}
 										isRequired
 										sx={{boxShadow: "none"}}
 										inputProps={{type: showPassword ? 'text' : 'password'}}
@@ -154,7 +157,7 @@ const SignupCard = () => {
 									<InputControl
 										className="prevent-select"
 										name="repeatPassword"
-										label="Repeat Password"
+										label={t("authentication.RepeatPassword")}
 										isRequired
 										sx={{boxShadow: "none"}}
 										inputProps={{
@@ -182,15 +185,18 @@ const SignupCard = () => {
 								<HStack spacing={5} w={"100%"} my={2}>
 									<SubmitButton
 										isLoading={isLoading}
-										loadingText="Submitting..."
+										loadingText={t("authentication.Submitting")}
 										width="100%"
 										margin={"auto"}
-									>Sign Up</SubmitButton>
+									>{t("authentication.SignUp")}</SubmitButton>
 									<CustomColorModeSwitch/>
+									<CustomLanguageSwitcher/>
 								</HStack>
 								<Text align={'center'} className="prevent-select">
-									Have an account?&nbsp;<Link onClick={() => setAuthScreen('login')}>Log
-									in!</Link>
+									{t("authentication.haveAccount")}&nbsp;<Link
+									onClick={() => setAuthScreen('login')}>
+									{t("authentication.LogIn")}!
+								</Link>
 								</Text>
 							</Stack>
 						</Box>
