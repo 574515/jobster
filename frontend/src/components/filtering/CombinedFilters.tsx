@@ -2,35 +2,29 @@ import React from "react";
 
 import SortBy from "./SortBy.tsx";
 import Filters from "./Filters.tsx";
+import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
+import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
 import {Text, VStack} from "@chakra-ui/react";
 import {homeScreenPages} from "../../helpers/constants.ts";
 import {CombinedFiltersProps} from "../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
-import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
-import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
+import {useTranslation} from "react-i18next";
 
 const CombinedFilters: React.FC<CombinedFiltersProps> = (
 	{
-		allMyJobs,
-		setAllMyJobs,
-		allMyConnections,
-		setAllMyConnections,
-		userToApplyListings,
-		setUserToApplyListings,
-		checkedStatuses,
-		setCheckedStatuses,
-		setMyJobsFiltered,
-		setFilterActive,
-		totalNumberOfListings,
+		allMyJobs, setAllMyJobs, allMyConnections, setAllMyConnections,
+		userToApplyListings, setUserToApplyListings, checkedStatuses, setCheckedStatuses,
+		setMyJobsFiltered, setFilterActive, totalNumberOfListings,
 	}
 ) => {
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
+	const {t} = useTranslation();
 
 	return (
 		<VStack w={"100%"} alignItems={"center"} px={4} gap={2}>
-			{!isPhone && <Text className={"prevent-select"} fontWeight={"bold"}>Sort By</Text>}
+			{!isPhone && <Text className={"prevent-select"} fontWeight={"bold"}>{t("filters.SortBy")}</Text>}
 			<SortBy
 				allMyJobs={allMyJobs}
 				setAllMyJobs={setAllMyJobs}
@@ -48,7 +42,7 @@ const CombinedFilters: React.FC<CombinedFiltersProps> = (
 						setMyJobsFiltered={setMyJobsFiltered}
 						setFilterActive={setFilterActive}
 					/>
-					<span><b>Total:</b> {totalNumberOfListings} job{totalNumberOfListings !== 1 && 's'}</span>
+					<span><b>{t("filters.TotalJobs")}:</b> {totalNumberOfListings}</span>
 				</VStack>
 			)}
 		</VStack>

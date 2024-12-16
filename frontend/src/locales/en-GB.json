@@ -18,8 +18,10 @@
     "Add": "Add",
     "LogOut": "Log Out",
     "emptyListings": "It is empty.",
-    "Filters": "Filters",
-    "myJobs": {
-    }
+    "Filters": "Filters"
+  },
+  "filters": {
+    "SortBy": "Sort By",
+    "TotalJobs": "Total Jobs"
   }
 }
