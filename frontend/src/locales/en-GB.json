@@ -11,11 +11,15 @@
     "Submitting": "Submitting...",
     "haveAccount": "Have an account?"
   },
-  "My Jobs": "My Jobs",
-  "My Connections": "My Connections",
-  "My Future Applications": "My Future Applications",
-  "add": "Add",
-  "emptyListings": "It is empty.",
-  "filters": "Filters",
-  "this_is_test_run": "This is <strong>test</strong> run"
+  "home": {
+    "My Jobs": "My Jobs",
+    "My Connections": "My Connections",
+    "My Future Applications": "My Future Applications",
+    "Add": "Add",
+    "LogOut": "Log Out",
+    "emptyListings": "It is empty.",
+    "Filters": "Filters",
+    "myJobs": {
+    }
+  }
 }
