@@ -7,6 +7,7 @@ import TextSearch from "./TextSearch.tsx";
 import {Accordion} from "@chakra-ui/react";
 import {FiltersType} from "../../models/types.ts";
 import {FilterProps} from "../../models/interfaces.ts";
+import {useTranslation} from "react-i18next";
 
 const Filters: React.FC<FilterProps> = (
 	{
@@ -14,9 +15,10 @@ const Filters: React.FC<FilterProps> = (
 		setMyJobsFiltered, setFilterActive,
 	}
 ) => {
+	const {t} = useTranslation();
 	const listOfFilters: FiltersType[] = [
 		{
-			filterName: "Search",
+			filterName: t("filters.Search"),
 			filterComponent: (
 				<TextSearch
 					allMyJobs={allMyJobs}
@@ -25,7 +27,7 @@ const Filters: React.FC<FilterProps> = (
 			),
 		},
 		{
-			filterName: "Status",
+			filterName: t("filters.Status"),
 			filterComponent: (
 				<StatusList
 					jobListings={allMyJobs}

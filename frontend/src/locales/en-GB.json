@@ -30,7 +30,18 @@
     "Newest": "Newest",
     "Oldest": "Oldest",
     "Later": "Later",
-    "Sooner": "Sooner"
+    "Sooner": "Sooner",
+    "Search": "Search",
+    "searchPlaceholder": "Name, company or description",
+    "Status": "Status",
+    "AllStatuses": "All Statuses",
+    "Applied": "Applied",
+    "Declined": "Declined",
+    "Testing": "Testing",
+    "Interview": "Interview",
+    "Cancelled": "Cancelled",
+    "Referral": "Referral",
+    "Offer": "Offer"
   },
   "phoneFilters": {
     "Sort By Date Applied": "Sort By Date Applied",
