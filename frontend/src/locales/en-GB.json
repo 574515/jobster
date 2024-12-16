@@ -54,5 +54,10 @@
     "Description": "Description",
     "Note": "Note",
     "ChangeApplicationStatus": "Change Application Status"
+  },
+  "myConnections": {
+    "Connected": "Connected",
+    "Note": "Note",
+    "JobConnectionTracker": "Job Connection Tracker"
   }
 }

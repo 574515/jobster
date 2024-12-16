@@ -27,7 +27,6 @@ import {ToApplyActions} from "../AppActions.action.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
 import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
-import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
 
 const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = (
 	{getAllItems, item}
@@ -53,15 +52,11 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 	);
 
 	const [closingDateMFATooltipOpen, setClosingDateMFATooltipOpen] = React.useState<boolean>(false);
-	const closingDateMFATooltipLabel = useTooltipLabel(item.closingDateMFA);
 
 	const getTag = () => {
 		if (item.closingDateMFA) {
 			return (
-				<Tooltip
-					label={<span>{closingDateMFATooltipLabel}</span>}
-					isOpen={closingDateMFATooltipOpen}
-				>
+				<Tooltip isOpen={closingDateMFATooltipOpen}>
 					{format(item.closingDateMFA, TIME_FORMATS[userLocale])}
 				</Tooltip>
 			)

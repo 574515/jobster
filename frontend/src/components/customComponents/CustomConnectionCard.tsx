@@ -24,9 +24,9 @@ import {ConnectionActions} from "../AppActions.action.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
 import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
-import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {format} from 'date-fns';
+import {useTranslation} from "react-i18next";
 
 const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 	{item, getAllItems}
@@ -40,7 +40,7 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 		onOpen: onAddEditNoteOpen,
 		onClose: onAddEditNoteClose,
 	} = useDisclosure();
-	// const [noteBoxHeight, setNoteBoxHeight] = React.useState<string>("");
+	const {t} = useTranslation();
 
 	React.useEffect(() => {
 		if (!customColor) setCustomColor("#FFFFFF");
@@ -53,15 +53,11 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 	);
 
 	const [dateSentTooltipOpen, setDateSentTooltipOpen] = React.useState<boolean>(false);
-	const dateSentTooltipLabel = useTooltipLabel(item.dateSent);
 
 	const getTag = () => {
 		if (item.dateSent) {
 			return (
-				<Tooltip
-					label={<span>{dateSentTooltipLabel}</span>}
-					isOpen={dateSentTooltipOpen}
-				>
+				<Tooltip isOpen={dateSentTooltipOpen}>
 					{format(item.dateSent, TIME_FORMATS[userLocale])}
 				</Tooltip>
 			)
@@ -85,7 +81,7 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 							color={customColor}
 							shadow={`inset 0 0 0px 1px ${customColor}`}
 						>
-							Connected
+							{t("myConnections.Connected")}
 						</Tag>
 						<HStack>
 							<CustomAddNoteIcon item={item} onAddEditNoteOpen={onAddEditNoteOpen}/>
@@ -114,7 +110,7 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 					{item.note && (
 						<React.Fragment>
 							<Text mt={2}>
-								Note
+								{t("myConnections.Note")}
 							</Text>
 							<Textarea
 								readOnly
@@ -152,7 +148,7 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 				item={item}
 				handleDelete={handleDelete}
 				cancelRef={cancelRef}
-				type={"Job Connection Tracker"}
+				type={t(`myConnections.JobConnectionTracker`)}
 			/>
 			<AddEditNote
 				isAddEditNoteOpen={isAddEditNoteOpen}

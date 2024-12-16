@@ -1,6 +1,7 @@
 import React from "react";
 
 import useDeleteItem from "../../hooks/useDeleteItem.ts";
+import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 import AddEditNote from "../AddEditNote.tsx";
 import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
 import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
@@ -49,11 +50,9 @@ import {JobActions} from "../AppActions.action.ts";
 import {toast} from "../../helpers/customToast.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
 import {LabelValueType, ModalSelectType} from "../../models/types.ts";
+import {useTranslation} from "react-i18next";
 
 import '../../styles/componentStyle.css';
-import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
-import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
-import {useTranslation} from "react-i18next";
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (
 	{item, getAllItems}
@@ -154,9 +153,6 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 
 	const [dateAppliedTooltipOpen, setDateAppliedTooltipOpen] = React.useState<boolean>(false);
 	const [closingDateTooltipOpen, setClosingDateTooltipOpen] = React.useState<boolean>(false);
-
-	const dateAppliedTooltipLabel = <span>{useTooltipLabel(item.dateApplied)}</span>;
-	const closingDateTooltipLabel = <span>{useTooltipLabel(item.closingDate)}</span>;
 
 	return (
 		<React.Fragment>
@@ -286,10 +282,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 								onMouseEnter={() => setDateAppliedTooltipOpen(true)}
 								onMouseLeave={() => setDateAppliedTooltipOpen(false)}
 							>
-								<Tooltip
-									label={dateAppliedTooltipLabel}
-									isOpen={dateAppliedTooltipOpen}
-								>
+								<Tooltip isOpen={dateAppliedTooltipOpen}>
 									{format(item.dateApplied, TIME_FORMATS[userLocale])}
 								</Tooltip>
 							</Tag>
@@ -310,10 +303,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
                                 onMouseEnter={() => setClosingDateTooltipOpen(true)}
                                 onMouseLeave={() => setClosingDateTooltipOpen(false)}
                             >
-                                <Tooltip
-                                    label={closingDateTooltipLabel}
-                                    isOpen={closingDateTooltipOpen}
-                                >
+                                <Tooltip isOpen={closingDateTooltipOpen}>
 									{format(item.closingDate, TIME_FORMATS[userLocale])}
                                 </Tooltip>
                             </Tag>
