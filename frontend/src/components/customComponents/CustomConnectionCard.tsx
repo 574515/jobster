@@ -148,7 +148,7 @@ const CustomConnectionCard: React.FC<CustomConnectionCardProps> = (
 				item={item}
 				handleDelete={handleDelete}
 				cancelRef={cancelRef}
-				type={t(`myConnections.JobConnectionTracker`)}
+				type={t(`myConnections.type`)}
 			/>
 			<AddEditNote
 				isAddEditNoteOpen={isAddEditNoteOpen}

@@ -16,8 +16,8 @@ const CustomLanguageSwitcher = () => {
 	const [isLoading, setIsLoading] = useRecoilState<boolean>(loadingAtom);
 
 	const languages: CustomLanguageSwitcherProps[] = [
-		{languageCode: 'en-GB', flagCode: 'GB', label: 'English'},
-		{languageCode: 'sv-SE', flagCode: 'SE', label: 'Svenska'},
+		{languageCode: 'enGB', flagCode: 'GB', label: 'English'},
+		{languageCode: 'svSE', flagCode: 'SE', label: 'Svenska'},
 	];
 	const selectedLanguage = languages.find(lang => lang.languageCode === currentLanguage) || languages[0];
 
@@ -47,8 +47,10 @@ const CustomLanguageSwitcher = () => {
 			<MenuButton
 				as={IconButton}
 				icon={<Flag code={selectedLanguage.flagCode} style={{width: 24, height: 16}}/>}
-				variant="outline"
+				variant="ghost"
 				isLoading={isLoading}
+				_active={{background: "none"}}
+				_hover={{background: "none"}}
 			/>
 			<MenuList>
 				<MenuOptionGroup value={selectedLanguage.languageCode} type="radio">
@@ -58,10 +60,7 @@ const CustomLanguageSwitcher = () => {
 							value={lang.languageCode}
 							onClick={() => changeLanguage(lang.languageCode)}
 						>
-							<Flex
-								alignItems={"center"}
-								gap={2}
-							>
+							<Flex alignItems={"center"} gap={2}>
 								<Flag code={lang.flagCode} style={{width: 24, height: 16}}/>
 								<Text>{lang.label}</Text>
 							</Flex>

@@ -53,11 +53,23 @@
   "myJobs": {
     "Description": "Description",
     "Note": "Note",
-    "ChangeApplicationStatus": "Change Application Status"
+    "ChangeApplicationStatus": "Change Application Status",
+    "type": "My Job Application Tracker"
   },
   "myConnections": {
     "Connected": "Connected",
     "Note": "Note",
-    "JobConnectionTracker": "Job Connection Tracker"
+    "type": "My Job Connection Tracker"
+  },
+  "myFutureApplications": {
+    "TODO": "TODO",
+    "Note": "Note",
+    "type": "My Future Application Tracker"
+  },
+  "components": {
+    "Delete": "Delete",
+    "Cancel": "Cancel",
+    "deleteMessage": "Are you sure you want to <strong>delete</strong> <italic>{{type}}</italic>?<br />This cannot be undone.",
+    "AddNote": "Add Note"
   }
 }

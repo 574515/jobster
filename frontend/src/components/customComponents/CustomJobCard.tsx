@@ -337,7 +337,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 				item={item}
 				handleDelete={handleDelete}
 				cancelRef={cancelRef}
-				type={"Job Application Tracker"}
+				type={t("myJobs.type")}
 			/>
 			<Modal
 				isOpen={isStatusChangeOpen}

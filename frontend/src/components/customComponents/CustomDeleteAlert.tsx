@@ -1,5 +1,7 @@
 import React from "react";
 
+import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
+
 import {
 	AlertDialog,
 	AlertDialogBody,
@@ -13,12 +15,15 @@ import {
 } from "@chakra-ui/react";
 import {CustomDeleteAlertProps} from "../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
-import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
+import {Trans, useTranslation} from "react-i18next";
+
+import "../../styles/style.css"
 
 const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 	{isDeleteOpen, onDeleteClose, cancelRef, item, handleDelete, type}
 ) => {
 	const isPhone = useRecoilValue(isPhoneAtom);
+	const {t} = useTranslation();
 	return (
 		<AlertDialog
 			isOpen={isDeleteOpen}
@@ -28,23 +33,30 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 			isCentered={isPhone}
 		>
 			<AlertDialogOverlay>
-				<AlertDialogContent>
+				<AlertDialogContent className={"prevent-select"}>
 					<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-						Delete {type ?? ''}
+						{t("components.Delete")} {type}
 						<br/>
 						{item.company && <Text>[{item.company}]</Text>}
 					</AlertDialogHeader>
 					<AlertDialogBody>
-						Are You sure You want to <span className={"importantText"}>delete</span> it?
-						<br/>You can not undo this action afterwards.
+						<Trans
+							i18nKey={"components.deleteMessage"}
+							components={{
+								strong: <b/>,
+								italic: <i/>,
+								br: <br/>,
+							}}
+							values={{type}}
+						/>
 					</AlertDialogBody>
 					<AlertDialogFooter>
 						<ButtonGroup gap={2}>
 							<Button variant={"outline"} onClick={handleDelete} colorScheme='red'>
-								Delete
+								{t("components.Delete")}
 							</Button>
 							<Button variant={"outline"} onClick={onDeleteClose} ref={cancelRef}>
-								Cancel
+								{t("components.Cancel")}
 							</Button>
 						</ButtonGroup>
 					</AlertDialogFooter>

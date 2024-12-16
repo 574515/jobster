@@ -4,12 +4,14 @@ import {Tooltip} from "@chakra-ui/react";
 import {FaNotesMedical, FaNoteSticky} from "react-icons/fa6";
 import {CustomAddNoteIconProps} from "../../models/interfaces.ts";
 import {CustomIconProps} from "../../models/types.ts";
+import {useTranslation} from "react-i18next";
 
 const CustomAddNoteIcon: React.FC<CustomAddNoteIconProps> = (
 	{item, onAddEditNoteOpen}
 ) => {
 	const [customIcon, setCustomIcon] = React.useState<React.ReactNode>();
 	const [customLabel, setCustomLabel] = React.useState<string>();
+	const {t} = useTranslation();
 
 	React.useEffect(() => {
 		const iconProps: CustomIconProps = {
@@ -20,10 +22,10 @@ const CustomAddNoteIcon: React.FC<CustomAddNoteIconProps> = (
 			setCustomLabel(item.note);
 			setCustomIcon(<FaNoteSticky {...iconProps}/>);
 		} else {
-			setCustomLabel("Add Note");
+			setCustomLabel(t("components.AddNote"));
 			setCustomIcon(<FaNotesMedical {...iconProps}/>);
 		}
-	}, [item]);
+	}, [item, t]);
 
 	return (
 		<Tooltip label={customLabel} hasArrow>
