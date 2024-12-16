@@ -25,6 +25,7 @@
     "Sort By": "Sort By",
     "TotalJobs": "Total Jobs",
     "Date Applied": "Date Applied",
+    "Applied Date": "Applied Date",
     "DateApplied": "Date Applied",
     "Closing Date": "Closing Date",
     "ClosingDate": "Closing Date",
@@ -71,5 +72,18 @@
     "Cancel": "Cancel",
     "deleteMessage": "Are you sure you want to <strong>delete</strong> <italic>{{type}}</italic>?<br />This cannot be undone.",
     "AddNote": "Add Note"
+  },
+  "addPanels": {
+    "Company": "Company",
+    "JobTitle": "Job Title",
+    "JobDescription": "Job Description",
+    "JobCategory": "Job Category",
+    "jobCategoryPlaceholder": "Select or Add Your Own Category",
+    "JobLink": "Job Link",
+    "statusPlaceholder": "Select Status",
+    "Note": "Note",
+    "notePlaceholder": "Enter Note...",
+    "Save": "Save",
+    "Reset": "Reset"
   }
 }
