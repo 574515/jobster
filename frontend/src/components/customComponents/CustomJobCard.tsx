@@ -53,6 +53,7 @@ import {LabelValueType, ModalSelectType} from "../../models/types.ts";
 import '../../styles/componentStyle.css';
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
+import {useTranslation} from "react-i18next";
 
 const CustomJobCard: React.FC<CustomJobCardProps> = (
 	{item, getAllItems}
@@ -90,6 +91,8 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 			}
 		}
 	}, [item.description, item.note]);
+
+	const {t} = useTranslation();
 
 	const textareaNoteHeight = useNoteBoxHeight(item.note);
 
@@ -170,7 +173,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 							shadow={tagShadow}
 							onClick={onStatusChangeOpen}
 						>
-							{item.status.label}
+							{t(`filters.${item.status.label}`)}
 						</Tag>
 						<HStack>
 							<CustomAddNoteIcon item={item} onAddEditNoteOpen={onAddEditNoteOpen}/>
@@ -196,7 +199,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 						{item.description &&
                             <React.Fragment>
                                 <Show below={"md"}>
-                                    <Text mt={4}>Description</Text>
+                                    <Text mt={4}>{t("myJobs.Description")}</Text>
                                 </Show>
                                 <Textarea
                                     readOnly
@@ -213,42 +216,45 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					<Show below={"md"}>
 						{(item.description && item.note) ?
 							(<Accordion allowMultiple defaultIndex={[]} mt={4}>
-								{accordionItems.map((accordionItem: LabelValueType, index: number) => (
-									<AccordionItem key={index} border={"none"}>
-										<AccordionButton
-											color={"#aaa"}
-											_expanded={{
-												color: "#fff"
-											}}
-											_hover={{
-												background: "none",
-											}}
-										>
-											<Box className={"prevent-select"} as='span' flex='1'
-											     textAlign='center'>
-												{accordionItem.label}
-											</Box>
-											<AccordionIcon/>
-										</AccordionButton>
-										<AccordionPanel pb={4} justifyContent={"center"}>
-											<Textarea
-												readOnly
-												mt={3}
-												className={"descriptionOutline"}
-												maxHeight={"25vh"}
-												resize={"none"}
-												height={accordionItem.height}
-												value={accordionItem.value}
-												onClick={() => accordionItem.onClick && accordionItem.onClick()}
-											/>
-										</AccordionPanel>
-									</AccordionItem>
-								))}
+								{accordionItems.map((accordionItem: LabelValueType, index: number) => {
+									const accordionItemLabel = accordionItem.label;
+									return (
+										<AccordionItem key={index} border={"none"}>
+											<AccordionButton
+												color={"#aaa"}
+												_expanded={{
+													color: "#fff"
+												}}
+												_hover={{
+													background: "none",
+												}}
+											>
+												<Box className={"prevent-select"} as='span' flex='1'
+												     textAlign='center'>
+													{t(`myJobs.${accordionItemLabel}`)}
+												</Box>
+												<AccordionIcon/>
+											</AccordionButton>
+											<AccordionPanel pb={4} justifyContent={"center"}>
+												<Textarea
+													readOnly
+													mt={3}
+													className={"descriptionOutline"}
+													maxHeight={"25vh"}
+													resize={"none"}
+													height={accordionItem.height}
+													value={accordionItem.value}
+													onClick={() => accordionItem.onClick && accordionItem.onClick()}
+												/>
+											</AccordionPanel>
+										</AccordionItem>
+									)
+								})}
 							</Accordion>)
 							: (item.description || item.note) && (
 							<React.Fragment>
 								<Text mt={2}>
-									{item.description ? 'Description' : 'Note'}
+									{item.description ? t('myJobs.Description') : t('myJobs.Note')}
 								</Text>
 								<Textarea
 									readOnly
@@ -266,7 +272,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					<HStack mb={2} mt={4} width={'100%'}>
 						<VStack w={"100%"}>
 							<Text className={"prevent-select"} color={"gray.400"}>
-								Date Applied
+								{t("filters.DateApplied")}
 							</Text>
 							<Tag
 								className={"prevent-select"}
@@ -290,7 +296,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 						</VStack>
 						{item.closingDate && <VStack w={"100%"}>
                             <Text className={"prevent-select"} color={"gray.400"}>
-                                Closing Date
+								{t("filters.ClosingDate")}
                             </Text>
                             <Tag
                                 className={"prevent-select"}
@@ -354,7 +360,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 				<ModalOverlay/>
 				<ModalContent>
 					<ModalHeader alignItems={"center"} justifyContent="center">
-						Change Application Status
+						{t("myJobs.ChangeApplicationStatus")}
 					</ModalHeader>
 					<ModalCloseButton my={2}/>
 					<Divider mb={'1rem'}/>
@@ -374,7 +380,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 									key={index}
 									onClick={() => handleTagChange(status)}
 								>
-									{status.label}
+									{t(`filters.${status.label}`)}
 								</Tag>
 							))}
 						</Grid>
