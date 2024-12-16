@@ -4,6 +4,7 @@ import authScreenAtom from '../atoms/authScreenAtom.ts';
 import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import useAuth from "../hooks/useAuth.ts";
 import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
+import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
 
 import {
 	Box,
@@ -21,12 +22,13 @@ import {
 } from '@chakra-ui/react';
 import {useSetRecoilState} from 'recoil';
 import {useForm} from 'react-hook-form';
-import {LoginValidationSchema} from "../helpers/validators.js";
-import {getDefaultValues} from "../helpers/constants.js";
+import {LoginValidationSchema} from "../helpers/validators.ts";
+import {getDefaultValues} from "../helpers/constants.ts";
 import {LoginValuesType} from "../models/types.ts";
 import {InputControl, SubmitButton} from "react-hook-form-chakra";
 import {FaLock, FaUser} from "react-icons/fa6";
 import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
+import {useTranslation} from 'react-i18next'
 
 import '../styles/style.css'
 
@@ -37,6 +39,7 @@ const LoginCard = () => {
 	const [isLoading, setIsLoading] = React.useState(false);
 	const methods = useForm({resolver: LoginValidationSchema, ...getDefaultValues("login"), mode: "onSubmit",});
 	const {colorMode} = useColorMode();
+	const {t} = useTranslation();
 
 	const handleLogin = async (data: LoginValuesType) => {
 		setIsLoading(true);
@@ -71,7 +74,7 @@ const LoginCard = () => {
 						>
 							<Stack align={'center'} mb={12}>
 								<Heading className="prevent-select" fontSize={'4xl'} textAlign='center'>
-									Login
+									{t("authentication.Login")}
 								</Heading>
 							</Stack>
 							<Stack spacing={4} className={`custom-inputs-${colorMode}`}>
@@ -79,7 +82,7 @@ const LoginCard = () => {
 									inputProps={{autoFocus: true}}
 									className="prevent-select"
 									name="username"
-									label="Username"
+									label={t("authentication.Username")}
 									isRequired
 									sx={{boxShadow: "none"}}
 									leftElement={
@@ -91,7 +94,7 @@ const LoginCard = () => {
 								<InputControl
 									className="prevent-select"
 									name="password"
-									label="Password"
+									label={t("authentication.Password")}
 									isRequired
 									inputProps={{type: showPassword ? 'text' : 'password'}}
 									leftElement={
@@ -114,12 +117,15 @@ const LoginCard = () => {
 										loadingText="Submitting..."
 										width="100%"
 										margin={"auto"}
-									>Log in</SubmitButton>
+									>{t("authentication.LogIn")}</SubmitButton>
 									<CustomColorModeSwitch/>
+									<CustomLanguageSwitcher/>
 								</HStack>
 								<Text align={'center'} className="prevent-select">
-									Don&apos;t have an account?&nbsp;<Link onClick={() => setAuthScreen('signup')}>Sign
-									up!</Link>
+									{t("authentication.noAccount")}&nbsp;<Link
+									onClick={() => setAuthScreen('signup')}>
+									{t("authentication.SignUp")}!
+								</Link>
 								</Text>
 							</Stack>
 						</Box>
