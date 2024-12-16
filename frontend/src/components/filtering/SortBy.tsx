@@ -1,13 +1,14 @@
 import React from "react";
 
 import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
+import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
 import {SortByProps} from "../../models/interfaces.ts";
-import {FormControl, Select} from "@chakra-ui/react";
+import {FormControl, FormLabel, Select} from "@chakra-ui/react";
 import {homeScreenPages, sortByOptions} from "../../helpers/constants.ts";
 import {MyConnectionResponseModel, MyJobResponseModel, SortByOptionType} from "../../models/types.ts";
 import {useRecoilValue} from "recoil";
-import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
+import {useTranslation} from "react-i18next";
 
 const SortBy: React.FC<SortByProps> = (
 	{
@@ -19,14 +20,15 @@ const SortBy: React.FC<SortByProps> = (
 	const [sortOptions, setSortOptions] = React.useState<SortByOptionType[]>([]);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
+	const {t} = useTranslation();
 
 	React.useEffect(() => {
 		const sortOptions: SortByOptionType[] = sortByOptions[homeScreenState];
 		setSortOptions(isPhone ? sortOptions.map(item => ({
 			...item,
-			whatDate: `Sort By ${item.whatDate}`,
+			whatDate: `${t("filters.SortBy")} ${t(`filters.${item.whatDate}`)}`,
 		})) : sortOptions);
-	}, [homeScreenState, isPhone]);
+	}, [homeScreenState, isPhone, t]);
 
 	const handleSort = (e: React.BaseSyntheticEvent) => {
 		switch (homeScreenState) {
@@ -91,9 +93,15 @@ const SortBy: React.FC<SortByProps> = (
 
 	return (
 		<FormControl w={"100%"}>
+			{homeScreenState !== homeScreenPages.MY_JOBS && !isPhone && (
+				<FormLabel textAlign={"center"}>
+					{t("filters.SortBy")}
+				</FormLabel>
+			)}
 			<Select onChange={handleSort} textAlign={"center"}>
 				{sortOptions.map((option: SortByOptionType, index: number) => {
-					const combinedOption = `${option.whatDate} [${option.when}]`;
+					const basePath = isPhone ? 'phoneFilters' : 'filters';
+					const combinedOption = `${t(`${basePath}.${option.whatDate}`)} [${t(`filters.${option.when}`)}]`;
 					return (
 						<option defaultValue={index === 0 ? combinedOption : undefined} key={index}>
 							{combinedOption}

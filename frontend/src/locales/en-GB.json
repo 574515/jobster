@@ -22,6 +22,19 @@
   },
   "filters": {
     "SortBy": "Sort By",
-    "TotalJobs": "Total Jobs"
+    "Sort By": "Sort By",
+    "TotalJobs": "Total Jobs",
+    "Date Applied": "Date Applied",
+    "Closing Date": "Closing Date",
+    "Date Sent": "Date Sent",
+    "Newest": "Newest",
+    "Oldest": "Oldest",
+    "Later": "Later",
+    "Sooner": "Sooner"
+  },
+  "phoneFilters": {
+    "Sort By Date Applied": "Sort By Date Applied",
+    "Sort By Closing Date": "Sort By Closing Date",
+    "Sort By Date Sent": "Sort By Date Sent"
   }
 }
