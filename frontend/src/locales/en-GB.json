@@ -1,0 +1,18 @@
+{
+  "authentication": {
+    "Login": "Login",
+    "Username": "Username",
+    "Password": "Password",
+    "LogIn": "Log In",
+    "noAccount": "Don't have an account?",
+    "SignUp": "Sign Up",
+    "logOut": "Log Out"
+  },
+  "My Jobs": "My Jobs",
+  "My Connections": "My Connections",
+  "My Future Applications": "My Future Applications",
+  "add": "Add",
+  "emptyListings": "It is empty.",
+  "filters": "Filters",
+  "this_is_test_run": "This is <strong>test</strong> run"
+}
