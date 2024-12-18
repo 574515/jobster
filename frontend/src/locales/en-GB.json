@@ -90,6 +90,12 @@
     "notePlaceholder": "Enter Note...",
     "Save": "Save",
     "Reset": "Reset",
-    "NoteUpdate": "'s Note {{action}} Successfully"
+    "NoteUpdate": "'s Note {{action}} Successfully",
+    "Job": "Job",
+    "Connection": "Connection",
+    "Future Application": "Future Application",
+    "AddedSuccessfully": "Added Successfully",
+    "ConnectionFor": "Connection For",
+    "MyFutureApplicationFor": "My Future Application For"
   }
 }
