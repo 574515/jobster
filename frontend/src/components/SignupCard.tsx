@@ -94,7 +94,7 @@ const SignupCard = () => {
 						>
 							<Stack align={'center'} mb={12}>
 								<Heading className="prevent-select" fontSize={'4xl'} textAlign="center">
-									{t("authentication.SignUp")}
+									{t("authentication.Signup")}
 								</Heading>
 							</Stack>
 							<Stack spacing={4} className={`custom-inputs-${colorMode}`}>

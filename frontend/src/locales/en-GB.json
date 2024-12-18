@@ -7,11 +7,12 @@
     "LogIn": "Log In",
     "noAccount": "Don't have an account?",
     "SignUp": "Sign Up",
+    "Signup": "Signup",
     "logOut": "Log Out",
     "Submitting": "Submitting...",
     "haveAccount": "Have an account?",
     "LoginSuccessful": "Login Successful",
-    "loginError": "Username or password does not exists",
+    "loginError": "Username or password does not exist",
     "RegistrationSuccessful": "Registration Successful",
     "logoutMessage": "You have been logged out"
   },

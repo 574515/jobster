@@ -12,7 +12,6 @@ void i18n
 			enGB: {translation: en_GB},
 			svSE: {translation: sv_SE},
 		},
-		lng: 'enGB',
 		fallbackLng: 'enGB',
 		interpolation: {escapeValue: false},
 		keySeparator: '.',
