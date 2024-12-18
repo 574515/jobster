@@ -9,7 +9,11 @@
     "SignUp": "Sign Up",
     "logOut": "Log Out",
     "Submitting": "Submitting...",
-    "haveAccount": "Have an account?"
+    "haveAccount": "Have an account?",
+    "LoginSuccessful": "Login Successful",
+    "loginError": "Username or password does not exists",
+    "RegistrationSuccessful": "Registration Successful",
+    "logoutMessage": "You have been logged out"
   },
   "home": {
     "My Jobs": "My Jobs",
