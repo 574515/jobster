@@ -112,6 +112,13 @@
     "minPassword": "Password has to be at least {{count}} characters",
     "maxPassword": "Password can not be over {{count}} characters",
     "matchPassword": "Passwords must match",
-    "DeletedSuccessfully": "Deleted Successfully"
+    "DeletedSuccessfully": "Deleted Successfully",
+    "passwordStrength": "Password is not strong enough.",
+    "minCompany": "Company name has to be at least {{count}} characters",
+    "maxCompany": "Company name can not be more than {{count}} characters",
+    "minJob": "Job title has to be at least {{count}} characters",
+    "maxJob": "Job title can not be more than {{count}} characters",
+    "maxCats": "You can pick up to {{count}} characters",
+    "maxNote": "Note cannot be more than {{count}} characters"
   }
 }
