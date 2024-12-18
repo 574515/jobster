@@ -37,7 +37,7 @@ const LoginCard = () => {
 	const setAuthScreen = useSetRecoilState(authScreenAtom);
 	const [showPassword, setShowPassword] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const methods = useForm({resolver: LoginValidationSchema, ...getDefaultValues("login"), mode: "onSubmit",});
+	const methods = useForm({resolver: LoginValidationSchema, ...getDefaultValues("login"), mode: "onChange",});
 	const {colorMode} = useColorMode();
 	const {t} = useTranslation();
 

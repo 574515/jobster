@@ -66,7 +66,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_JOBS) {
 			JobActions.handleNote(item._id, note)
 				.then((data: MyJobResponseModel) => {
-					void toast(`${data.jobTitle}${t("addPanels.NoteUpdate", {action: "Updated"})}`, 'success');
+					void toast(`${data.jobTitle}${t("addPanels.NoteUpdate", {action: t("addPanels.Updated")})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
@@ -75,7 +75,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_CONNECTIONS) {
 			ConnectionActions.handleNote(item._id, note)
 				.then(() => {
-					void toast(`${item.company}${t("addPanels.NoteUpdate", {action: "Updated"})}`, 'success');
+					void toast(`${item.company}${t("addPanels.NoteUpdate", {action: t("addPanels.Updated")})})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
@@ -84,7 +84,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_FUTURE_APPLICATIONS) {
 			ToApplyActions.handleNote(item._id, note)
 				.then(() => {
-					void toast(`${item.jobLink}${t("addPanels.NoteUpdate", {action: "Updated"})}`, 'success');
+					void toast(`${item.jobLink}${t("addPanels.NoteUpdate", {action: t("addPanels.Updated")})})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
@@ -97,7 +97,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_JOBS) {
 			JobActions.handleNote(item._id)
 				.then((data: MyJobResponseModel) => {
-					void toast(`${data.jobTitle}${t("addPanels.NoteUpdate", {action: "Removed"})}`, 'success');
+					void toast(`${data.jobTitle}${t("addPanels.NoteUpdate", {action: t("addPanels.Removed")})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
@@ -106,7 +106,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_CONNECTIONS) {
 			ConnectionActions.handleNote(item._id)
 				.then(() => {
-					void toast(`${item.company}${t("addPanels.NoteUpdate", {action: "Removed"})}`, 'success');
+					void toast(`${item.company}${t("addPanels.NoteUpdate", {action: t("addPanels.Removed")})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
@@ -115,7 +115,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_FUTURE_APPLICATIONS) {
 			ToApplyActions.handleNote(item._id)
 				.then(() => {
-					void toast(`${item.jobLink}${t("addPanels.NoteUpdate", {action: "Removed"})}`, 'success');
+					void toast(`${item.jobLink}${t("addPanels.NoteUpdate", {action: t("addPanels.Removed")})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))

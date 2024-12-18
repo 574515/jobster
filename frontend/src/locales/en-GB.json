@@ -100,6 +100,13 @@
     "Future Application": "Future Application",
     "AddedSuccessfully": "Added Successfully",
     "ConnectionFor": "Connection For",
-    "MyFutureApplicationFor": "My Future Application For"
+    "MyFutureApplicationFor": "My Future Application For",
+    "Updated": "Updated",
+    "Removed": "Removed"
+  },
+  "validators": {
+    "characters": "characters",
+    "minUsername": "Username has to be at least {{count}} characters",
+    "maxUsername": "Username can not be over {{count}} characters"
   }
 }

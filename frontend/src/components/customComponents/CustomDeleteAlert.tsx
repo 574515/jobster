@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
@@ -16,14 +16,38 @@ import {
 import {CustomDeleteAlertProps} from "../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
 import {Trans, useTranslation} from "react-i18next";
+import {MyTrackerNames} from "../../helpers/enums.ts";
 
 import "../../styles/style.css"
 
 const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 	{isDeleteOpen, onDeleteClose, cancelRef, item, handleDelete, type}
 ) => {
+	const [typeMessage, setTypeMessage] = React.useState<string>();
 	const isPhone = useRecoilValue(isPhoneAtom);
 	const {t} = useTranslation();
+
+	useEffect(() => {
+		switch (type) {
+			case MyTrackerNames.JOB: {
+				setTypeMessage(t("myJobs.type"));
+				break;
+			}
+			case MyTrackerNames.CONNECTION: {
+				setTypeMessage(t("myConnections.type"));
+				break;
+			}
+			case MyTrackerNames.APPLICATION: {
+				setTypeMessage(t("myFutureApplications.type"));
+				break;
+			}
+			default: {
+				setTypeMessage("");
+				break;
+			}
+		}
+	}, [t, type]);
+
 	return (
 		<AlertDialog
 			isOpen={isDeleteOpen}
@@ -47,7 +71,7 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 								italic: <i/>,
 								br: <br/>,
 							}}
-							values={{type}}
+							values={{typeMessage}}
 						/>
 					</AlertDialogBody>
 					<AlertDialogFooter>
