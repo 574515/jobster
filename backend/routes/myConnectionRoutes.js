@@ -11,9 +11,9 @@ import {
 
 const router = express.Router();
 
-router.post("/myConnection", addMyConnection, protectRoute);
-router.put("/myConnection/:connectionId/note", handleNote, protectRoute);
-router.delete("/myConnection/:connectionId", deleteMyConnection, protectRoute);
-router.get("/myConnection/:userId", getAllConnections, protectRoute);
+router.post("/myConnection", protectRoute, addMyConnection);
+router.put("/myConnection/:connectionId/note", protectRoute, handleNote);
+router.delete("/myConnection/:connectionId", protectRoute, deleteMyConnection);
+router.get("/myConnection/:userId", protectRoute, getAllConnections);
 
 export default router;

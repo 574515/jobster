@@ -11,9 +11,9 @@ import {
 
 const router = express.Router();
 
-router.post("/myFutureApplication", addMyFutureApplication, protectRoute);
-router.get("/myFutureApplication/:userId", getAllFutureApplications, protectRoute);
-router.put("/myFutureApplication/:applicationId/note", handleNote, protectRoute);
-router.delete("/myFutureApplication/:applicationId", deleteMyFutureApplication, protectRoute);
+router.post("/myFutureApplication", protectRoute, addMyFutureApplication);
+router.get("/myFutureApplication/:userId", protectRoute, getAllFutureApplications);
+router.put("/myFutureApplication/:applicationId/note", protectRoute, handleNote);
+router.delete("/myFutureApplication/:applicationId", protectRoute, deleteMyFutureApplication);
 
 export default router;
