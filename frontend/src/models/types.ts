@@ -221,7 +221,7 @@ export type DeleteItemItemType = {
 
 export type LabelValueType = {
 	height: string;
-	label?: string;
+	label: string;
 	value?: string;
 
 	onClick?(): void;
@@ -236,4 +236,8 @@ export type CustomLanguageSwitcherProps = {
 	languageCode: string;
 	flagCode: string;
 	label: string;
+}
+
+export type ErrorResponse = {
+	action: string;
 }

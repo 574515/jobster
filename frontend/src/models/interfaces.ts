@@ -76,7 +76,7 @@ export interface AddEditJobModalProps {
 }
 
 export interface LoadingOverlayProps {
-	isLoading: boolean;
+	isApp?: boolean;
 }
 
 export interface MyJobsProps {
@@ -209,4 +209,8 @@ export interface CombinedFiltersProps {
 	setMyJobsFiltered(searchListings: MyJobResponseModel[]): void;
 
 	setFilterActive(filterActive: number): void;
+}
+
+export interface CustomSubmitButtonGroupProps {
+	resetMethod(): void;
 }
