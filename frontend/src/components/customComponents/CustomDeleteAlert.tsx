@@ -71,7 +71,7 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 								italic: <i/>,
 								br: <br/>,
 							}}
-							values={{typeMessage}}
+							values={{type: typeMessage}}
 						/>
 					</AlertDialogBody>
 					<AlertDialogFooter>

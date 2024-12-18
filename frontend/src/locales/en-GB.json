@@ -107,6 +107,11 @@
   "validators": {
     "characters": "characters",
     "minUsername": "Username has to be at least {{count}} characters",
-    "maxUsername": "Username can not be over {{count}} characters"
+    "maxUsername": "Username can not be over {{count}} characters",
+    "isRequired": "{{prop}} is required",
+    "minPassword": "Password has to be at least {{count}} characters",
+    "maxPassword": "Password can not be over {{count}} characters",
+    "matchPassword": "Passwords must match",
+    "DeletedSuccessfully": "Deleted Successfully"
   }
 }
