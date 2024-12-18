@@ -1,27 +1,52 @@
-import React from 'react';
+import {useEffect} from "react";
 
-import useAuth from "../hooks/useAuth.ts";
+import useAuth from '../hooks/useAuth.ts';
 
-import {authInstance} from '../api/axiosInstances.ts';
+import {authInstance, connectionInstance, jobInstance, toApplyInstance} from '../api/axiosInstances.ts';
+import {AxiosError} from "axios";
+import {ErrorResponse} from "../models/types.ts";
+
+const setupAxiosInterceptors = (
+	logoutUser: () => Promise<void>
+) => {
+	const responseInterceptor = async (error: AxiosError<ErrorResponse>) => {
+		const {response} = error;
+		if (response && response.status === 401 && response.data && response.data.action === 'logout') {
+			await logoutUser()
+				.then(() => {
+					console.log('User successfully logged out')
+				})
+				.catch((error: ErrorResponse) => {
+					console.error('Error logging out:', error);
+				});
+		}
+		return Promise.reject(error);
+	};
+
+	authInstance.interceptors.response.use(
+		response => response,
+		responseInterceptor
+	);
+
+	jobInstance.interceptors.response.use(
+		response => response,
+		responseInterceptor
+	);
+
+	connectionInstance.interceptors.response.use(
+		response => response,
+		responseInterceptor
+	);
+
+	toApplyInstance.interceptors.response.use(
+		response => response,
+		responseInterceptor
+	);
+};
 
 const AxiosInterceptor = () => {
 	const {logoutUser} = useAuth();
-	React.useEffect(() => {
-		const interceptor = authInstance.interceptors.response.use(
-			response => response,
-			async ({response}) => {
-				if (response && response.status === 401 && response.data.actions === 'logout') {
-					try {
-						await logoutUser();
-					} catch (error) {
-						console.error('Error logging out:', error);
-					}
-				}
-				return Promise.reject(response);
-			}
-		);
-		return () => authInstance.interceptors.response.eject(interceptor);
-	}, [logoutUser]);
+	useEffect(() => setupAxiosInterceptors(logoutUser), [logoutUser]);
 	return null;
 };
 
