@@ -47,19 +47,17 @@ const AddEditNote: React.FC<AddNoteProps> = (
 	const [numberOfCharacters, setNumberOfCharacters] = React.useState<number>(item.note?.length ?? 0);
 	const [isLoading, setIsLoading] = useRecoilState(loadingAtom);
 
-	const jobMethods = useForm<NoteFormValues>({
+	const methods = useForm<NoteFormValues>({
 		resolver: NoteValidationSchema,
 		defaultValues: {note: item.note ?? undefined},
 		mode: "onChange",
 	});
 	const {t} = useTranslation();
 
-	const handleReset = () => jobMethods.reset();
-
 	React.useEffect(() => {
-		jobMethods.reset({note: item.note ?? ""});
+		methods.reset({note: item.note ?? ""});
 		setNumberOfCharacters(item.note?.length ?? 0);
-	}, [item.note, jobMethods]);
+	}, [item.note, methods]);
 
 	const handleNoteSubmit: SubmitHandler<NoteFormValues> = ({note}) => {
 		setIsLoading(true);
@@ -139,10 +137,10 @@ const AddEditNote: React.FC<AddNoteProps> = (
 				</ModalHeader>
 				<ModalCloseButton my={2}/>
 				<ModalBody pt={2} pb={4} px={4}>
-					<CustomFormProvider formProviderData={jobMethods}>
-						<VStack as={"form"} onSubmit={jobMethods.handleSubmit(handleNoteSubmit)}>
+					<CustomFormProvider formProviderData={methods}>
+						<VStack as={"form"} onSubmit={methods.handleSubmit(handleNoteSubmit)}>
 							<Controller
-								control={jobMethods.control}
+								control={methods.control}
 								name="note"
 								render={({field, fieldState: {error}}) => (
 									<FormControl py={4} className="prevent-select">
@@ -168,7 +166,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 											<Text
 												fontStyle={"italic"}
 												color={"#FF9999"}
-											>{jobMethods.formState.errors.note?.message}</Text>
+											>{methods.formState.errors.note?.message}</Text>
 											<Text
 												fontWeight={"light"}
 												fontStyle={"italic"}
@@ -182,15 +180,19 @@ const AddEditNote: React.FC<AddNoteProps> = (
 												width="full"
 												colorScheme={"green"}
 												variant={"outline"}
-												disabled={!!jobMethods.formState.errors.note ||
-													!jobMethods.getValues("note")}
+												disabled={!!methods.formState.errors.note ||
+													!methods.getValues("note")}
 											>
 												{t("components.Save")}
 											</SubmitButton>
 											<ResetButton
 												isLoading={isLoading}
 												width="full"
-												onClick={handleReset}
+												onClick={() => {
+													methods.reset();
+													const noteLength = methods.getValues("note")?.length;
+													if (noteLength) setNumberOfCharacters(noteLength);
+												}}
 												colorScheme={"yellow"}
 												variant={"outline"}
 											>
