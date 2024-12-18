@@ -1,21 +1,20 @@
 import React from "react";
-
-import loadingAtom from "../../atoms/loadingAtom.ts";
 import CustomFormProvider from "../customComponents/CustomFormProvider.tsx";
 
-import {ButtonGroup, FormControl, FormLabel, HStack, TabPanel, VStack} from "@chakra-ui/react";
-import {InputControl, ResetButton, SubmitButton} from "react-hook-form-chakra";
+import {FormControl, FormLabel, HStack, TabPanel, VStack} from "@chakra-ui/react";
+import {InputControl} from "react-hook-form-chakra";
 import {Controller} from "react-hook-form";
 import {DateSelectType} from "../../models/types.ts";
 import {SingleDatepicker} from "chakra-dayzed-datepicker";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {AddMyConnectionTabPanelProps} from "../../models/interfaces.ts";
-import {useRecoilValue} from "recoil";
+import {useTranslation} from "react-i18next";
+import CustomSubmitButtonGroup from "../customComponents/CustomSubmitButtonGroup.tsx";
 
 const AddMyConnectionTabPanel: React.FC<AddMyConnectionTabPanelProps> = (
 	{myConnectionMethods, myConnectionDateSelects, userLocale, handleMyConnectionSave}
 ) => {
-	const isLoading = useRecoilValue<boolean>(loadingAtom);
+	const {t} = useTranslation();
 
 	return (
 		<TabPanel>
@@ -29,30 +28,30 @@ const AddMyConnectionTabPanel: React.FC<AddMyConnectionTabPanelProps> = (
 						pb={2}
 						className="prevent-select"
 						name="company"
-						label="Company"
-						inputProps={{placeholder: 'Company'}}
+						label={t("addPanels.Company")}
+						inputProps={{placeholder: t("addPanels.Company")}}
 						isRequired={true}
 					/>
 					<InputControl
 						py={2}
 						className="prevent-select"
 						name="jobLink"
-						label="Job Link"
+						label={t("addPanels.JobLink")}
 						inputProps={{placeholder: 'https://linktojob.com'}}
 					/>
-					<HStack w={"100%"} py={2}>
+					<HStack w={"100%"}>
 						{myConnectionDateSelects.map((date: DateSelectType, index: number) => (
 							<Controller
 								key={index}
 								name={date.name}
 								render={({field}) => (
 									<FormControl
-										py={4}
+										py={2}
 										className={"prevent-select"}
 										textAlign={"center"}
 										isRequired={date.isRequired}
 									>
-										{date.label && <FormLabel mx={0}>{date.label}</FormLabel>}
+										{date.label && <FormLabel mx={0}>{t(`filters.${date.label}`)}</FormLabel>}
 										<HStack>
 											<SingleDatepicker
 												date={field.value}
@@ -69,24 +68,7 @@ const AddMyConnectionTabPanel: React.FC<AddMyConnectionTabPanelProps> = (
 							/>
 						))}
 					</HStack>
-					<ButtonGroup my={2} w={"100%"}>
-						<SubmitButton
-							isLoading={isLoading}
-							loadingText="Submitting..."
-							width="full"
-							colorScheme={"green"}
-							variant={"outline"}
-						>
-							Save
-						</SubmitButton>
-						<ResetButton
-							isLoading={isLoading}
-							width="full"
-							onClick={() => myConnectionMethods.reset()}
-							colorScheme={"red"}
-							variant={"outline"}
-						>Reset</ResetButton>
-					</ButtonGroup>
+					<CustomSubmitButtonGroup resetMethod={myConnectionMethods.reset}/>
 				</VStack>
 			</CustomFormProvider>
 		</TabPanel>

@@ -3,18 +3,8 @@ import React from "react";
 import loadingAtom from "../../atoms/loadingAtom.ts";
 import CustomFormProvider from "../customComponents/CustomFormProvider.tsx";
 
-import {
-	ButtonGroup,
-	Checkbox,
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	HStack,
-	TabPanel,
-	VStack
-} from "@chakra-ui/react";
-import {InputControl, ResetButton, SubmitButton, TextareaControl} from "react-hook-form-chakra";
+import {Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, HStack, TabPanel, VStack} from "@chakra-ui/react";
+import {InputControl, TextareaControl} from "react-hook-form-chakra";
 import {Controller} from "react-hook-form";
 import {SingleDatepicker} from "chakra-dayzed-datepicker";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
@@ -25,6 +15,8 @@ import {CreatableSelect, GroupBase, Select} from "chakra-react-select";
 import {jobListingCategories} from "../../helpers/categories.ts";
 import {FaCaretRight} from "react-icons/fa6";
 import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
+import {useTranslation} from "react-i18next";
+import CustomSubmitButtonGroup from "../customComponents/CustomSubmitButtonGroup.tsx";
 
 const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 	{
@@ -34,6 +26,7 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 ) => {
 	const isLoading = useRecoilValue<boolean>(loadingAtom);
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
+	const {t} = useTranslation();
 
 	const formatGroupLabel = (data: GroupBase<CategorySelectionModel>) => (
 		<span className={"customSelectGroupLabel"}><FaCaretRight/>&nbsp;{data.label}</span>
@@ -47,23 +40,23 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 						py={2}
 						className="prevent-select"
 						name="company"
-						label="Company"
-						inputProps={{placeholder: 'Company'}}
+						label={t("addPanels.Company")}
+						inputProps={{placeholder: t("addPanels.Company")}}
 						isRequired
 					/>
 					<InputControl
 						py={2}
 						className="prevent-select"
 						name="jobTitle"
-						label="Job Title"
-						inputProps={{placeholder: 'Job Title'}}
+						label={t("addPanels.JobTitle")}
+						inputProps={{placeholder: t("addPanels.JobTitle")}}
 						isRequired
 					/>
 					<FormControl py={2} className={"prevent-select"}>
-						<FormLabel>Job Description</FormLabel>
+						<FormLabel>{t("addPanels.JobDescription")}</FormLabel>
 						<TextareaControl
 							name={'description'}
-							textareaProps={{placeholder: 'Job Description'}}
+							textareaProps={{placeholder: t("addPanels.JobDescription")}}
 						/>
 					</FormControl>
 					<Controller
@@ -79,13 +72,13 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 								isInvalid={!!error}
 								id={name}
 							>
-								<FormLabel>Job Category</FormLabel>
+								<FormLabel>{t("addPanels.JobCategory")}</FormLabel>
 								<CreatableSelect
 									isLoading={isLoading}
 									isDisabled={isLoading}
 									menuPlacement="auto"
 									name={name}
-									placeholder={"Select or Add Your Own Category"}
+									placeholder={t("addPanels.jobCategoryPlaceholder")}
 									ref={ref}
 									onChange={(selectedOptions) => onChange(selectedOptions)}
 									onBlur={onBlur}
@@ -117,22 +110,22 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 						py={2}
 						className="prevent-select"
 						name="jobLink"
-						label="Job Link"
+						label={t("addPanels.JobLink")}
 						inputProps={{placeholder: 'https://linktojob.com'}}
 					/>
-					<Flex w={"100%"} py={2} columnGap={4} flexDirection={isPhone ? "column" : "row"}>
+					<Flex w={"100%"} columnGap={4} flexDirection={isPhone ? "column" : "row"}>
 						{myJobDateSelects.map((date: DateSelectType, index: number) => (
 							<Controller
 								key={index}
 								name={date.name}
 								render={({field}) => (
 									<FormControl
-										py={4}
+										py={2}
 										className={"prevent-select"}
 										textAlign={"center"}
 										isRequired={date.isRequired}
 									>
-										{date.label && <FormLabel mx={0}>{date.label}</FormLabel>}
+										{date.label && <FormLabel mx={0}>{t(`filters.${date.label}`)}</FormLabel>}
 										<HStack>
 											<SingleDatepicker
 												date={field.value}
@@ -161,8 +154,9 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 					</Flex>
 					<Controller
 						name={"status"}
-						render={({field, fieldState: {error}}) => (
-							<FormControl
+						render={({field, fieldState: {error}}) => {
+							const fieldValue = field.value.value !== "" ? field.value : undefined;
+							return <FormControl
 								py={2}
 								className={"prevent-select"}
 								isInvalid={!!error}
@@ -171,38 +165,23 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 							>
 								<FormLabel>Job Status</FormLabel>
 								<Select
-									placeholder={"Select Status"}
+									placeholder={t("addPanels.statusPlaceholder")}
 									menuPlacement={"auto"}
 									onChange={field.onChange}
 									options={statuses}
-									value={field.value}
+									value={fieldValue}
 								/>
 								<FormErrorMessage>{error && error.message}</FormErrorMessage>
 							</FormControl>
-						)}
+						}}
 					/>
-					<FormControl py={2} className={"prevent-select"}>
-						<FormLabel>Note</FormLabel>
-						<TextareaControl name={'note'}/>
-					</FormControl>
-					<ButtonGroup my={2} w={"100%"}>
-						<SubmitButton
-							isLoading={isLoading}
-							loadingText="Submitting..."
-							width="full"
-							colorScheme={"green"}
-							variant={"outline"}
-						>
-							Save
-						</SubmitButton>
-						<ResetButton
-							isLoading={isLoading}
-							width="full"
-							onClick={() => myJobMethods.reset()}
-							colorScheme={"red"}
-							variant={"outline"}
-						>Reset</ResetButton>
-					</ButtonGroup>
+					<TextareaControl
+						name={'note'}
+						textareaProps={{placeholder: t("addPanels.notePlaceholder")}}
+						label={t("addPanels.Note")}
+						m={2}
+					/>
+					<CustomSubmitButtonGroup resetMethod={myJobMethods.reset}/>
 				</VStack>
 			</CustomFormProvider>
 		</TabPanel>

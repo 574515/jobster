@@ -2,9 +2,11 @@ import React from "react";
 
 import {Input} from "@chakra-ui/react";
 import {TextSearchProps} from "../../models/interfaces.ts";
+import {useTranslation} from "react-i18next";
 
 const TextSearch: React.FC<TextSearchProps> = ({allMyJobs, setMyJobsFiltered}) => {
 	const searchInputRef = React.useRef<HTMLInputElement>(null);
+	const {t} = useTranslation();
 
 	const handleSearch = (data: React.BaseSyntheticEvent) => {
 		const formattedSearchTerm = data.target.value.toLowerCase().trim();
@@ -17,7 +19,7 @@ const TextSearch: React.FC<TextSearchProps> = ({allMyJobs, setMyJobsFiltered}) =
 
 	return (
 		<Input
-			placeholder={"Title, Company or Description"}
+			placeholder={t("filters.searchPlaceholder")}
 			textAlign={"center"}
 			ref={searchInputRef as React.LegacyRef<HTMLInputElement>}
 			onFocus={() => {
@@ -29,7 +31,7 @@ const TextSearch: React.FC<TextSearchProps> = ({allMyJobs, setMyJobsFiltered}) =
 			onBlur={() => {
 				if (searchInputRef.current && !searchInputRef.current.value) {
 					searchInputRef.current.style.textAlign = "center";
-					searchInputRef.current.placeholder = "Title, Company or Description";
+					searchInputRef.current.placeholder = t("filters.searchPlaceholder");
 				}
 			}}
 			onKeyUp={handleSearch}

@@ -40,6 +40,7 @@ import {toast} from "../helpers/customToast.ts";
 import {AddEditJobModalProps} from "../models/interfaces.ts";
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import isPhoneAtom from "../atoms/isPhoneAtom.ts";
+import {useTranslation} from "react-i18next";
 
 const AddListingModal: React.FC<AddEditJobModalProps> = (
 	{
@@ -58,6 +59,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 	const [dateSent, setDateSent] = React.useState<Date>(new Date());
 	const [hasClosingDate, setHasClosingDate] = React.useState<boolean>(false);
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
+	const {t} = useTranslation();
 
 	React.useEffect(() => setStatuses(statusesToSet), []);
 
@@ -86,7 +88,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			.postMyNewJob(transformedData)
 			.then((response: MyJobResponseModel): void => {
 				onClose();
-				void toast(`Job "${response.jobTitle}" Added Successfully`, 'success');
+				void toast(`${t("addPanels.Job")} "${response.jobTitle}" ${t("addPanels.AddedSuccessfully")}`, 'success');
 				myJobMethods.reset();
 				setDateApplied(new Date());
 				setClosingDate(new Date());
@@ -109,7 +111,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			.postMyConnection(transformedData)
 			.then((response: MyConnectionResponseModel) => {
 				onClose();
-				void toast(`Connection For "${response.company}" Added Successfully`, 'success');
+				void toast(`${t("addPanels.ConnectionFor")} "${response.company}" ${t("addPanels.AddedSuccessfully")}`, 'success');
 				myConnectionMethods.reset();
 				getAllMyConnections();
 				setHomeScreenState(homeScreenPages.MY_CONNECTIONS);
@@ -131,7 +133,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			.postMyToApply(transformedData)
 			.then((response: MyFutureApplicationResponseModel) => {
 				onClose();
-				void toast(`My Future Application for ${response.jobLink} Added Successfully`, 'success');
+				void toast(`${t("addPanels.MyFutureApplicationFor")} "${response.company}" ${t("addPanels.AddedSuccessfully")}`, 'success');
 				myFutureApplicationMethods.reset();
 				getAllMyFutureApplications();
 				setHomeScreenState(homeScreenPages.MY_FUTURE_APPLICATIONS);
@@ -142,14 +144,14 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 
 	const jobDateSelects: DateSelectType[] = [
 		{
-			label: "Applied Date",
+			label: t("filters.Applied Date"),
 			name: "dateApplied",
 			definedDate: dateApplied,
 			isRequired: true,
 			setDate: setDateApplied,
 		},
 		{
-			label: "Closing Date",
+			label: t("filters.Closing Date"),
 			name: "closingDate",
 			definedDate: closingDate,
 			isRequired: false,
@@ -163,7 +165,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 
 	const myConnectionDateSelects: DateSelectType[] = [
 		{
-			label: "Date Sent",
+			label: t("filters.Date Sent"),
 			name: "dateSent",
 			definedDate: dateSent,
 			setDate: setDateSent,
@@ -172,7 +174,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 
 	const myFutureApplicationsDateSelects: DateSelectType[] = [
 		{
-			label: "Closing Date",
+			label: t("filters.Closing Date"),
 			name: "closingDateMFA",
 			definedDate: closingDateMFA,
 			setDate: setClosingDateMFA,
@@ -191,7 +193,7 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 			<ModalOverlay/>
 			<ModalContent>
 				<ModalHeader className={"prevent-select"} alignItems={"center"} justifyContent="center">
-					Add
+					{t("home.Add")}
 				</ModalHeader>
 				<ModalCloseButton my={2}/>
 				<Divider mb={'1rem'}/>
@@ -203,9 +205,9 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 						onChange={(tabNumber: number): void => setCurrentTab(tabNumber)}
 					>
 						<TabList>
-							<Tab>Job</Tab>
-							<Tab>Connection</Tab>
-							<Tab>Future Application</Tab>
+							<Tab>{t("addPanels.Job")}</Tab>
+							<Tab>{t("addPanels.Connection")}</Tab>
+							<Tab>{t("addPanels.Future Application")}</Tab>
 						</TabList>
 						<TabPanels>
 							<AddMyJobTabPanel

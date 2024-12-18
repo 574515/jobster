@@ -3,10 +3,12 @@ import React, {ChangeEvent, useEffect} from 'react';
 import {StatusListProps} from "../../models/interfaces.ts";
 import {Checkbox, Flex, Text} from "@chakra-ui/react";
 import {MyJobResponseModel, StatusSelectType} from "../../models/types.ts";
+import {useTranslation} from "react-i18next";
 
 const StatusList: React.FC<StatusListProps> = (
 	{jobListings, checkedStatuses, setCheckedStatuses}
 ) => {
+	const {t} = useTranslation();
 	const statusCount: Record<string, StatusSelectType> = React.useMemo((): Record<string, StatusSelectType> => {
 		return jobListings.reduce(
 			(acc: Record<string, StatusSelectType>, job: MyJobResponseModel): Record<string, StatusSelectType> => {
@@ -65,7 +67,7 @@ const StatusList: React.FC<StatusListProps> = (
 					isChecked={allChecked}
 					onChange={(e: ChangeEvent<HTMLInputElement>): void => e.stopPropagation()}
 				>
-					All
+					{t("filters.AllStatuses")}
 				</Checkbox>
 			</Flex>
 			{Object.values(statusCount).map((jobListingStatus: StatusSelectType, index: number): React.ReactNode => (
@@ -87,7 +89,7 @@ const StatusList: React.FC<StatusListProps> = (
 						isChecked={checkedStatuses[jobListingStatus.value] || false}
 						onChange={(): void => handleFlexClick(jobListingStatus.value)}
 					>
-						{jobListingStatus.label}
+						{t(`filters.${jobListingStatus.label}`)}
 					</Checkbox>
 					<Text className={"prevent-select"}>{jobListingStatus.count}</Text>
 				</Flex>

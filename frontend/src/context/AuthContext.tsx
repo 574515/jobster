@@ -9,6 +9,7 @@ import {toast} from "../helpers/customToast.ts";
 import {AuthContextType, CustomUser, UserToken} from "../models/types.ts";
 import {authInstance} from "../api/axiosInstances.ts";
 import {AuthProviderProps} from "../models/interfaces.ts";
+import {useTranslation} from "react-i18next";
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
@@ -18,6 +19,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 	const [userToken, setUserToken] = React.useState<UserToken | null>(storedTokens);
 	const setAuthScreen = useSetRecoilState<string>(authScreenAtom);
 	const [user, setUser] = useRecoilState<CustomUser | null>(userAtom);
+	const {t} = useTranslation();
 	const navigate = useNavigate();
 
 	const loginUser = async (inputs: object) => {
@@ -27,11 +29,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 				setUserToken(res.data);
 				localStorage.setItem('userToken', JSON.stringify(res.data));
 				setUser(res.data);
-				toast('Login Successful', 'success', 2000);
+				toast(t("authentication.LoginSuccessful"), 'success', 2000);
 				navigate('/');
 			})
 			.catch((err) => {
-				toast('Username or password does not exists', 'error');
+				toast(t("authentication.loginError"), 'error');
 				return Promise.reject(err);
 			});
 	};
@@ -41,7 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			.post('/signup', inputs)
 			.then(() => {
 				setAuthScreen('login')
-				toast('Registration Successful', 'success', 2000);
+				toast(t("authentication.RegistrationSuccessful"), 'success', 2000);
 			})
 			.catch((err) => {
 				toast(err.data.error, 'error');
@@ -56,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 				setUserToken(null);
 				setUser(null);
 				localStorage.removeItem('userToken');
-				toast('You have been logged out', 'success');
+				toast(t("authentication.logoutMessage"), 'success');
 				navigate('/auth');
 			})
 			.catch((err) => {

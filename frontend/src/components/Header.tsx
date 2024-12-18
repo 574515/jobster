@@ -60,12 +60,12 @@ const Header: React.FC<HeaderProps> = (
 				<ButtonGroup mt={{base: "1rem", sm: "unset"}}>
 					<Button leftIcon={<FaPlus/>} variant="outline" colorScheme="gray"
 					        onClick={onOpen}>
-						{t('add')}
+						{t('home.Add')}
 					</Button>
 					<Button leftIcon={<FaArrowRightFromBracket/>} variant="outline"
 					        colorScheme="gray"
 					        onClick={handleLogout}>
-						{t('logOut')} [{user.username}]
+						{t('home.LogOut')} [{user.username}]
 					</Button>
 					<CustomLanguageSwitcher/>
 				</ButtonGroup>

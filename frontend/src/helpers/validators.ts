@@ -1,43 +1,77 @@
 import * as Yup from "yup";
+import i18n from 'i18next';
 import {Constants} from "./constants.ts";
 import {yupResolver} from "@hookform/resolvers/yup";
 
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-const passwordMessage = "Password is not strong enough.";
+const passwordMessage = () => i18n.t("validators.passwordStrength");
 
 export const LoginValidationSchema = yupResolver(Yup.object({
 	username: Yup.string()
-		.required("Username is required")
-		.min(Constants.MIN_LENGTH_USERNAME, `Username has to be at least ${Constants.MIN_LENGTH_USERNAME} characters`)
-		.max(Constants.MAX_LENGTH_USERNAME, `Username can not be over ${Constants.MAX_LENGTH_USERNAME} characters`),
+		.required(() => i18n.t("validators.isRequired", {prop: i18n.t("authentication.Username")}))
+		.min(
+			Constants.MIN_LENGTH_USERNAME,
+			() => i18n.t("validators.minUsername", {count: Constants.MIN_LENGTH_USERNAME})
+		)
+		.max(
+			Constants.MAX_LENGTH_USERNAME,
+			() => i18n.t("validators.maxUsername", {count: Constants.MAX_LENGTH_USERNAME})
+		),
 	password: Yup.string()
-		.required("Password is required")
+		.required(() => i18n.t("validators.isRequired", {prop: i18n.t("authentication.Password")}))
 }));
 
 export const RegisterValidationSchema = yupResolver(Yup.object({
 	username: Yup.string()
-		.required("Username is required")
-		.min(Constants.MIN_LENGTH_USERNAME, `Username has to be at least ${Constants.MIN_LENGTH_USERNAME} characters`)
-		.max(Constants.MAX_LENGTH_USERNAME, `Username can not be over ${Constants.MAX_LENGTH_USERNAME} characters`),
+		.required(() => i18n.t("validators.isRequired", {prop: i18n.t("authentication.Username")}))
+		.min(
+			Constants.MIN_LENGTH_USERNAME,
+			() => i18n.t('validators.minUsername', {count: Constants.MIN_LENGTH_USERNAME})
+		)
+		.max(
+			Constants.MAX_LENGTH_USERNAME,
+			() => i18n.t("validators.maxUsername", {count: Constants.MAX_LENGTH_USERNAME})
+		),
 	password: Yup.string()
-		.required("Password is required")
-		.min(Constants.PASSWORD_MIN_LENGTH, `Password has to be at least ${Constants.PASSWORD_MIN_LENGTH} characters`)
+		.required(() => i18n.t("validators.isRequired", {prop: i18n.t("authentication.Password")}))
+		.min(
+			Constants.MIN_LENGTH_USERNAME,
+			() => i18n.t('validators.minPassword', {count: Constants.MIN_LENGTH_USERNAME})
+		)
 		.matches(passwordRules, passwordMessage),
 	repeatPassword: Yup.string()
-		.required("Password is required")
-		.min(Constants.PASSWORD_MIN_LENGTH, `Password has to be at least ${Constants.PASSWORD_MIN_LENGTH} characters`)
+		.required(() => i18n.t("validators.isRequired", {prop: i18n.t("authentication.Password")}))
+		.min(
+			Constants.MIN_LENGTH_USERNAME,
+			() => i18n.t('validators.minPassword', {count: Constants.MIN_LENGTH_USERNAME})
+		)
 		.matches(passwordRules, passwordMessage)
-		.oneOf([Yup.ref('password')], 'Passwords must match'),
+		.oneOf(
+			[Yup.ref('password')],
+			() => i18n.t("validators.matchPassword")
+		),
 }));
 
 export const MyJobValidationSchema = yupResolver(Yup.object({
 	company: Yup.string()
-		.min(Constants.MIN_LENGTH_COMPANY_NAME, `Company name has to be at least ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
-		.max(Constants.MAX_LENGTH_COMPANY_NAME, `Company name can not be more than ${Constants.MAX_LENGTH_COMPANY_NAME} characters`)
+		.min(
+			Constants.MIN_LENGTH_COMPANY_NAME,
+			() => i18n.t("validators.minCompany", {count: Constants.MIN_LENGTH_COMPANY_NAME})
+		)
+		.max(
+			Constants.MAX_LENGTH_COMPANY_NAME,
+			() => i18n.t("validators.maxCompany", {count: Constants.MAX_LENGTH_COMPANY_NAME})
+		)
 		.required(),
 	jobTitle: Yup.string()
-		.min(Constants.MIN_LENGTH_JOB_NAME, `Job title has to be at least ${Constants.MIN_LENGTH_JOB_NAME} characters`)
-		.max(Constants.MAX_LENGTH_JOB_NAME, `Job title can not be more than ${Constants.MAX_LENGTH_JOB_NAME} characters`)
+		.min(
+			Constants.MIN_LENGTH_JOB_NAME,
+			() => i18n.t("validators.minJob", {count: Constants.MIN_LENGTH_JOB_NAME})
+		)
+		.max(
+			Constants.MIN_LENGTH_JOB_NAME,
+			() => i18n.t("validators.maxJob", {count: Constants.MAX_LENGTH_JOB_NAME})
+		)
 		.required(),
 	description: Yup.string(),
 	category: Yup.array().of(
@@ -45,7 +79,8 @@ export const MyJobValidationSchema = yupResolver(Yup.object({
 			value: Yup.string(),
 			label: Yup.string(),
 		})).max(
-		Constants.MAX_CATEGORIES, `You can pick up to ${Constants.MAX_CATEGORIES} categories`
+		Constants.MAX_CATEGORIES,
+		() => i18n.t("validators.maxCats", {count: Constants.MAX_CATEGORIES})
 	),
 	note: Yup.string(),
 	jobLink: Yup.string(),
@@ -60,13 +95,22 @@ export const MyJobValidationSchema = yupResolver(Yup.object({
 
 export const NoteValidationSchema = yupResolver(Yup.object({
 	note: Yup.string()
-		.max(Constants.MAX_LENGTH_NOTE, `Note cannot be more than ${Constants.MAX_LENGTH_NOTE} characters`),
+		.max(
+			Constants.MAX_LENGTH_NOTE,
+			() => i18n.t("validators.maxNote", {count: Constants.MAX_LENGTH_NOTE})
+		),
 }));
 
 export const MyConnectionValidationSchema = yupResolver(Yup.object({
 	company: Yup.string()
-		.min(Constants.MIN_LENGTH_COMPANY_NAME, `Company name has to be at least ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
-		.max(Constants.MAX_LENGTH_COMPANY_NAME, `Company name can not be more than ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
+		.min(
+			Constants.MIN_LENGTH_COMPANY_NAME,
+			() => i18n.t("validators.minCompany", {count: Constants.MIN_LENGTH_COMPANY_NAME})
+		)
+		.max(
+			Constants.MAX_LENGTH_COMPANY_NAME,
+			() => i18n.t("validators.maxCompany", {count: Constants.MAX_LENGTH_COMPANY_NAME})
+		)
 		.required(),
 	jobLink: Yup.string(),
 	dateSent: Yup.date(),
@@ -74,11 +118,23 @@ export const MyConnectionValidationSchema = yupResolver(Yup.object({
 
 export const MyToApplyValidationSchema = yupResolver(Yup.object({
 	company: Yup.string()
-		.min(Constants.MIN_LENGTH_COMPANY_NAME, `Company name has to be at least ${Constants.MIN_LENGTH_COMPANY_NAME} characters`)
-		.max(Constants.MAX_LENGTH_COMPANY_NAME, `Company name can not be more than ${Constants.MIN_LENGTH_COMPANY_NAME} characters`),
+		.min(
+			Constants.MIN_LENGTH_COMPANY_NAME,
+			() => i18n.t("validators.minCompany", {count: Constants.MIN_LENGTH_COMPANY_NAME})
+		)
+		.max(
+			Constants.MAX_LENGTH_COMPANY_NAME,
+			() => i18n.t("validators.maxCompany", {count: Constants.MAX_LENGTH_COMPANY_NAME})
+		),
 	jobTitle: Yup.string()
-		.min(Constants.MIN_LENGTH_JOB_NAME, `Job title has to be at least ${Constants.MIN_LENGTH_JOB_NAME} characters`)
-		.max(Constants.MAX_LENGTH_JOB_NAME, `Job title can not be more than ${Constants.MAX_LENGTH_JOB_NAME} characters`),
+		.min(
+			Constants.MIN_LENGTH_JOB_NAME,
+			() => i18n.t("validators.minJob", {count: Constants.MIN_LENGTH_JOB_NAME})
+		)
+		.max(
+			Constants.MIN_LENGTH_JOB_NAME,
+			() => i18n.t("validators.maxJob", {count: Constants.MAX_LENGTH_JOB_NAME})
+		),
 	jobLink: Yup.string().required(),
 	closingDateMFA: Yup.date(),
 }));

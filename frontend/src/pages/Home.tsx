@@ -50,7 +50,7 @@ import {useTranslation} from "react-i18next";
 const Home = () => {
 	const {onOpen, isOpen, onClose} = useDisclosure();
 	const user = useRecoilValue<CustomUser | null>(userAtom);
-	const [isLoading, setIsLoading] = useRecoilState<boolean>(loadingAtom);
+	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 	const [homeScreenState, setHomeScreenState] = useRecoilState<string>(homeScreenAtom);
 
 	const [allMyJobs, setAllMyJobs] = React.useState<MyJobResponseModel[]>([]);
@@ -189,12 +189,12 @@ const Home = () => {
 		);
 		const content = (
 			<Text>
-				{t(page.title)}
+				{t(`home.${page.title}`)}
 				{badge}
 			</Text>
 		);
 		return isListingEmpty(page)
-			? <Tooltip hasArrow label="It is empty.">{content}</Tooltip>
+			? <Tooltip hasArrow label={t("home.emptyListings")}>{content}</Tooltip>
 			: content;
 	};
 
@@ -212,7 +212,7 @@ const Home = () => {
 
 	return (
 		<React.Fragment>
-			<LoadingOverlay isLoading={isLoading}/>
+			<LoadingOverlay/>
 			{user && (
 				<React.Fragment>
 					<Header
@@ -230,7 +230,7 @@ const Home = () => {
 									<h2>
 										<AccordionButton>
 											<Box className={"prevent-select"} as='span' flex='1' textAlign='center'>
-												Filters
+												{t('home.Filters')}
 											</Box>
 											<AccordionIcon/>
 										</AccordionButton>

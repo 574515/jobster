@@ -2,6 +2,7 @@ import React from "react";
 
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import loadingAtom from "../atoms/loadingAtom.ts";
+import i18n from 'i18next';
 
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {constantItemName} from "../helpers/constants.ts";
@@ -24,7 +25,7 @@ const useDeleteItem = (
 			setIsLoading(true);
 			await deleteAction(item._id)
 				.then((response: DeleteItemType) => {
-					void toast(`${itemName} "${response.deletedProperty}" Deleted Successfully`, 'success');
+					void toast(`${itemName} "${response.deletedProperty}" ${i18n.t("validators.DeletedSuccessfully")}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))

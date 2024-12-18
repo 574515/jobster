@@ -27,7 +27,7 @@ import {ToApplyActions} from "../AppActions.action.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
 import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
-import useTooltipLabel from "../../hooks/useTooltipLabel.ts";
+import {useTranslation} from "react-i18next";
 
 const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = (
 	{getAllItems, item}
@@ -41,6 +41,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 		onOpen: onAddEditNoteOpen,
 		onClose: onAddEditNoteClose,
 	} = useDisclosure();
+	const {t} = useTranslation();
 
 	React.useEffect(() => {
 		if (!customColor) setCustomColor("#FFFFFF");
@@ -53,15 +54,11 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 	);
 
 	const [closingDateMFATooltipOpen, setClosingDateMFATooltipOpen] = React.useState<boolean>(false);
-	const closingDateMFATooltipLabel = useTooltipLabel(item.closingDateMFA);
 
 	const getTag = () => {
 		if (item.closingDateMFA) {
 			return (
-				<Tooltip
-					label={<span>{closingDateMFATooltipLabel}</span>}
-					isOpen={closingDateMFATooltipOpen}
-				>
+				<Tooltip isOpen={closingDateMFATooltipOpen}>
 					{format(item.closingDateMFA, TIME_FORMATS[userLocale])}
 				</Tooltip>
 			)
@@ -85,7 +82,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 							color={customColor}
 							shadow={`inset 0 0 0px 1px ${customColor}`}
 						>
-							TODO
+							{t("myFutureApplications.TODO")}
 						</Tag>
 						<HStack>
 							<CustomAddNoteIcon item={item} onAddEditNoteOpen={onAddEditNoteOpen}/>
@@ -112,7 +109,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 					{item.note && (
 						<React.Fragment>
 							<Text mt={2}>
-								Note
+								{t("myFutureApplications.Note")}
 							</Text>
 							<Textarea
 								readOnly
@@ -150,7 +147,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 				item={item}
 				handleDelete={handleDelete}
 				cancelRef={cancelRef}
-				type={"My Future Application Tracker"}
+				type={t("myFutureApplications.type")}
 			/>
 			<AddEditNote
 				isAddEditNoteOpen={isAddEditNoteOpen}
