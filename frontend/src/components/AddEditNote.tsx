@@ -33,6 +33,7 @@ import {useRecoilState} from "recoil";
 import {ConstantItemNames} from "../helpers/enums.ts";
 
 import '../styles/componentStyle.css'
+import {useTranslation} from "react-i18next";
 
 const AddEditNote: React.FC<AddNoteProps> = (
 	{isAddEditNoteOpen, onAddEditNoteClose, item, getAllItems, identifier}
@@ -50,7 +51,8 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		resolver: NoteValidationSchema,
 		defaultValues: {note: item.note ?? undefined},
 		mode: "onChange",
-	})
+	});
+	const {t} = useTranslation();
 
 	const handleReset = () => jobMethods.reset();
 
@@ -64,7 +66,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_JOBS) {
 			JobActions.handleNote(item._id, note)
 				.then((data: MyJobResponseModel) => {
-					void toast(`${data.jobTitle}'s Note Updated Successfully`, 'success');
+					void toast(`${data.jobTitle}${t("addPanels.NoteUpdate", {action: "Updated"})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
@@ -73,17 +75,16 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		if (identifier === ConstantItemNames.MY_CONNECTIONS) {
 			ConnectionActions.handleNote(item._id, note)
 				.then(() => {
-					void toast(`${item.company}'s Note Updated Successfully`, 'success');
+					void toast(`${item.company}${t("addPanels.NoteUpdate", {action: "Updated"})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
 				.finally(() => setIsLoading(false));
 		}
 		if (identifier === ConstantItemNames.MY_FUTURE_APPLICATIONS) {
-			setIsLoading(true);
 			ToApplyActions.handleNote(item._id, note)
 				.then(() => {
-					void toast(`${item.jobLink}'s Note Updated Successfully`, 'success');
+					void toast(`${item.jobLink}${t("addPanels.NoteUpdate", {action: "Updated"})}`, 'success');
 					getAllItems();
 				})
 				.catch((error) => void toast(error.response.data.error, 'error'))
@@ -93,14 +94,33 @@ const AddEditNote: React.FC<AddNoteProps> = (
 
 	const handleNoteDelete = () => {
 		setIsLoading(true);
-		JobActions
-			.handleNote(item._id)
-			.then(() => {
-				void toast(`${(item as MyJobResponseModel).jobTitle}'s Note Removed Successfully`, 'success');
-				getAllItems();
-			})
-			.catch((error) => void toast(error.response.data.error, 'error'))
-			.finally(() => setIsLoading(false));
+		if (identifier === ConstantItemNames.MY_JOBS) {
+			JobActions.handleNote(item._id)
+				.then((data: MyJobResponseModel) => {
+					void toast(`${data.jobTitle}${t("addPanels.NoteUpdate", {action: "Removed"})}`, 'success');
+					getAllItems();
+				})
+				.catch((error) => void toast(error.response.data.error, 'error'))
+				.finally(() => setIsLoading(false));
+		}
+		if (identifier === ConstantItemNames.MY_CONNECTIONS) {
+			ConnectionActions.handleNote(item._id)
+				.then(() => {
+					void toast(`${item.company}${t("addPanels.NoteUpdate", {action: "Removed"})}`, 'success');
+					getAllItems();
+				})
+				.catch((error) => void toast(error.response.data.error, 'error'))
+				.finally(() => setIsLoading(false));
+		}
+		if (identifier === ConstantItemNames.MY_FUTURE_APPLICATIONS) {
+			ToApplyActions.handleNote(item._id)
+				.then(() => {
+					void toast(`${item.jobLink}${t("addPanels.NoteUpdate", {action: "Removed"})}`, 'success');
+					getAllItems();
+				})
+				.catch((error) => void toast(error.response.data.error, 'error'))
+				.finally(() => setIsLoading(false));
+		}
 	}
 
 	return (
@@ -115,7 +135,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 			<ModalOverlay/>
 			<ModalContent>
 				<ModalHeader alignItems={"center"} justifyContent="center">
-					{item.note ? "Notes" : "Add Note"}
+					{item.note ? t("components.Note") : t("components.AddNote")}
 				</ModalHeader>
 				<ModalCloseButton my={2}/>
 				<ModalBody pt={2} pb={4} px={4}>
@@ -132,7 +152,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 											mx={0}
 											alignItems={"center"}
 										>
-											<Text>Note</Text>
+											<Text>{t("components.Note")}</Text>
 										</FormLabel>
 										<Textarea
 											height={(field.value && item.note) ? "2xs" : "unset"}
@@ -142,7 +162,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 												field.onChange(e.target.value);
 												setNumberOfCharacters(e.currentTarget.value.length);
 											}}
-											placeholder={"Your Note Goes Here"}
+											placeholder={t("components.notePlaceholder")}
 										/>
 										<HStack justifyContent={"space-between"} mb={4} alignContent={"center"}>
 											<Text
@@ -158,13 +178,14 @@ const AddEditNote: React.FC<AddNoteProps> = (
 										<ButtonGroup my={2} w={"100%"}>
 											<SubmitButton
 												isLoading={isLoading}
-												loadingText="Submitting..."
+												loadingText={t("authentication.Submitting")}
 												width="full"
 												colorScheme={"green"}
 												variant={"outline"}
-												disabled={!!jobMethods.formState.errors.note}
+												disabled={!!jobMethods.formState.errors.note ||
+													!jobMethods.getValues("note")}
 											>
-												Save
+												{t("components.Save")}
 											</SubmitButton>
 											<ResetButton
 												isLoading={isLoading}
@@ -172,14 +193,21 @@ const AddEditNote: React.FC<AddNoteProps> = (
 												onClick={handleReset}
 												colorScheme={"yellow"}
 												variant={"outline"}
-											>Undo</ResetButton>
-											<Button
-												isLoading={isLoading}
-												width="full"
-												onClick={onDeleteOpen}
-												colorScheme={"red"}
-												variant={"outline"}
-											>Delete</Button>
+											>
+												{t("components.Undo")}
+											</ResetButton>
+											{item.note && (
+												<Button
+													isLoading={isLoading}
+													width="full"
+													onClick={onDeleteOpen}
+													colorScheme={"red"}
+													variant={"outline"}
+													disabled={!item.note}
+												>
+													{t("components.Delete")}
+												</Button>
+											)}
 										</ButtonGroup>
 									</FormControl>
 								)}
@@ -194,7 +222,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 				item={item}
 				handleDelete={handleNoteDelete}
 				cancelRef={cancelRef}
-				type={"Note"}
+				type={t("components.Note")}
 			/>
 		</Modal>
 	);

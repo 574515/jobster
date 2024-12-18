@@ -68,10 +68,15 @@
     "type": "My Future Application Tracker"
   },
   "components": {
+    "Save": "Save",
     "Delete": "Delete",
     "Cancel": "Cancel",
     "deleteMessage": "Are you sure you want to <strong>delete</strong> <italic>{{type}}</italic>?<br />This cannot be undone.",
-    "AddNote": "Add Note"
+    "AddNote": "Add Note",
+    "Note": "Note",
+    "notePlaceholder": "Enter Note...",
+    "Undo": "Undo",
+    "Reset": "Reset"
   },
   "addPanels": {
     "Company": "Company",
@@ -84,6 +89,7 @@
     "Note": "Note",
     "notePlaceholder": "Enter Note...",
     "Save": "Save",
-    "Reset": "Reset"
+    "Reset": "Reset",
+    "NoteUpdate": "'s Note {{action}} Successfully"
   }
 }
