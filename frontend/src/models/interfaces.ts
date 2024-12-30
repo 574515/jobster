@@ -46,6 +46,8 @@ export interface CustomFutureApplicationCardProps {
 }
 
 export interface HeaderProps {
+	statisticsDisabled: boolean;
+
 	handlePageClick(pageValue: string): void;
 
 	getClassName(page: HomeScreenPagesType): string;
@@ -57,6 +59,8 @@ export interface HeaderProps {
 	getHeading(page: HomeScreenPagesType): React.ReactNode;
 
 	onOpen(): void;
+
+	onOpenStats(): void;
 }
 
 export interface AddEditJobModalProps {
@@ -194,7 +198,7 @@ export interface AddMyFutureApplicationTabPanelProps {
 export interface CombinedFiltersProps {
 	allMyJobs?: MyJobResponseModel[];
 	allMyConnections?: MyConnectionResponseModel[];
-	userToApplyListings?: MyFutureApplicationResponseModel[];
+	allMyFutureConnections?: MyFutureApplicationResponseModel[];
 	totalNumberOfListings: number;
 	checkedStatuses: Record<string, boolean>;
 
@@ -213,4 +217,27 @@ export interface CombinedFiltersProps {
 
 export interface CustomSubmitButtonGroupProps {
 	resetMethod(): void;
+}
+
+export interface StatisticsProps {
+	isOpen: boolean;
+	allMyJobs: MyJobResponseModel[];
+	allMyConnections: MyConnectionResponseModel[];
+	allMyFutureConnections: MyFutureApplicationResponseModel[];
+
+	onClose(): void;
+}
+
+export interface MyJobStatisticProps {
+	allMyJobs: MyJobResponseModel[];
+}
+
+export interface MyCustomStatisticProps {
+	myConnectionData?: MyConnectionResponseModel[];
+	myFutureApplicationData?: MyFutureApplicationResponseModel[];
+}
+
+export interface CustomDateTagProps {
+	dateToShow: Date;
+	title: string;
 }

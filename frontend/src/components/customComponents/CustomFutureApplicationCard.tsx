@@ -147,7 +147,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 				item={item}
 				handleDelete={handleDelete}
 				cancelRef={cancelRef}
-				type={t("myFutureApplications.type")}
+				type={"My Future Application Tracker"}
 			/>
 			<AddEditNote
 				isAddEditNoteOpen={isAddEditNoteOpen}

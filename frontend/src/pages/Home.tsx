@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import loadingAtom from "../atoms/loadingAtom.ts";
 import userAtom from "../atoms/userAtom.ts";
@@ -45,10 +45,12 @@ import CombinedFilters from "../components/filtering/CombinedFilters.tsx";
 import SortBy from "../components/filtering/SortBy.tsx";
 import isPhoneAtom from "../atoms/isPhoneAtom.ts";
 import {useTranslation} from "react-i18next";
+import Statistics from "../components/statistics/Statistics.tsx";
 
 
 const Home = () => {
 	const {onOpen, isOpen, onClose} = useDisclosure();
+	const {onOpen: onOpenStats, isOpen: isOpenStats, onClose: onCloseStats} = useDisclosure();
 	const user = useRecoilValue<CustomUser | null>(userAtom);
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 	const [homeScreenState, setHomeScreenState] = useRecoilState<string>(homeScreenAtom);
@@ -56,7 +58,7 @@ const Home = () => {
 	const [allMyJobs, setAllMyJobs] = React.useState<MyJobResponseModel[]>([]);
 	const [myJobsFiltered, setMyJobsFiltered] = React.useState<MyJobResponseModel[]>([]);
 	const [allMyConnections, setAllMyConnections] = React.useState<MyConnectionResponseModel[]>([]);
-	const [userToApplyListings, setUserToApplyListings] = React.useState<MyFutureApplicationResponseModel[]>([]);
+	const [allMyFutureConnections, setUserToApplyListings] = React.useState<MyFutureApplicationResponseModel[]>([]);
 	const [checkedStatuses, setCheckedStatuses] = React.useState<Record<string, boolean>>({});
 	const [totalNumberOfListings, setTotalNumberOfListings] = React.useState<number>(0);
 	const [filterActive, setFilterActive] = React.useState<number>(0);
@@ -147,7 +149,7 @@ const Home = () => {
 	const handlePageClick = (pageValue: string) => {
 		if (pageValue === homeScreenPages.MY_JOBS && allMyJobs.length === 0) return;
 		if (pageValue === homeScreenPages.MY_CONNECTIONS && allMyConnections.length === 0) return;
-		if (pageValue === homeScreenPages.MY_FUTURE_APPLICATIONS && userToApplyListings.length === 0) return;
+		if (pageValue === homeScreenPages.MY_FUTURE_APPLICATIONS && allMyFutureConnections.length === 0) return;
 		setHomeScreenState(pageValue);
 	}
 
@@ -157,7 +159,7 @@ const Home = () => {
 		return (
 			(page.value === homeScreenPages.MY_JOBS && allMyJobs.length === 0) ||
 			(page.value === homeScreenPages.MY_CONNECTIONS && allMyConnections.length === 0) ||
-			(page.value === homeScreenPages.MY_FUTURE_APPLICATIONS && userToApplyListings.length === 0)
+			(page.value === homeScreenPages.MY_FUTURE_APPLICATIONS && allMyFutureConnections.length === 0)
 		);
 	};
 
@@ -174,7 +176,7 @@ const Home = () => {
 
 	const getHeading = (page: HomeScreenPagesType): React.ReactNode => {
 		const badge = (
-			page.title === ConstantItemNames.MY_FUTURE_APPLICATIONS && userToApplyListings.length > 0
+			page.title === ConstantItemNames.MY_FUTURE_APPLICATIONS && allMyFutureConnections.length > 0
 				? <Badge
 					ml='1rem'
 					bg="#FF9999"
@@ -183,7 +185,7 @@ const Home = () => {
 					px={2}
 					borderRadius="50%"
 				>
-					{userToApplyListings.length}
+					{allMyFutureConnections.length}
 				</Badge>
 				: null
 		);
@@ -210,6 +212,15 @@ const Home = () => {
 		return isListingEmpty(page) ? "#999" : isActivePage(page) ? "#fff" : "#999";
 	};
 
+	const [statisticsDisabled, setStatisticsDisabled] = React.useState<boolean>(true);
+
+	useEffect(() => {
+		setStatisticsDisabled(
+			allMyJobs.length === 0 &&
+			allMyConnections.length === 0 &&
+			allMyFutureConnections.length === 0);
+	}, [allMyConnections.length, allMyFutureConnections.length, allMyJobs.length]);
+
 	return (
 		<React.Fragment>
 			<LoadingOverlay/>
@@ -222,6 +233,15 @@ const Home = () => {
 						getColor={getColor}
 						getHeading={getHeading}
 						onOpen={onOpen}
+						onOpenStats={onOpenStats}
+						statisticsDisabled={statisticsDisabled}
+					/>
+					<Statistics
+						isOpen={isOpenStats}
+						onClose={onCloseStats}
+						allMyJobs={allMyJobs}
+						allMyConnections={allMyConnections}
+						allMyFutureConnections={allMyFutureConnections}
 					/>
 					{homeScreenState === homeScreenPages.MY_JOBS ? (
 						<Show below={"xl"}>
@@ -250,7 +270,7 @@ const Home = () => {
 											checkedStatuses={checkedStatuses}
 											setAllMyConnections={setAllMyConnections}
 											allMyConnections={allMyConnections}
-											userToApplyListings={userToApplyListings}
+											allMyFutureConnections={allMyFutureConnections}
 											setUserToApplyListings={setUserToApplyListings}
 											totalNumberOfListings={totalNumberOfListings}
 										/>
@@ -265,7 +285,7 @@ const Home = () => {
 								setAllMyJobs={setAllMyJobs}
 								allMyConnections={allMyConnections}
 								setAllMyConnections={setAllMyConnections}
-								allMyFutureApplications={userToApplyListings}
+								allMyFutureApplications={allMyFutureConnections}
 								setAllMyFutureApplications={setUserToApplyListings}
 							/>
 						</Show>
@@ -278,7 +298,7 @@ const Home = () => {
 									getAllMyJobs={getAllMyJobs}
 									allMyConnections={allMyConnections}
 									getAllMyConnections={getAllMyConnections}
-									allMyFutureApplications={userToApplyListings}
+									allMyFutureApplications={allMyFutureConnections}
 									getAllMyFutureApplications={getAllMyFutureApplications}
 								/>
 							)}
@@ -288,7 +308,7 @@ const Home = () => {
 									getAllMyJobs={getAllMyJobs}
 									allMyConnections={allMyConnections}
 									getAllMyConnections={getAllMyConnections}
-									allMyFutureApplications={userToApplyListings}
+									allMyFutureApplications={allMyFutureConnections}
 									getAllMyFutureApplications={getAllMyFutureApplications}
 								/>
 							)}
@@ -298,7 +318,7 @@ const Home = () => {
 									getAllMyJobs={getAllMyJobs}
 									allMyConnections={allMyConnections}
 									getAllMyConnections={getAllMyConnections}
-									allMyFutureApplications={userToApplyListings}
+									allMyFutureApplications={allMyFutureConnections}
 									getAllMyFutureApplications={getAllMyFutureApplications}
 								/>
 							)}
@@ -312,7 +332,7 @@ const Home = () => {
 									checkedStatuses={checkedStatuses}
 									setAllMyConnections={setAllMyConnections}
 									allMyConnections={allMyConnections}
-									userToApplyListings={userToApplyListings}
+									allMyFutureConnections={allMyFutureConnections}
 									setUserToApplyListings={setUserToApplyListings}
 									totalNumberOfListings={totalNumberOfListings}
 								/>

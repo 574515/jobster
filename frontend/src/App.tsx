@@ -12,7 +12,6 @@ import {useRecoilValue} from 'recoil';
 import {AuthProvider} from './context/AuthContext.tsx';
 import {Box, useColorMode} from "@chakra-ui/react";
 
-import './styles/pagesStyle.css';
 import "./i18n.ts";
 
 function App() {

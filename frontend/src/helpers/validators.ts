@@ -69,7 +69,7 @@ export const MyJobValidationSchema = yupResolver(Yup.object({
 			() => i18n.t("validators.minJob", {count: Constants.MIN_LENGTH_JOB_NAME})
 		)
 		.max(
-			Constants.MIN_LENGTH_JOB_NAME,
+			Constants.MAX_LENGTH_JOB_NAME,
 			() => i18n.t("validators.maxJob", {count: Constants.MAX_LENGTH_JOB_NAME})
 		)
 		.required(),

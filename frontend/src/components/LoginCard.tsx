@@ -4,7 +4,6 @@ import authScreenAtom from '../atoms/authScreenAtom.ts';
 import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import useAuth from "../hooks/useAuth.ts";
 import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
-import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
 
 import {
 	Box,
@@ -119,7 +118,7 @@ const LoginCard = () => {
 										margin={"auto"}
 									>{t("authentication.LogIn")}</SubmitButton>
 									<CustomColorModeSwitch/>
-									<CustomLanguageSwitcher/>
+									{/*<CustomLanguageSwitcher/>*/}
 								</HStack>
 								<Text align={'center'} className="prevent-select">
 									{t("authentication.noAccount")}&nbsp;<Link

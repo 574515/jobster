@@ -30,7 +30,7 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 	useEffect(() => {
 		switch (type) {
 			case MyTrackerNames.JOB: {
-				setTypeMessage(t("myJobs.type"));
+				setTypeMessage(t("myConnections.type"));
 				break;
 			}
 			case MyTrackerNames.CONNECTION: {
@@ -39,6 +39,10 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 			}
 			case MyTrackerNames.APPLICATION: {
 				setTypeMessage(t("myFutureApplications.type"));
+				break;
+			}
+			case MyTrackerNames.NOTE: {
+				setTypeMessage(t("components.Note"));
 				break;
 			}
 			default: {
@@ -59,7 +63,7 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 			<AlertDialogOverlay>
 				<AlertDialogContent className={"prevent-select"}>
 					<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-						{t("components.Delete")} {type}
+						{t("components.Delete")} {typeMessage}
 						<br/>
 						{item.company && <Text>[{item.company}]</Text>}
 					</AlertDialogHeader>

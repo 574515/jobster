@@ -224,7 +224,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 				item={item}
 				handleDelete={handleNoteDelete}
 				cancelRef={cancelRef}
-				type={t("components.Note")}
+				type={"Note"}
 			/>
 		</Modal>
 	);

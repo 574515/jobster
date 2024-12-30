@@ -1,5 +1,6 @@
 import {GroupBase} from 'chakra-react-select';
 import React from 'react';
+import {Locale} from "date-fns";
 
 export type DefaultStringKeyNumberModel = {
 	[key: string]: number;
@@ -7,6 +8,10 @@ export type DefaultStringKeyNumberModel = {
 
 export type DefaultStringKeyStringModel = {
 	[key: string]: string;
+}
+
+export type DefaultStringKeyLocaleModel = {
+	[key: string]: Locale;
 }
 
 type ThemePropsBodyType = {
@@ -52,7 +57,7 @@ export type CustomIconProps = {
 	color: string;
 	className: string;
 }
-// ------------------------------------------------------
+
 export type StatusSelectType = ModalSelectType & {
 	count: number;
 }
@@ -145,6 +150,7 @@ export type CategorySelectionModel = {
 	value?: string;
 	label?: string;
 	color?: string;
+	tooltip?: string;
 }
 
 export type CategorySelectionGroupModel = GroupBase<CategorySelectionModel> & {
@@ -240,4 +246,12 @@ export type CustomLanguageSwitcherProps = {
 
 export type ErrorResponse = {
 	action: string;
+}
+
+export type MyConnectionResponseModelStatistic = {
+	value: number;
+	color: string;
+	name: string | undefined;
+	link: string | undefined;
+	date: Date | undefined;
 }

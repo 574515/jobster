@@ -1,4 +1,5 @@
-import {DefaultStringKeyStringModel} from "../models/types.ts";
+import {DefaultStringKeyLocaleModel, DefaultStringKeyStringModel} from "../models/types.ts";
+import * as DATE_LOCALES from 'date-fns/locale';
 
 export const TIME_FORMATS: DefaultStringKeyStringModel = {
 	"af-ZA": "yyyy/MM/dd",
@@ -212,3 +213,36 @@ export const TIME_FORMATS: DefaultStringKeyStringModel = {
 	"zh-TW": "yyyy/M/d",
 	"zu-ZA": "yyyy/MM/dd",
 };
+
+export const CONVERTED_LOCALES: DefaultStringKeyLocaleModel = {
+	"de-AT": DATE_LOCALES.deAT,
+	"de-DE": DATE_LOCALES.de,
+	"en-AU": DATE_LOCALES.enAU,
+	"en-CA": DATE_LOCALES.enCA,
+	"en-GB": DATE_LOCALES.enGB,
+	"en-IE": DATE_LOCALES.enIE,
+	"en-IN": DATE_LOCALES.enIN,
+	"en-NZ": DATE_LOCALES.enNZ,
+	"en-US": DATE_LOCALES.enUS,
+	"en-ZA": DATE_LOCALES.enZA,
+	"es-ES": DATE_LOCALES.es,
+	"fr-BE": DATE_LOCALES.fr,
+	"fr-CA": DATE_LOCALES.frCA,
+	"fr-CH": DATE_LOCALES.frCH,
+	"hr-HR": DATE_LOCALES.hr,
+	"it-CH": DATE_LOCALES.itCH,
+	"it-IT": DATE_LOCALES.it,
+	"ja-JP": DATE_LOCALES.ja,
+	"ko-KR": DATE_LOCALES.ko,
+	"mk-MK": DATE_LOCALES.mk,
+	"nl-BE": DATE_LOCALES.nlBE,
+	"nl-NL": DATE_LOCALES.nl,
+	"ro-RO": DATE_LOCALES.ro,
+	"ru-RU": DATE_LOCALES.ru,
+	"sr-Cyrl-RS": DATE_LOCALES.sr,
+	"sr-Latn-RS": DATE_LOCALES.srLatn,
+	"sv-SE": DATE_LOCALES.sv,
+	"tr-TR": DATE_LOCALES.tr,
+	"uk-UA": DATE_LOCALES.uk,
+	"vi-VN": DATE_LOCALES.vi,
+}

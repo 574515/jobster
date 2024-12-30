@@ -14,7 +14,7 @@ import {useTranslation} from "react-i18next";
 const CombinedFilters: React.FC<CombinedFiltersProps> = (
 	{
 		allMyJobs, setAllMyJobs, allMyConnections, setAllMyConnections,
-		userToApplyListings, setUserToApplyListings, checkedStatuses, setCheckedStatuses,
+		allMyFutureConnections, setUserToApplyListings, checkedStatuses, setCheckedStatuses,
 		setMyJobsFiltered, setFilterActive, totalNumberOfListings,
 	}
 ) => {
@@ -30,7 +30,7 @@ const CombinedFilters: React.FC<CombinedFiltersProps> = (
 				setAllMyJobs={setAllMyJobs}
 				allMyConnections={allMyConnections}
 				setAllMyConnections={setAllMyConnections}
-				allMyFutureApplications={userToApplyListings}
+				allMyFutureApplications={allMyFutureConnections}
 				setAllMyFutureApplications={setUserToApplyListings}
 			/>
 			{homeScreenState === homeScreenPages.MY_JOBS && allMyJobs && (

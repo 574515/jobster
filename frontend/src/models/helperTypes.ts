@@ -33,3 +33,18 @@ export type UseFormMyFutureApplicationType = {
 	jobTitle?: string;
 	closingDateMFA?: Date;
 }
+
+export type StatDataType = {
+	name: string;
+	value: number;
+	fill: string;
+}
+import {Payload as RechartsPayload} from "recharts/types/component/DefaultLegendContent";
+
+export type CustomPayload = RechartsPayload & {
+	payload: {
+		link?: string;
+		fill?: string;
+		date?: Date;
+	};
+}

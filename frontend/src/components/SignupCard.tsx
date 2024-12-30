@@ -4,7 +4,6 @@ import AuthContext from "../context/AuthContext.tsx";
 import authScreenAtom from "../atoms/authScreenAtom.ts";
 import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
 import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
-import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
 
 import {toast} from "../helpers/customToast.ts";
 import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
@@ -190,7 +189,7 @@ const SignupCard = () => {
 										margin={"auto"}
 									>{t("authentication.SignUp")}</SubmitButton>
 									<CustomColorModeSwitch/>
-									<CustomLanguageSwitcher/>
+									{/*<CustomLanguageSwitcher/>*/}
 								</HStack>
 								<Text align={'center'} className="prevent-select">
 									{t("authentication.haveAccount")}&nbsp;<Link

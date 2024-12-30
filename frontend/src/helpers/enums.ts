@@ -7,5 +7,6 @@ export enum ConstantItemNames {
 export enum MyTrackerNames {
 	JOB = "My Job Application Tracker",
 	CONNECTION = "My Job Connection Tracker",
-	APPLICATION = "My Future Application Tracker"
+	APPLICATION = "My Future Application Tracker",
+	NOTE = "Note",
 }

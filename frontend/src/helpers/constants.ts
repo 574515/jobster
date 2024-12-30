@@ -172,6 +172,12 @@ export const constantItemName: DefaultStringKeyStringModel = {
 	myFutureApplications: 'My Future Application',
 };
 
+export const constantHomeScreenPageName = {
+	MY_JOBS: 'My Jobs',
+	MY_CONNECTIONS: 'My Connections',
+	MY_FUTURE_APPLICATIONS: 'My Future Applications',
+};
+
 export const homeScreenPagesList: HomeScreenPagesType[] = [
 	{
 		title: 'My Jobs',
