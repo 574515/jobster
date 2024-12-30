@@ -1,7 +1,8 @@
 import express from 'express';
 
-import { addMyJob, changeMyJobStatus, deleteMyJob, getAllMyJobs, handleNote } from "../controllers/myJobController.js";
 import protectRoute from "../middleware/verifyJWT.js";
+
+import { addMyJob, changeMyJobStatus, deleteMyJob, getAllMyJobs, handleNote } from "../controllers/myJobController.js";
 
 const router = express.Router();
 
