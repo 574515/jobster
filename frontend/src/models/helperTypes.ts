@@ -1,3 +1,5 @@
+import {Payload as RechartsPayload} from "recharts/types/component/DefaultLegendContent";
+
 type UseFormMyJobCategory = {
 	value?: string;
 	label?: string;
@@ -32,4 +34,18 @@ export type UseFormMyFutureApplicationType = {
 	company?: string;
 	jobTitle?: string;
 	closingDateMFA?: Date;
+}
+
+export type StatDataType = {
+	name: string;
+	value: number;
+	fill: string;
+}
+
+export type CustomPayload = RechartsPayload & {
+	payload: {
+		link?: string;
+		fill?: string;
+		date?: Date;
+	};
 }

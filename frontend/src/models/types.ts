@@ -1,5 +1,7 @@
+import {ReactNode} from 'react';
+
 import {GroupBase} from 'chakra-react-select';
-import React from 'react';
+import {Locale} from "date-fns";
 
 export type DefaultStringKeyNumberModel = {
 	[key: string]: number;
@@ -7,6 +9,10 @@ export type DefaultStringKeyNumberModel = {
 
 export type DefaultStringKeyStringModel = {
 	[key: string]: string;
+}
+
+export type DefaultStringKeyLocaleModel = {
+	[key: string]: Locale;
 }
 
 type ThemePropsBodyType = {
@@ -52,38 +58,9 @@ export type CustomIconProps = {
 	color: string;
 	className: string;
 }
-// ------------------------------------------------------
+
 export type StatusSelectType = ModalSelectType & {
 	count: number;
-}
-
-type MyResponseType = {
-	user: string;
-	_id: string;
-	createdAt: string;
-	updatedAt: string;
-	__v: number;
-}
-
-type MyCommonCreationType = {
-	company: string;
-	jobLink: string;
-}
-
-export type MyJobCreationTransformedType = MyCommonCreationType & {
-	jobTitle: string;
-	description: string;
-	category: CategorySelectionModel[];
-	status: ModalSelectType;
-	userId: string;
-	dateApplied: string;
-	closingDate: Date;
-	note?: string;
-}
-
-export type MyJobCreationResponseType =
-	MyJobCreationTransformedType & MyResponseType & {
-	note: string | null;
 }
 
 export type PoolCreationResponseModel = {
@@ -94,10 +71,9 @@ export type PoolCreationResponseModel = {
 	updatedAt: string;
 }
 
-
 export type FiltersType = {
 	filterName: string;
-	filterComponent: React.ReactNode;
+	filterComponent: ReactNode;
 }
 
 export type SortByOptionType = {
@@ -145,6 +121,7 @@ export type CategorySelectionModel = {
 	value?: string;
 	label?: string;
 	color?: string;
+	tooltip?: string;
 }
 
 export type CategorySelectionGroupModel = GroupBase<CategorySelectionModel> & {
@@ -240,4 +217,12 @@ export type CustomLanguageSwitcherProps = {
 
 export type ErrorResponse = {
 	action: string;
+}
+
+export type MyConnectionResponseModelStatistic = {
+	value: number;
+	color: string;
+	name: string | undefined;
+	link: string | undefined;
+	date: Date | undefined;
 }

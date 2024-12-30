@@ -1,4 +1,4 @@
-import React from "react";
+import {FC} from "react";
 
 import StatusList from "./StatusList.tsx";
 import StatusFilters from "./StatusFilters.tsx";
@@ -9,7 +9,7 @@ import {FiltersType} from "../../models/types.ts";
 import {FilterProps} from "../../models/interfaces.ts";
 import {useTranslation} from "react-i18next";
 
-const Filters: React.FC<FilterProps> = (
+const Filters: FC<FilterProps> = (
 	{
 		allMyJobs, checkedStatuses, setCheckedStatuses,
 		setMyJobsFiltered, setFilterActive,

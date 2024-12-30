@@ -1,4 +1,4 @@
-import React from "react";
+import {FC, ReactNode, useEffect, useState} from "react";
 
 import {Tooltip} from "@chakra-ui/react";
 import {FaNotesMedical, FaNoteSticky} from "react-icons/fa6";
@@ -6,14 +6,14 @@ import {CustomAddNoteIconProps} from "../../models/interfaces.ts";
 import {CustomIconProps} from "../../models/types.ts";
 import {useTranslation} from "react-i18next";
 
-const CustomAddNoteIcon: React.FC<CustomAddNoteIconProps> = (
+const CustomAddNoteIcon: FC<CustomAddNoteIconProps> = (
 	{item, onAddEditNoteOpen}
 ) => {
-	const [customIcon, setCustomIcon] = React.useState<React.ReactNode>();
-	const [customLabel, setCustomLabel] = React.useState<string>();
+	const [customIcon, setCustomIcon] = useState<ReactNode>();
+	const [customLabel, setCustomLabel] = useState<string>();
 	const {t} = useTranslation();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const iconProps: CustomIconProps = {
 			color: "#FEFF9C",
 			className: "make-pointer",

@@ -1,28 +1,34 @@
-import {homeScreenPages, homeScreenPagesList} from "../helpers/constants.ts";
-import {AuthContextType, CustomUser, HomeScreenPagesType} from "../models/types.ts";
-import React from "react";
-import {Button, ButtonGroup, Divider, Flex, Heading, VStack} from "@chakra-ui/react";
-import {FaArrowRightFromBracket, FaPlus} from "react-icons/fa6";
-import {toast} from "../helpers/customToast.ts";
+import {FC, ReactNode, useContext} from "react";
+
 import AuthContext from "../context/AuthContext.tsx";
-import {useRecoilValue, useSetRecoilState} from "recoil";
 import loadingAtom from "../atoms/loadingAtom.ts";
 import userAtom from "../atoms/userAtom.ts";
-import {HeaderProps} from "../models/interfaces.ts";
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
+import isPhoneAtom from "../atoms/isPhoneAtom.ts";
+import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
 import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
+
+import {homeScreenPages, homeScreenPagesList} from "../helpers/constants.ts";
+import {AuthContextType, CustomUser, HomeScreenPagesType} from "../models/types.ts";
+import {Button, ButtonGroup, Divider, Flex, Heading, Show, VStack} from "@chakra-ui/react";
+import {FaArrowRightFromBracket, FaChartSimple, FaPlus} from "react-icons/fa6";
+import {toast} from "../helpers/customToast.ts";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {HeaderProps} from "../models/interfaces.ts";
 import {useTranslation} from "react-i18next";
 
-const Header: React.FC<HeaderProps> = (
+const Header: FC<HeaderProps> = (
 	{
-		handlePageClick, getClassName, getBottomBorder, getColor, getHeading, onOpen
+		handlePageClick, getClassName, getBottomBorder, getColor,
+		getHeading, onOpen, onOpenStats, statisticsDisabled
 	}
 ) => {
-	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
+	const authContext = useContext<AuthContextType | undefined>(AuthContext);
 	const logoutUser = authContext ? authContext.logoutUser : undefined;
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 	const user = useRecoilValue<CustomUser | null>(userAtom);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const {t} = useTranslation();
 
 	const handleLogout = async () => {
@@ -42,7 +48,7 @@ const Header: React.FC<HeaderProps> = (
 				alignItems={"center"}
 				flexDirection={{base: "column-reverse", xl: "row"}}
 			>
-				{homeScreenPagesList.map((page: HomeScreenPagesType, index: number): React.ReactNode => (
+				{homeScreenPagesList.map((page: HomeScreenPagesType, index: number): ReactNode => (
 					<Heading
 						my="1rem"
 						size="md"
@@ -57,18 +63,74 @@ const Header: React.FC<HeaderProps> = (
 						{getHeading(page)}
 					</Heading>
 				))}
-				<ButtonGroup mt={{base: "1rem", sm: "unset"}}>
-					<Button leftIcon={<FaPlus/>} variant="outline" colorScheme="gray"
-					        onClick={onOpen}>
-						{t('home.Add')}
-					</Button>
-					<Button leftIcon={<FaArrowRightFromBracket/>} variant="outline"
-					        colorScheme="gray"
-					        onClick={handleLogout}>
-						{t('home.LogOut')} [{user.username}]
-					</Button>
-					<CustomLanguageSwitcher/>
-				</ButtonGroup>
+				<Show below={"xl"}>
+					<ButtonGroup my={2} alignItems={"center"} justifyContent="space-evenly" w={"100%"}>
+						<Button
+							w={"full"}
+							leftIcon={<FaChartSimple/>}
+							variant="outline"
+							colorScheme="gray"
+							onClick={onOpenStats}
+							my={2}
+							isDisabled={statisticsDisabled}
+						>
+							{t('statistics.Statistics')}
+						</Button>
+						<CustomColorModeSwitch/>
+						<CustomLanguageSwitcher/>
+					</ButtonGroup>
+					<ButtonGroup w={"100%"} my={2} justifyContent={"space-evenly"}>
+						<Button
+							w={"full"}
+							leftIcon={<FaPlus/>}
+							variant="outline"
+							colorScheme="gray"
+							onClick={onOpen}
+						>
+							{t('home.Add')}
+						</Button>
+						<Button
+							w={"full"}
+							leftIcon={<FaArrowRightFromBracket/>}
+							variant="outline"
+							colorScheme="gray"
+							onClick={handleLogout}
+						>
+							{t('home.LogOut')} {!isPhone && [user.username]}
+						</Button>
+					</ButtonGroup>
+				</Show>
+				<Show above={"xl"}>
+					<ButtonGroup mt={{base: "1rem", sm: "unset"}} alignItems={"center"}>
+						<Button
+							leftIcon={<FaPlus/>}
+							variant="outline"
+							colorScheme="gray"
+							onClick={onOpen}
+						>
+							{t('home.Add')}
+						</Button>
+						<Button
+							leftIcon={<FaChartSimple/>}
+							variant="outline"
+							colorScheme="gray"
+							onClick={onOpenStats}
+							isDisabled={statisticsDisabled}
+						>
+							{t('statistics.Statistics')}
+						</Button>
+						<Button
+							leftIcon={<FaArrowRightFromBracket/>}
+							variant="outline"
+							colorScheme="gray"
+							onClick={handleLogout}
+						>
+							{t('home.LogOut')} [{user.username}]
+						</Button>
+						<CustomLanguageSwitcher/>
+						<CustomColorModeSwitch/>
+					</ButtonGroup>
+				</Show>
 			</Flex>
 			{homeScreenState === homeScreenPages.MY_JOBS && <Divider/>}
 		</VStack>

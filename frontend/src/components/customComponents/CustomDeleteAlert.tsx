@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {FC, useEffect, useState} from "react";
 
 import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
@@ -20,17 +20,17 @@ import {MyTrackerNames} from "../../helpers/enums.ts";
 
 import "../../styles/style.css"
 
-const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
+const CustomDeleteAlert: FC<CustomDeleteAlertProps> = (
 	{isDeleteOpen, onDeleteClose, cancelRef, item, handleDelete, type}
 ) => {
-	const [typeMessage, setTypeMessage] = React.useState<string>();
-	const isPhone = useRecoilValue(isPhoneAtom);
+	const [typeMessage, setTypeMessage] = useState<string>();
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const {t} = useTranslation();
 
 	useEffect(() => {
 		switch (type) {
 			case MyTrackerNames.JOB: {
-				setTypeMessage(t("myJobs.type"));
+				setTypeMessage(t("myConnections.type"));
 				break;
 			}
 			case MyTrackerNames.CONNECTION: {
@@ -39,6 +39,10 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 			}
 			case MyTrackerNames.APPLICATION: {
 				setTypeMessage(t("myFutureApplications.type"));
+				break;
+			}
+			case MyTrackerNames.NOTE: {
+				setTypeMessage(t("components.Note"));
 				break;
 			}
 			default: {
@@ -59,7 +63,7 @@ const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
 			<AlertDialogOverlay>
 				<AlertDialogContent className={"prevent-select"}>
 					<AlertDialogHeader fontSize='lg' fontWeight='bold'>
-						{t("components.Delete")} {type}
+						{t("components.Delete")} {typeMessage}
 						<br/>
 						{item.company && <Text>[{item.company}]</Text>}
 					</AlertDialogHeader>

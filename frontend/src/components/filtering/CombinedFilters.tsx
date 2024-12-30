@@ -1,4 +1,4 @@
-import React from "react";
+import {FC} from "react";
 
 import SortBy from "./SortBy.tsx";
 import Filters from "./Filters.tsx";
@@ -11,10 +11,10 @@ import {CombinedFiltersProps} from "../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
 import {useTranslation} from "react-i18next";
 
-const CombinedFilters: React.FC<CombinedFiltersProps> = (
+const CombinedFilters: FC<CombinedFiltersProps> = (
 	{
 		allMyJobs, setAllMyJobs, allMyConnections, setAllMyConnections,
-		userToApplyListings, setUserToApplyListings, checkedStatuses, setCheckedStatuses,
+		allMyFutureConnections, setUserToApplyListings, checkedStatuses, setCheckedStatuses,
 		setMyJobsFiltered, setFilterActive, totalNumberOfListings,
 	}
 ) => {
@@ -30,7 +30,7 @@ const CombinedFilters: React.FC<CombinedFiltersProps> = (
 				setAllMyJobs={setAllMyJobs}
 				allMyConnections={allMyConnections}
 				setAllMyConnections={setAllMyConnections}
-				allMyFutureApplications={userToApplyListings}
+				allMyFutureApplications={allMyFutureConnections}
 				setAllMyFutureApplications={setUserToApplyListings}
 			/>
 			{homeScreenState === homeScreenPages.MY_JOBS && allMyJobs && (

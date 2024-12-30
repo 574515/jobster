@@ -1,4 +1,4 @@
-import React from "react";
+import {FC, useEffect, useState} from "react";
 
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import loadingAtom from "../atoms/loadingAtom.ts";
@@ -10,20 +10,25 @@ import {Box, Grid, VStack} from "@chakra-ui/react";
 import {MyJobsProps} from "../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
 import {homeScreenPages} from "../helpers/constants.ts";
-import {MyConnectionResponseModel, MyFutureApplicationResponseModel, MyJobResponseModel} from "../models/types.ts";
+import {
+	DefaultStringKeyStringModel,
+	MyConnectionResponseModel,
+	MyFutureApplicationResponseModel,
+	MyJobResponseModel
+} from "../models/types.ts";
 
-const MyJobs: React.FC<MyJobsProps> = (
+const MyJobs: FC<MyJobsProps> = (
 	{
 		allMyJobs, allMyConnections,
 		getAllMyJobs, getAllMyConnections,
 		allMyFutureApplications, getAllMyFutureApplications
 	}
 ) => {
-	const [templateColumns, setTemplateColumns] = React.useState<{ [key: string]: string; }>();
+	const [templateColumns, setTemplateColumns] = useState<DefaultStringKeyStringModel>();
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 	const isLoading = useRecoilValue<boolean>(loadingAtom);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (homeScreenState === homeScreenPages.MY_JOBS)
 			setTemplateColumns({
 				base: 'repeat(1, 1fr)',

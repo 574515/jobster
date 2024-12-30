@@ -1,4 +1,5 @@
-import React from "react";
+import {ReactNode, RefObject} from "react";
+
 import {FieldValues, UseFormReturn} from "react-hook-form";
 import {
 	CustomUser,
@@ -16,14 +17,19 @@ import {
 	MyJobResponseModel,
 } from "./types.ts";
 import {ConstantItemNames} from "../helpers/enums.ts";
-import {UseFormMyConnectionType, UseFormMyFutureApplicationType, UseFormMyJobType} from "./helperTypes.ts";
+import {
+	CustomPayload,
+	UseFormMyConnectionType,
+	UseFormMyFutureApplicationType,
+	UseFormMyJobType
+} from "./helperTypes.ts";
 
 export interface AuthProviderProps {
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 export interface CustomFormProviderProps<T extends FieldValues> {
-	children: React.ReactNode;
+	children: ReactNode;
 	formProviderData: UseFormReturn<T>;
 }
 
@@ -46,6 +52,8 @@ export interface CustomFutureApplicationCardProps {
 }
 
 export interface HeaderProps {
+	statisticsDisabled: boolean;
+
 	handlePageClick(pageValue: string): void;
 
 	getClassName(page: HomeScreenPagesType): string;
@@ -54,9 +62,11 @@ export interface HeaderProps {
 
 	getColor(page: HomeScreenPagesType): string;
 
-	getHeading(page: HomeScreenPagesType): React.ReactNode;
+	getHeading(page: HomeScreenPagesType): ReactNode;
 
 	onOpen(): void;
+
+	onOpenStats(): void;
 }
 
 export interface AddEditJobModalProps {
@@ -143,7 +153,7 @@ export interface AddNoteProps {
 
 export interface CustomDeleteAlertProps {
 	isDeleteOpen: boolean;
-	cancelRef: React.RefObject<HTMLButtonElement>;
+	cancelRef: RefObject<HTMLButtonElement>;
 	item: MyJobResponseModel | MyConnectionResponseModel | MyFutureApplicationResponseModel;
 	type: string;
 
@@ -194,7 +204,7 @@ export interface AddMyFutureApplicationTabPanelProps {
 export interface CombinedFiltersProps {
 	allMyJobs?: MyJobResponseModel[];
 	allMyConnections?: MyConnectionResponseModel[];
-	userToApplyListings?: MyFutureApplicationResponseModel[];
+	allMyFutureConnections?: MyFutureApplicationResponseModel[];
 	totalNumberOfListings: number;
 	checkedStatuses: Record<string, boolean>;
 
@@ -213,4 +223,31 @@ export interface CombinedFiltersProps {
 
 export interface CustomSubmitButtonGroupProps {
 	resetMethod(): void;
+}
+
+export interface StatisticsProps {
+	isOpen: boolean;
+	allMyJobs: MyJobResponseModel[];
+	allMyConnections: MyConnectionResponseModel[];
+	allMyFutureConnections: MyFutureApplicationResponseModel[];
+
+	onClose(): void;
+}
+
+export interface MyJobStatisticProps {
+	allMyJobs: MyJobResponseModel[];
+}
+
+export interface MyCustomStatisticProps {
+	myConnectionData?: MyConnectionResponseModel[];
+	myFutureApplicationData?: MyFutureApplicationResponseModel[];
+}
+
+export interface CustomDateTagProps {
+	dateToShow: Date;
+	title: string;
+}
+
+export interface CustomLegendProps {
+	payload: CustomPayload[];
 }

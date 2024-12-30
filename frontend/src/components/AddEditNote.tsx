@@ -1,4 +1,4 @@
-import React from "react";
+import {ChangeEvent, FC, useEffect, useRef, useState} from "react";
 
 import loadingAtom from "../atoms/loadingAtom.ts";
 import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
@@ -31,11 +31,11 @@ import {MyJobResponseModel, NoteFormValues} from "../models/types.ts";
 import {Constants} from "../helpers/constants.ts";
 import {useRecoilState} from "recoil";
 import {ConstantItemNames} from "../helpers/enums.ts";
-
-import '../styles/componentStyle.css'
 import {useTranslation} from "react-i18next";
 
-const AddEditNote: React.FC<AddNoteProps> = (
+import '../styles/componentStyle.css'
+
+const AddEditNote: FC<AddNoteProps> = (
 	{isAddEditNoteOpen, onAddEditNoteClose, item, getAllItems, identifier}
 ) => {
 	const {
@@ -43,8 +43,8 @@ const AddEditNote: React.FC<AddNoteProps> = (
 		onOpen: onDeleteOpen,
 		onClose: onDeleteClose
 	} = useDisclosure();
-	const cancelRef = React.useRef<HTMLButtonElement>(null);
-	const [numberOfCharacters, setNumberOfCharacters] = React.useState<number>(item.note?.length ?? 0);
+	const cancelRef = useRef<HTMLButtonElement>(null);
+	const [numberOfCharacters, setNumberOfCharacters] = useState<number>(item.note?.length ?? 0);
 	const [isLoading, setIsLoading] = useRecoilState(loadingAtom);
 
 	const methods = useForm<NoteFormValues>({
@@ -54,7 +54,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 	});
 	const {t} = useTranslation();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		methods.reset({note: item.note ?? ""});
 		setNumberOfCharacters(item.note?.length ?? 0);
 	}, [item.note, methods]);
@@ -156,7 +156,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 											height={(field.value && item.note) ? "2xs" : "unset"}
 											{...field}
 											value={field.value}
-											onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+											onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
 												field.onChange(e.target.value);
 												setNumberOfCharacters(e.currentTarget.value.length);
 											}}
@@ -224,7 +224,7 @@ const AddEditNote: React.FC<AddNoteProps> = (
 				item={item}
 				handleDelete={handleNoteDelete}
 				cancelRef={cancelRef}
-				type={t("components.Note")}
+				type={"Note"}
 			/>
 		</Modal>
 	);

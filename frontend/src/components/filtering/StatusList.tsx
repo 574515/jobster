@@ -1,15 +1,15 @@
-import React, {ChangeEvent, useEffect} from 'react';
+import {ChangeEvent, FC, ReactNode, useEffect, useMemo} from 'react';
 
 import {StatusListProps} from "../../models/interfaces.ts";
 import {Checkbox, Flex, Text} from "@chakra-ui/react";
 import {MyJobResponseModel, StatusSelectType} from "../../models/types.ts";
 import {useTranslation} from "react-i18next";
 
-const StatusList: React.FC<StatusListProps> = (
+const StatusList: FC<StatusListProps> = (
 	{jobListings, checkedStatuses, setCheckedStatuses}
 ) => {
 	const {t} = useTranslation();
-	const statusCount: Record<string, StatusSelectType> = React.useMemo((): Record<string, StatusSelectType> => {
+	const statusCount: Record<string, StatusSelectType> = useMemo((): Record<string, StatusSelectType> => {
 		return jobListings.reduce(
 			(acc: Record<string, StatusSelectType>, job: MyJobResponseModel): Record<string, StatusSelectType> => {
 				const {value, label, color} = job.status;
@@ -70,7 +70,7 @@ const StatusList: React.FC<StatusListProps> = (
 					{t("filters.AllStatuses")}
 				</Checkbox>
 			</Flex>
-			{Object.values(statusCount).map((jobListingStatus: StatusSelectType, index: number): React.ReactNode => (
+			{Object.values(statusCount).map((jobListingStatus: StatusSelectType, index: number): ReactNode => (
 				<Flex
 					textAlign={"center"}
 					justifyContent={"space-between"}
