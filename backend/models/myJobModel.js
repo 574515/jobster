@@ -30,6 +30,7 @@ const myJobSchema = new mongoose.Schema({
                 label: String,
                 value: String,
                 color: String,
+                tooltip: String,
             },
         },
         dateApplied: {
