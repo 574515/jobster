@@ -125,7 +125,7 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 										textAlign={"center"}
 										isRequired={date.isRequired}
 									>
-										{date.label && <FormLabel mx={0}>{t(`filters.${date.label}`)}</FormLabel>}
+										{date.label && <FormLabel mx={0}>{t(date.label)}</FormLabel>}
 										<HStack>
 											<SingleDatepicker
 												date={field.value}
@@ -144,6 +144,7 @@ const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
 														if (date.setHasClosingDate)
 															date.setHasClosingDate(!date.hasClosingDate);
 													}}
+													isChecked={date.hasClosingDate}
 												/>
 											)}
 										</HStack>

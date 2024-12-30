@@ -57,7 +57,7 @@ const AddMyFutureApplicationTabPanel: React.FC<AddMyFutureApplicationTabPanelPro
 										textAlign={"center"}
 										isRequired={date.isRequired}
 									>
-										{date.label && <FormLabel mx={0}>{t(`filters.${date.label}`)}</FormLabel>}
+										{date.label && <FormLabel mx={0}>{t(date.label)}</FormLabel>}
 										<HStack>
 											<SingleDatepicker
 												date={field.value}
