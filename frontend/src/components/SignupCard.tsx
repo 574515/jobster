@@ -1,4 +1,4 @@
-import React from 'react';
+import {ChangeEvent, KeyboardEvent, useContext, useState} from 'react';
 
 import AuthContext from "../context/AuthContext.tsx";
 import authScreenAtom from "../atoms/authScreenAtom.ts";
@@ -33,16 +33,16 @@ import {useTranslation} from "react-i18next";
 import '../styles/style.css'
 
 const SignupCard = () => {
-	const [signUpInputs, setSignUpInputs] = React.useState<SignupValuesType>({
+	const [signUpInputs, setSignUpInputs] = useState<SignupValuesType>({
 		username: "",
 		password: "",
 		repeatPassword: "",
 	});
-	const [showPassword, setShowPassword] = React.useState<boolean>(false);
-	const [showRepeatPassword, setShowRepeatPassword] = React.useState<boolean>(false);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showRepeatPassword, setShowRepeatPassword] = useState<boolean>(false);
 	const setAuthScreen = useSetRecoilState<string>(authScreenAtom);
-	const [isLoading, setIsLoading] = React.useState<boolean>(false);
-	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const authContext = useContext<AuthContextType | undefined>(AuthContext);
 	const registerUser = authContext ? authContext.registerUser : undefined;
 	const methods = useForm({
 		resolver: RegisterValidationSchema, ...getDefaultValues("signup"),
@@ -115,7 +115,7 @@ const SignupCard = () => {
 											</InputLeftElement>
 										}
 										onChange={
-											({target}: React.ChangeEvent<HTMLInputElement>) =>
+											({target}: ChangeEvent<HTMLInputElement>) =>
 												setSignUpInputs({...signUpInputs, username: target.value})
 										}
 									/>
@@ -126,7 +126,7 @@ const SignupCard = () => {
 										isRequired
 										sx={{boxShadow: "none"}}
 										inputProps={{type: showPassword ? 'text' : 'password'}}
-										onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+										onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
 											const currentPassword = methods.getValues("password");
 											if (currentPassword) {
 												const passwordWithoutWS = currentPassword.replace(/\s/g, '');
@@ -148,7 +148,7 @@ const SignupCard = () => {
 											</InputRightElement>
 										}
 										onChange={
-											({target}: React.ChangeEvent<HTMLInputElement>) =>
+											({target}: ChangeEvent<HTMLInputElement>) =>
 												setSignUpInputs({...signUpInputs, password: target.value})
 										}
 									/>
@@ -175,7 +175,7 @@ const SignupCard = () => {
 											</InputRightElement>
 										}
 										onChange={
-											({target}: React.ChangeEvent<HTMLInputElement>) =>
+											({target}: ChangeEvent<HTMLInputElement>) =>
 												setSignUpInputs({...signUpInputs, repeatPassword: target.value})
 										}
 									/>

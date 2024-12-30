@@ -1,8 +1,9 @@
-import React, {useMemo} from "react";
+import {FC, useEffect, useMemo, useState} from "react";
 
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import loadingAtom from "../atoms/loadingAtom.ts";
 import userLocaleAtom from "../atoms/userLocaleAtom.ts";
+import isPhoneAtom from "../atoms/isPhoneAtom.ts";
 import AddMyConnectionTabPanel from "./addPanels/AddMyConnectionTabPanel.tsx";
 import AddMyFutureApplicationTabPanel from "./addPanels/AddMyFutureApplicationTabPanel.tsx";
 import AddMyJobTabPanel from "./addPanels/AddMyJobTabPanel.tsx";
@@ -39,11 +40,10 @@ import {ConnectionActions, JobActions, ToApplyActions} from "./AppActions.action
 import {toast} from "../helpers/customToast.ts";
 import {AddEditJobModalProps} from "../models/interfaces.ts";
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
-import isPhoneAtom from "../atoms/isPhoneAtom.ts";
 import {useTranslation} from "react-i18next";
 import {jobListingCategories} from "../helpers/categories.ts";
 
-const AddListingModal: React.FC<AddEditJobModalProps> = (
+const AddListingModal: FC<AddEditJobModalProps> = (
 	{
 		isOpen, onClose, user, getAllMyJobs, getAllMyConnections,
 		getAllMyFutureApplications, myJobMethods, myConnectionMethods, myFutureApplicationMethods
@@ -51,20 +51,20 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 ) => {
 	const userLocale = useRecoilValue<string>(userLocaleAtom);
 	const [homeScreenState, setHomeScreenState] = useRecoilState<string>(homeScreenAtom);
-	const [currentTab, setCurrentTab] = React.useState<number>(0);
-	const [statuses, setStatuses] = React.useState<ModalSelectType[]>([]);
+	const [currentTab, setCurrentTab] = useState<number>(0);
+	const [statuses, setStatuses] = useState<ModalSelectType[]>([]);
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
-	const [dateApplied, setDateApplied] = React.useState<Date>(new Date());
-	const [closingDate, setClosingDate] = React.useState<Date>(new Date());
-	const [closingDateMFA, setClosingDateMFA] = React.useState<Date>(new Date(+new Date() + Constants.DAY_IN_MILLISECONDS));
-	const [dateSent, setDateSent] = React.useState<Date>(new Date());
-	const [hasClosingDate, setHasClosingDate] = React.useState<boolean>(false);
+	const [dateApplied, setDateApplied] = useState<Date>(new Date());
+	const [closingDate, setClosingDate] = useState<Date>(new Date());
+	const [closingDateMFA, setClosingDateMFA] = useState<Date>(new Date(+new Date() + Constants.DAY_IN_MILLISECONDS));
+	const [dateSent, setDateSent] = useState<Date>(new Date());
+	const [hasClosingDate, setHasClosingDate] = useState<boolean>(false);
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const {t} = useTranslation();
 
-	React.useEffect(() => setStatuses(statusesToSet), []);
+	useEffect(() => setStatuses(statusesToSet), []);
 
-	React.useEffect(() => setCurrentTab(addModalTabs[homeScreenState]), [homeScreenState]);
+	useEffect(() => setCurrentTab(addModalTabs[homeScreenState]), [homeScreenState]);
 
 	const preprocessedColors = useMemo(() =>
 		new Map(jobListingCategories.flatMap(obj => obj.options
@@ -90,8 +90,8 @@ const AddListingModal: React.FC<AddEditJobModalProps> = (
 
 			return {
 				...cat,
-				color: cat.color || group?.color || "#FF0000", // Assign group color or default
-				tooltip: group?.label || "Unknown Group", // Assign group name or default
+				color: cat.color || group?.color || "#FF0000",
+				tooltip: group?.label || "Unknown Group",
 			};
 		}) || [];
 		const coloredCategories: CategorySelectionModel[] = assignColorsToCategorySelectionOptimized(newCategories);

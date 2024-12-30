@@ -1,9 +1,10 @@
-import React from 'react';
+import {useState} from 'react';
 
 import authScreenAtom from '../atoms/authScreenAtom.ts';
-import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import useAuth from "../hooks/useAuth.ts";
+import CustomFormProvider from "./customComponents/CustomFormProvider.tsx";
 import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
+import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
 
 import {
 	Box,
@@ -33,9 +34,9 @@ import '../styles/style.css'
 
 const LoginCard = () => {
 	const {loginUser} = useAuth();
-	const setAuthScreen = useSetRecoilState(authScreenAtom);
-	const [showPassword, setShowPassword] = React.useState(false);
-	const [isLoading, setIsLoading] = React.useState(false);
+	const setAuthScreen = useSetRecoilState<string>(authScreenAtom);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const methods = useForm({resolver: LoginValidationSchema, ...getDefaultValues("login"), mode: "onChange",});
 	const {colorMode} = useColorMode();
 	const {t} = useTranslation();
@@ -118,7 +119,7 @@ const LoginCard = () => {
 										margin={"auto"}
 									>{t("authentication.LogIn")}</SubmitButton>
 									<CustomColorModeSwitch/>
-									{/*<CustomLanguageSwitcher/>*/}
+									<CustomLanguageSwitcher/>
 								</HStack>
 								<Text align={'center'} className="prevent-select">
 									{t("authentication.noAccount")}&nbsp;<Link

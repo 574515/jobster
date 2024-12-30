@@ -1,9 +1,11 @@
-import React from "react";
+import {FC, Fragment, useEffect, useRef, useState} from "react";
 
 import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
 import useDeleteItem from "../../hooks/useDeleteItem.ts";
 import AddEditNote from "../AddEditNote.tsx";
 import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
+import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
+import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 
 import {CustomFutureApplicationCardProps} from "../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
@@ -25,17 +27,16 @@ import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
 import {ToApplyActions} from "../AppActions.action.ts";
 import {ConstantItemNames} from "../../helpers/enums.ts";
-import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
-import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 import {useTranslation} from "react-i18next";
 
-const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = (
+const CustomFutureApplicationCard: FC<CustomFutureApplicationCardProps> = (
 	{getAllItems, item}
 ) => {
-	const userLocale = useRecoilValue(userLocaleAtom);
+	const userLocale = useRecoilValue<string>(userLocaleAtom);
 	const {isOpen, onOpen, onClose} = useDisclosure();
-	const cancelRef = React.useRef<HTMLButtonElement>(null);
-	const [customColor, setCustomColor] = React.useState<string>("#ADD8E6");
+	const cancelRef = useRef<HTMLButtonElement>(null);
+	const [customColor, setCustomColor] = useState<string>("#ADD8E6");
+	const [closingDateMFATooltipOpen, setClosingDateMFATooltipOpen] = useState<boolean>(false);
 	const {
 		isOpen: isAddEditNoteOpen,
 		onOpen: onAddEditNoteOpen,
@@ -43,7 +44,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 	} = useDisclosure();
 	const {t} = useTranslation();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!customColor) setCustomColor("#FFFFFF");
 	}, [customColor]);
 
@@ -53,23 +54,20 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 		{getAllItems, item, deleteAction: ToApplyActions.deleteMyToApply}
 	);
 
-	const [closingDateMFATooltipOpen, setClosingDateMFATooltipOpen] = React.useState<boolean>(false);
-
 	const getTag = () => {
 		if (item.closingDateMFA) {
 			return (
 				<Tooltip isOpen={closingDateMFATooltipOpen}>
 					{format(item.closingDateMFA, TIME_FORMATS[userLocale])}
 				</Tooltip>
-			)
-
+			);
 		} else return "";
 	}
 
 	const noteBoxHeight = useNoteBoxHeight(item.note);
 
 	return (
-		<React.Fragment>
+		<Fragment>
 			<Card colorScheme={"red"}>
 				<CardHeader pb={2}>
 					<HStack justifyContent={"space-between"}>
@@ -107,7 +105,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 						</Heading>
 					</VStack>
 					{item.note && (
-						<React.Fragment>
+						<Fragment>
 							<Text mt={2}>
 								{t("myFutureApplications.Note")}
 							</Text>
@@ -121,7 +119,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 								value={item.note}
 								onClick={() => item.note && onAddEditNoteOpen()}
 							/>
-						</React.Fragment>
+						</Fragment>
 					)}
 					<Tag
 						className={"prevent-select"}
@@ -156,7 +154,7 @@ const CustomFutureApplicationCard: React.FC<CustomFutureApplicationCardProps> = 
 				getAllItems={getAllItems}
 				identifier={ConstantItemNames.MY_FUTURE_APPLICATIONS}
 			/>
-		</React.Fragment>
+		</Fragment>
 	);
 }
 

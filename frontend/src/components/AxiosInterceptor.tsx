@@ -13,12 +13,8 @@ const setupAxiosInterceptors = (
 		const {response} = error;
 		if (response && response.status === 401 && response.data && response.data.action === 'logout') {
 			await logoutUser()
-				.then(() => {
-					console.log('User successfully logged out')
-				})
-				.catch((error: ErrorResponse) => {
-					console.error('Error logging out:', error);
-				});
+				.then(() => console.log('User successfully logged out'))
+				.catch((error: ErrorResponse) => console.error('Error logging out:', error));
 		}
 		return Promise.reject(error);
 	};

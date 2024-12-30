@@ -1,4 +1,4 @@
-import React from 'react';
+import {createContext, FC, useState} from 'react';
 
 import userAtom from '../atoms/userAtom.ts';
 import authScreenAtom from "../atoms/authScreenAtom.ts";
@@ -11,16 +11,18 @@ import {authInstance} from "../api/axiosInstances.ts";
 import {AuthProviderProps} from "../models/interfaces.ts";
 import {useTranslation} from "react-i18next";
 
-const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+export const AuthProvider: FC<AuthProviderProps> = (
+	{children}
+) => {
 	const storedTokensString = localStorage.getItem('userToken');
 	const storedTokens: UserToken | null = storedTokensString ? JSON.parse(storedTokensString) : null;
-	const [userToken, setUserToken] = React.useState<UserToken | null>(storedTokens);
+	const [userToken, setUserToken] = useState<UserToken | null>(storedTokens);
 	const setAuthScreen = useSetRecoilState<string>(authScreenAtom);
 	const [user, setUser] = useRecoilState<CustomUser | null>(userAtom);
-	const {t} = useTranslation();
 	const navigate = useNavigate();
+	const {t} = useTranslation();
 
 	const loginUser = async (inputs: object) => {
 		await authInstance

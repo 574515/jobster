@@ -8,7 +8,9 @@ import {useRecoilValue} from "recoil";
 import {useTranslation} from "react-i18next";
 import {CustomSubmitButtonGroupProps} from "../../models/interfaces.ts";
 
-const CustomSubmitButtonGroup: FC<CustomSubmitButtonGroupProps> = ({resetMethod}) => {
+const CustomSubmitButtonGroup: FC<CustomSubmitButtonGroupProps> = (
+	{resetMethod}
+) => {
 	const isLoading = useRecoilValue<boolean>(loadingAtom);
 	const {t} = useTranslation();
 

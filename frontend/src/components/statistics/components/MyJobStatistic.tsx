@@ -2,17 +2,17 @@ import {FC, useEffect, useState} from "react";
 
 import darkModeAtom from "../../../atoms/darkModeAtom.ts";
 import CustomLegend from "./CustomLegend.tsx";
+import isPhoneAtom from "../../../atoms/isPhoneAtom.ts";
 
 import {Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipProps} from "recharts"
 import {Box} from "@chakra-ui/react";
 import {CustomPayload, StatDataType} from "../../../models/helperTypes.ts";
 import {MyJobStatisticProps} from "../../../models/interfaces.ts";
 import {useRecoilValue} from "recoil";
-
-import '../../../styles/componentStyle.css'
 import {Payload} from "recharts/types/component/DefaultLegendContent";
 import {useTranslation} from "react-i18next";
-import isPhoneAtom from "../../../atoms/isPhoneAtom.ts";
+
+import '../../../styles/componentStyle.css'
 
 const MyJobStatistic: FC<MyJobStatisticProps> = (
 	{allMyJobs}
@@ -39,7 +39,7 @@ const MyJobStatistic: FC<MyJobStatisticProps> = (
 		if (active && payload && payload.length) {
 			const data = payload[0];
 			if (data.value) {
-				const percentage = ((data.value / total) * 100).toFixed(2); // Calculate percentage
+				const percentage = ((data.value / total) * 100).toFixed(2);
 				return (
 					<div className={`customTooltip ${isDarkMode ? 'customTooltipDark' : 'customTooltipLight'}`}>
 						<p>{`${percentage}% (${data.value})`}</p>

@@ -1,4 +1,4 @@
-import React from "react";
+import {useCallback, useEffect, useState} from "react";
 
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
 import loadingAtom from "../atoms/loadingAtom.ts";
@@ -15,11 +15,11 @@ const useDeleteItem = (
 ) => {
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
-	const [itemName, setItemName] = React.useState<string>();
+	const [itemName, setItemName] = useState<string>();
 
-	React.useEffect(() => setItemName(constantItemName[homeScreenState]), [homeScreenState]);
+	useEffect(() => setItemName(constantItemName[homeScreenState]), [homeScreenState]);
 
-	const handleDelete = React.useCallback(
+	const handleDelete = useCallback(
 		async () => {
 			if (!item) return;
 			setIsLoading(true);

@@ -1,4 +1,4 @@
-import React, {FC, Fragment, ReactNode, useEffect, useState} from "react";
+import {FC, Fragment, ReactNode, useEffect, useState} from "react";
 
 import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
 import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
@@ -30,10 +30,10 @@ const Statistics: FC<StatisticsProps> = (
 ) => {
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
-	const {t} = useTranslation();
 	const [showAll, setShowAll] = useState<boolean>(false);
 	const [renderedStatistics, setRenderedStatistics] = useState<ReactNode>();
-	const [visibleShowAllButton, setVisibleShowAllButton] = React.useState<boolean>(false);
+	const [visibleShowAllButton, setVisibleShowAllButton] = useState<boolean>(false);
+	const {t} = useTranslation();
 
 	useEffect(() => {
 		const arrays = [allMyJobs, allMyConnections, allMyFutureConnections];

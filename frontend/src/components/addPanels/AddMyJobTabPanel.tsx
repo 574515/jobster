@@ -1,7 +1,9 @@
-import React from "react";
+import {FC} from "react";
 
+import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 import loadingAtom from "../../atoms/loadingAtom.ts";
 import CustomFormProvider from "../customComponents/CustomFormProvider.tsx";
+import CustomSubmitButtonGroup from "../customComponents/CustomSubmitButtonGroup.tsx";
 
 import {Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, HStack, TabPanel, VStack} from "@chakra-ui/react";
 import {InputControl, TextareaControl} from "react-hook-form-chakra";
@@ -14,11 +16,9 @@ import {AddMyJobTabPanelProps} from "../../models/interfaces.ts";
 import {CreatableSelect, GroupBase, Select} from "chakra-react-select";
 import {jobListingCategories} from "../../helpers/categories.ts";
 import {FaCaretRight} from "react-icons/fa6";
-import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 import {useTranslation} from "react-i18next";
-import CustomSubmitButtonGroup from "../customComponents/CustomSubmitButtonGroup.tsx";
 
-const AddMyJobTabPanel: React.FC<AddMyJobTabPanelProps> = (
+const AddMyJobTabPanel: FC<AddMyJobTabPanelProps> = (
 	{
 		myJobMethods, myJobDateSelects, userLocale,
 		dateApplied, statuses, handleMyJobSave

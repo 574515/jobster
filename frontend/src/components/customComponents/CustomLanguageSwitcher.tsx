@@ -1,4 +1,4 @@
-import React from 'react';
+import {useEffect} from 'react';
 
 import languageAtom from '../../atoms/languageAtom';
 import loadingAtom from "../../atoms/loadingAtom.ts";
@@ -21,7 +21,7 @@ const CustomLanguageSwitcher = () => {
 	];
 	const selectedLanguage = languages.find(lang => lang.languageCode === currentLanguage) || languages[0];
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setIsLoading(true);
 		const savedLanguage = localStorage.getItem('language') || 'en-GB';
 		i18n.changeLanguage(savedLanguage)

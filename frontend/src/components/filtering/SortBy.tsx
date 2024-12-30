@@ -1,4 +1,4 @@
-import React from "react";
+import {BaseSyntheticEvent, FC, useEffect, useState} from "react";
 
 import homeScreenAtom from "../../atoms/homeScreenAtom.ts";
 import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
@@ -10,19 +10,19 @@ import {MyConnectionResponseModel, MyJobResponseModel, SortByOptionType} from ".
 import {useRecoilValue} from "recoil";
 import {useTranslation} from "react-i18next";
 
-const SortBy: React.FC<SortByProps> = (
+const SortBy: FC<SortByProps> = (
 	{
 		allMyJobs, setAllMyJobs,
 		allMyConnections, setAllMyConnections,
 		allMyFutureApplications, setAllMyFutureApplications,
 	}
 ) => {
-	const [sortOptions, setSortOptions] = React.useState<SortByOptionType[]>([]);
+	const [sortOptions, setSortOptions] = useState<SortByOptionType[]>([]);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const {t} = useTranslation();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const sortOptions: SortByOptionType[] = sortByOptions[homeScreenState];
 		setSortOptions(isPhone ? sortOptions.map(item => ({
 			...item,
@@ -30,7 +30,7 @@ const SortBy: React.FC<SortByProps> = (
 		})) : sortOptions);
 	}, [homeScreenState, isPhone, t]);
 
-	const handleSort = (e: React.BaseSyntheticEvent) => {
+	const handleSort = (e: BaseSyntheticEvent) => {
 		switch (homeScreenState) {
 			case homeScreenPages.MY_JOBS: {
 				if (allMyJobs && setAllMyJobs) {

@@ -1,11 +1,12 @@
-import React from "react";
+import {FC, Fragment, useEffect, useRef, useState} from "react";
 
+import loadingAtom from "../../atoms/loadingAtom.ts";
 import useDeleteItem from "../../hooks/useDeleteItem.ts";
 import useNoteBoxHeight from "../../hooks/useNoteBoxHeight.ts";
 import AddEditNote from "../AddEditNote.tsx";
 import CustomDeleteAlert from "./CustomDeleteAlert.tsx";
 import CustomAddNoteIcon from "./CustomAddNoteIcon.tsx";
-import loadingAtom from "../../atoms/loadingAtom.ts";
+import CustomDateTag from "./CustomDateTag.tsx";
 
 import {CustomJobCardProps} from "../../models/interfaces.ts";
 import {
@@ -38,8 +39,6 @@ import {
 	useDisclosure
 } from "@chakra-ui/react";
 import {DeleteIcon, LinkIcon} from "@chakra-ui/icons";
-
-
 import {useSetRecoilState} from "recoil";
 import {statusesToSet} from "../../helpers/constants.ts";
 import {JobActions} from "../AppActions.action.ts";
@@ -49,9 +48,8 @@ import {LabelValueType, ModalSelectType} from "../../models/types.ts";
 import {useTranslation} from "react-i18next";
 
 import '../../styles/componentStyle.css';
-import CustomDateTag from "./CustomDateTag.tsx";
 
-const CustomJobCard: React.FC<CustomJobCardProps> = (
+const CustomJobCard: FC<CustomJobCardProps> = (
 	{item, getAllItems}
 ) => {
 	const {
@@ -69,12 +67,13 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 		onOpen: onAddEditNoteOpen,
 		onClose: onAddEditNoteClose,
 	} = useDisclosure();
-	const cancelRef = React.useRef<HTMLButtonElement>(null);
-	const [textareaDescHeight, setTextareaDescHeight] = React.useState<string>("0vh");
-	const [tagShadow, setTagShadow] = React.useState<string>("");
+	const cancelRef = useRef<HTMLButtonElement>(null);
+	const [textareaDescHeight, setTextareaDescHeight] = useState<string>("0vh");
+	const [tagShadow, setTagShadow] = useState<string>("");
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
+	const {t} = useTranslation();
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (window.innerWidth < 400) {
 			if (item.description && item.description.length > 350) setTextareaDescHeight("50vh")
 		} else {
@@ -87,11 +86,9 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 		}
 	}, [item.description, item.note]);
 
-	const {t} = useTranslation();
-
 	const textareaNoteHeight = useNoteBoxHeight(item.note);
 
-	React.useEffect(() => setTagShadow(`inset 0 0 0px 1px ${item.status.color}`), [item.status.color]);
+	useEffect(() => setTagShadow(`inset 0 0 0px 1px ${item.status.color}`), [item.status.color]);
 
 	const {handleDelete} = useDeleteItem({getAllItems, item, deleteAction: JobActions.deleteMyJob});
 
@@ -148,7 +145,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 	}
 
 	return (
-		<React.Fragment>
+		<Fragment>
 			<Card colorScheme={"red"}>
 				<CardHeader pb={2}>
 					<HStack justifyContent={"space-between"}>
@@ -186,7 +183,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 					</Heading>
 					<Show above={"sm"}>
 						{item.description &&
-                            <React.Fragment>
+                            <Fragment>
                                 <Show below={"md"}>
                                     <Text mt={4}>{t("myJobs.Description")}</Text>
                                 </Show>
@@ -199,7 +196,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
                                     height={textareaDescHeight}
                                     value={item.description}
                                 />
-                            </React.Fragment>
+                            </Fragment>
 						}
 					</Show>
 					<Show below={"md"}>
@@ -241,7 +238,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 								})}
 							</Accordion>)
 							: (item.description || item.note) && (
-							<React.Fragment>
+							<Fragment>
 								<Text mt={2}>
 									{item.description ? t('myJobs.Description') : t('myJobs.Note')}
 								</Text>
@@ -255,7 +252,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 									value={getValue()}
 									onClick={() => item.note && onAddEditNoteOpen()}
 								/>
-							</React.Fragment>
+							</Fragment>
 						)}
 					</Show>
 					<HStack mb={2} mt={4} width={'100%'}>
@@ -345,7 +342,7 @@ const CustomJobCard: React.FC<CustomJobCardProps> = (
 				getAllItems={getAllItems}
 				identifier={ConstantItemNames.MY_JOBS}
 			/>
-		</React.Fragment>
+		</Fragment>
 	);
 }
 

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {FC, useEffect, useState} from "react";
 
 import isPhoneAtom from "../../atoms/isPhoneAtom.ts";
 
@@ -20,11 +20,11 @@ import {MyTrackerNames} from "../../helpers/enums.ts";
 
 import "../../styles/style.css"
 
-const CustomDeleteAlert: React.FC<CustomDeleteAlertProps> = (
+const CustomDeleteAlert: FC<CustomDeleteAlertProps> = (
 	{isDeleteOpen, onDeleteClose, cancelRef, item, handleDelete, type}
 ) => {
-	const [typeMessage, setTypeMessage] = React.useState<string>();
-	const isPhone = useRecoilValue(isPhoneAtom);
+	const [typeMessage, setTypeMessage] = useState<string>();
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const {t} = useTranslation();
 
 	useEffect(() => {

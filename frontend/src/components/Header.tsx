@@ -1,31 +1,34 @@
-import {homeScreenPages, homeScreenPagesList} from "../helpers/constants.ts";
-import {AuthContextType, CustomUser, HomeScreenPagesType} from "../models/types.ts";
-import React from "react";
-import {Button, ButtonGroup, Divider, Flex, Heading, Show, VStack} from "@chakra-ui/react";
-import {FaArrowRightFromBracket, FaChartSimple, FaPlus} from "react-icons/fa6";
-import {toast} from "../helpers/customToast.ts";
+import {FC, ReactNode, useContext} from "react";
+
 import AuthContext from "../context/AuthContext.tsx";
-import {useRecoilValue, useSetRecoilState} from "recoil";
 import loadingAtom from "../atoms/loadingAtom.ts";
 import userAtom from "../atoms/userAtom.ts";
-import {HeaderProps} from "../models/interfaces.ts";
 import homeScreenAtom from "../atoms/homeScreenAtom.ts";
-import {useTranslation} from "react-i18next";
 import isPhoneAtom from "../atoms/isPhoneAtom.ts";
 import CustomColorModeSwitch from "./customComponents/CustomColorModeSwitch.tsx";
 import CustomLanguageSwitcher from "./customComponents/CustomLanguageSwitcher.tsx";
 
-const Header: React.FC<HeaderProps> = (
+import {homeScreenPages, homeScreenPagesList} from "../helpers/constants.ts";
+import {AuthContextType, CustomUser, HomeScreenPagesType} from "../models/types.ts";
+import {Button, ButtonGroup, Divider, Flex, Heading, Show, VStack} from "@chakra-ui/react";
+import {FaArrowRightFromBracket, FaChartSimple, FaPlus} from "react-icons/fa6";
+import {toast} from "../helpers/customToast.ts";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {HeaderProps} from "../models/interfaces.ts";
+import {useTranslation} from "react-i18next";
+
+const Header: FC<HeaderProps> = (
 	{
-		handlePageClick, getClassName, getBottomBorder, getColor, getHeading, onOpen, onOpenStats, statisticsDisabled
+		handlePageClick, getClassName, getBottomBorder, getColor,
+		getHeading, onOpen, onOpenStats, statisticsDisabled
 	}
 ) => {
-	const authContext = React.useContext<AuthContextType | undefined>(AuthContext);
+	const authContext = useContext<AuthContextType | undefined>(AuthContext);
 	const logoutUser = authContext ? authContext.logoutUser : undefined;
 	const setIsLoading = useSetRecoilState<boolean>(loadingAtom);
 	const user = useRecoilValue<CustomUser | null>(userAtom);
 	const homeScreenState = useRecoilValue<string>(homeScreenAtom);
-	const isPhone = useRecoilValue(isPhoneAtom);
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const {t} = useTranslation();
 
 	const handleLogout = async () => {
@@ -45,7 +48,7 @@ const Header: React.FC<HeaderProps> = (
 				alignItems={"center"}
 				flexDirection={{base: "column-reverse", xl: "row"}}
 			>
-				{homeScreenPagesList.map((page: HomeScreenPagesType, index: number): React.ReactNode => (
+				{homeScreenPagesList.map((page: HomeScreenPagesType, index: number): ReactNode => (
 					<Heading
 						my="1rem"
 						size="md"

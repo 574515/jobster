@@ -1,9 +1,13 @@
 import {FC, useState} from "react";
+
+import isPhoneAtom from "../../../atoms/isPhoneAtom.ts";
+import darkModeAtom from "../../../atoms/darkModeAtom.ts";
+import CustomLegend from "./CustomLegend.tsx";
+import moment from "moment";
+
 import {Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipProps} from "recharts";
 import {Box} from "@chakra-ui/react";
-import moment from "moment";
 import {Payload} from "recharts/types/component/DefaultLegendContent";
-import CustomLegend from "./CustomLegend.tsx";
 import {MyCustomStatisticProps} from "../../../models/interfaces.ts";
 import {
 	DefaultStringKeyNumberModel,
@@ -14,16 +18,16 @@ import {
 import {CustomPayload, StatDataType} from "../../../models/helperTypes.ts";
 import {useTranslation} from "react-i18next";
 import {useRecoilValue} from "recoil";
-import isPhoneAtom from "../../../atoms/isPhoneAtom.ts";
-import darkModeAtom from "../../../atoms/darkModeAtom.ts";
 
-const CustomStatistic: FC<MyCustomStatisticProps> = ({myConnectionData, myFutureApplicationData}) => {
-	const isPhone = useRecoilValue(isPhoneAtom);
+const CustomStatistic: FC<MyCustomStatisticProps> = (
+	{myConnectionData, myFutureApplicationData}
+) => {
+	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const [view, setView] = useState<string>("months");
 	const [filteredData, setFilteredData] = useState<MyConnectionResponseModelStatistic[] | null>(null);
 	const isDarkMode = useRecoilValue<boolean>(darkModeAtom);
 	const {t} = useTranslation();
-	const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+	const COLORS: string[] = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 	const getMonthData = () => {
 		const months: DefaultStringKeyNumberModel = {};
@@ -93,7 +97,6 @@ const CustomStatistic: FC<MyCustomStatisticProps> = ({myConnectionData, myFuture
 
 	const renderCustomTooltip = ({active, payload}: TooltipProps<number, string>) => {
 		if (active && payload && payload.length) {
-			console.log(payload);
 			const data = payload[0];
 			if (data.value) {
 				return (

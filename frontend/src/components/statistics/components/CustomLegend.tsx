@@ -1,34 +1,33 @@
-import {CustomPayload} from "../../../models/helperTypes.ts";
+import {FC} from "react";
 
-import '../../../styles/componentStyle.css';
-import {useTranslation} from "react-i18next";
-import {useRecoilValue} from "recoil";
 import isPhoneAtom from "../../../atoms/isPhoneAtom.ts";
-import {format, parseISO} from "date-fns";
-import {TIME_FORMATS} from "../../../helpers/dateLocales.ts";
 import userLocaleAtom from "../../../atoms/userLocaleAtom.ts";
 
-const CustomLegend = ({payload}: { payload: CustomPayload[] }) => {
+import {CustomLegendProps} from "../../../models/interfaces.ts";
+import {useTranslation} from "react-i18next";
+import {CustomPayload} from "../../../models/helperTypes.ts";
+import {useRecoilValue} from "recoil";
+import {format, parseISO} from "date-fns";
+import {TIME_FORMATS} from "../../../helpers/dateLocales.ts";
+
+import '../../../styles/componentStyle.css';
+
+const CustomLegend: FC<CustomLegendProps> = (
+	{payload}
+) => {
 	const {t} = useTranslation();
 	const isPhone = useRecoilValue<boolean>(isPhoneAtom);
 	const userLocale = useRecoilValue(userLocaleAtom);
 
 	return (
-		<ul
-			className={`customLegendList${isPhone ? 'Mobile' : ''}`}
-		>
+		<ul className={`customLegendList${isPhone ? 'Mobile' : ''}`}>
 			{payload.map(({color, value, payload}: CustomPayload, index: number) => (
-				<li
-					key={`item-${index}`}
-					className="customLegendListItem"
-				>
+				<li key={`item-${index}`} className="customLegendListItem">
 					<div
+						className={"customLegendListItemCircle"}
 						style={{
-							width: 12,
-							height: 12,
 							backgroundColor: color,
 							marginRight: isPhone ? 4 : 8,
-							borderRadius: "50%",
 						}}
 					/>
 					{payload && payload.date ? (

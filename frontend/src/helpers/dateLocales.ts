@@ -1,5 +1,6 @@
-import {DefaultStringKeyLocaleModel, DefaultStringKeyStringModel} from "../models/types.ts";
 import * as DATE_LOCALES from 'date-fns/locale';
+
+import {DefaultStringKeyLocaleModel, DefaultStringKeyStringModel} from "../models/types.ts";
 
 export const TIME_FORMATS: DefaultStringKeyStringModel = {
 	"af-ZA": "yyyy/MM/dd",

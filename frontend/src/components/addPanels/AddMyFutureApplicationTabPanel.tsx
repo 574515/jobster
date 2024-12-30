@@ -1,5 +1,7 @@
-import React from "react";
+import {FC} from "react";
+
 import CustomFormProvider from "../customComponents/CustomFormProvider.tsx";
+import CustomSubmitButtonGroup from "../customComponents/CustomSubmitButtonGroup.tsx";
 
 import {FormControl, FormLabel, HStack, TabPanel, VStack} from "@chakra-ui/react";
 import {InputControl} from "react-hook-form-chakra";
@@ -9,9 +11,8 @@ import {SingleDatepicker} from "chakra-dayzed-datepicker";
 import {TIME_FORMATS} from "../../helpers/dateLocales.ts";
 import {AddMyFutureApplicationTabPanelProps} from "../../models/interfaces.ts";
 import {useTranslation} from "react-i18next";
-import CustomSubmitButtonGroup from "../customComponents/CustomSubmitButtonGroup.tsx";
 
-const AddMyFutureApplicationTabPanel: React.FC<AddMyFutureApplicationTabPanelProps> = (
+const AddMyFutureApplicationTabPanel: FC<AddMyFutureApplicationTabPanelProps> = (
 	{myFutureApplicationMethods, myFutureApplicationsDateSelects, userLocale, handleToApplySave}
 ) => {
 	const {t} = useTranslation();

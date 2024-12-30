@@ -1,4 +1,5 @@
-import React from "react";
+import {ReactNode, RefObject} from "react";
+
 import {FieldValues, UseFormReturn} from "react-hook-form";
 import {
 	CustomUser,
@@ -16,14 +17,19 @@ import {
 	MyJobResponseModel,
 } from "./types.ts";
 import {ConstantItemNames} from "../helpers/enums.ts";
-import {UseFormMyConnectionType, UseFormMyFutureApplicationType, UseFormMyJobType} from "./helperTypes.ts";
+import {
+	CustomPayload,
+	UseFormMyConnectionType,
+	UseFormMyFutureApplicationType,
+	UseFormMyJobType
+} from "./helperTypes.ts";
 
 export interface AuthProviderProps {
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 export interface CustomFormProviderProps<T extends FieldValues> {
-	children: React.ReactNode;
+	children: ReactNode;
 	formProviderData: UseFormReturn<T>;
 }
 
@@ -56,7 +62,7 @@ export interface HeaderProps {
 
 	getColor(page: HomeScreenPagesType): string;
 
-	getHeading(page: HomeScreenPagesType): React.ReactNode;
+	getHeading(page: HomeScreenPagesType): ReactNode;
 
 	onOpen(): void;
 
@@ -147,7 +153,7 @@ export interface AddNoteProps {
 
 export interface CustomDeleteAlertProps {
 	isDeleteOpen: boolean;
-	cancelRef: React.RefObject<HTMLButtonElement>;
+	cancelRef: RefObject<HTMLButtonElement>;
 	item: MyJobResponseModel | MyConnectionResponseModel | MyFutureApplicationResponseModel;
 	type: string;
 
@@ -240,4 +246,8 @@ export interface MyCustomStatisticProps {
 export interface CustomDateTagProps {
 	dateToShow: Date;
 	title: string;
+}
+
+export interface CustomLegendProps {
+	payload: CustomPayload[];
 }

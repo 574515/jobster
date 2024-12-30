@@ -1,3 +1,5 @@
+import {Payload as RechartsPayload} from "recharts/types/component/DefaultLegendContent";
+
 type UseFormMyJobCategory = {
 	value?: string;
 	label?: string;
@@ -39,7 +41,6 @@ export type StatDataType = {
 	value: number;
 	fill: string;
 }
-import {Payload as RechartsPayload} from "recharts/types/component/DefaultLegendContent";
 
 export type CustomPayload = RechartsPayload & {
 	payload: {

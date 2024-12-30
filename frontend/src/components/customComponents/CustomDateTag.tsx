@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import {FC, useEffect, useState} from "react";
 
 import userLocaleAtom from "../../atoms/userLocaleAtom.ts";
 
@@ -15,7 +15,7 @@ const CustomDateTag: FC<CustomDateTagProps> = (
 	const [toolTipOpen, setToolTipOpen] = useState<boolean>(false);
 	const userLocale = useRecoilValue<string>(userLocaleAtom);
 	const [formattedDate, setFormattedDate] = useState<string>("");
-	const [distanceDate, setDistanceDate] = React.useState<string>("");
+	const [distanceDate, setDistanceDate] = useState<string>("");
 
 	useEffect(() => setFormattedDate(format(dateToShow, TIME_FORMATS[userLocale])), [dateToShow, userLocale]);
 	useEffect(() => {

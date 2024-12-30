@@ -1,11 +1,11 @@
-import React from "react";
+import {useEffect, useState} from "react";
 
 const useNoteBoxHeight = (
 	note: string | undefined,
 ) => {
-	const [noteBoxHeight, setNoteBoxHeight] = React.useState<string>("10vh");
+	const [noteBoxHeight, setNoteBoxHeight] = useState<string>("10vh");
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (note) {
 			const noteLength = note.length;
 			if (window.innerWidth < 400 && noteLength > 350) {

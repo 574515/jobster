@@ -1,5 +1,6 @@
+import {ReactNode} from 'react';
+
 import {GroupBase} from 'chakra-react-select';
-import React from 'react';
 import {Locale} from "date-fns";
 
 export type DefaultStringKeyNumberModel = {
@@ -62,35 +63,6 @@ export type StatusSelectType = ModalSelectType & {
 	count: number;
 }
 
-type MyResponseType = {
-	user: string;
-	_id: string;
-	createdAt: string;
-	updatedAt: string;
-	__v: number;
-}
-
-type MyCommonCreationType = {
-	company: string;
-	jobLink: string;
-}
-
-export type MyJobCreationTransformedType = MyCommonCreationType & {
-	jobTitle: string;
-	description: string;
-	category: CategorySelectionModel[];
-	status: ModalSelectType;
-	userId: string;
-	dateApplied: string;
-	closingDate: Date;
-	note?: string;
-}
-
-export type MyJobCreationResponseType =
-	MyJobCreationTransformedType & MyResponseType & {
-	note: string | null;
-}
-
 export type PoolCreationResponseModel = {
 	createdAt: string;
 	jobLink: string;
@@ -99,10 +71,9 @@ export type PoolCreationResponseModel = {
 	updatedAt: string;
 }
 
-
 export type FiltersType = {
 	filterName: string;
-	filterComponent: React.ReactNode;
+	filterComponent: ReactNode;
 }
 
 export type SortByOptionType = {
