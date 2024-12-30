@@ -1,5 +1,3 @@
-import React from 'react'
-
 import App from './App.tsx'
 
 import {createRoot} from 'react-dom/client'
@@ -35,15 +33,12 @@ const colors = {
 const theme = extendTheme({config, styles, colors});
 
 createRoot(document.getElementById('root')!).render(
-	// TODO: Remove Restrict before deployment
-	<React.StrictMode>
-		<RecoilRoot>
-			<BrowserRouter>
-				<ChakraProvider theme={theme}>
-					<ColorModeScript initialColorMode={theme.config.initialColorMode}/>
-					<App/>
-				</ChakraProvider>
-			</BrowserRouter>
-		</RecoilRoot>
-	</React.StrictMode>,
+	<RecoilRoot>
+		<BrowserRouter>
+			<ChakraProvider theme={theme}>
+				<ColorModeScript initialColorMode={theme.config.initialColorMode}/>
+				<App/>
+			</ChakraProvider>
+		</BrowserRouter>
+	</RecoilRoot>
 )

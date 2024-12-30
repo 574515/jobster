@@ -1,4 +1,5 @@
 import {
+	DeleteItemType,
 	ModalSelectType,
 	MyConnectionResponseModel,
 	MyConnectionTransformedRequestModel,
@@ -9,8 +10,6 @@ import {
 	PoolCreationResponseModel,
 } from "../models/types.ts";
 import {connectionInstance, jobInstance, toApplyInstance} from "../api/axiosInstances.ts";
-
-// TODO: Type checking
 
 export class JobActions {
 	static postMyNewJob = async (
@@ -38,8 +37,8 @@ export class JobActions {
 
 	static deleteMyJob = async (
 		jobId: string,
-	) => {
-		const response = await jobInstance.delete(`/${jobId}`);
+	): Promise<DeleteItemType> => {
+		const response = await jobInstance.delete<DeleteItemType>(`/${jobId}`);
 		return response.data;
 	}
 
@@ -69,8 +68,8 @@ export class ConnectionActions {
 
 	static deleteMyConnection = async (
 		connectionId: string,
-	) => {
-		const response = await connectionInstance.delete(`/${connectionId}`);
+	): Promise<DeleteItemType> => {
+		const response = await connectionInstance.delete<DeleteItemType>(`/${connectionId}`);
 		return response.data;
 	}
 
@@ -100,8 +99,8 @@ export class ToApplyActions {
 
 	static deleteMyToApply = async (
 		applicationId: string,
-	) => {
-		const response = await toApplyInstance.delete(`/${applicationId}`);
+	): Promise<DeleteItemType> => {
+		const response = await toApplyInstance.delete<DeleteItemType>(`/${applicationId}`);
 		return response.data;
 	}
 

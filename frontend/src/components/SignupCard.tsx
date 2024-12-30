@@ -119,7 +119,6 @@ const SignupCard = () => {
 												setSignUpInputs({...signUpInputs, username: target.value})
 										}
 									/>
-									{/* TODO: Check if onKeyUp is needed and QoL */}
 									<InputControl
 										className="prevent-select"
 										name="password"
